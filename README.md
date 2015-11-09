@@ -1,4 +1,4 @@
-#logmesh-Message collector#
+#logmesh#
 
 Logmesh是一个开源消息采集/过滤/路由应用
 
