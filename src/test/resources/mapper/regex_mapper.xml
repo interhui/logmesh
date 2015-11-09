@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapper>
+	<map>
+		<name>FWLog</name>
+		<type>fw</type>
+		<pattern>FW log:name=(\S+);time=(\S+);action=(\S+);value=(\S+)</pattern>
+		<items>
+			<item index="1" key="name" />
+			<item index="2" key="time" />
+			<item index="3" key="action" />
+			<item index="4" key="value" />
+		</items>
+		<format>FW log:name=$name</format>
+	</map>
+	<map>
+		<name>FWLog2</name>
+		<type>fw</type>
+		<pattern>FW log2:(.*)</pattern>
+		<items>
+			<item index="1" split=";" pattern="(\S+)=(\S+)"/>
+		</items>
+		<format>FW log:name=$name</format>
+	</map>
+	<map>
+		<name>FWLog3</name>
+		<type>fw</type>
+		<pattern>FW log3:(.*)</pattern>
+		<items>
+			<item index="1" split=" " key="name;time;action;value"/>
+		</items>
+		<format>FW log:name=$name</format>
+	</map>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<filters>
+	<!-- 根据IP地址生成标签 -->
+	<filter>
+		<type>NOC</type>
+		<label>IP</label>
+		<value>192.168.0.106</value>
+		<value>192.168.0.107</value>
+	</filter>
+	<filter>
+		<type>Local</type>
+		<label>IP</label>
+		<value>127.0.0.1</value>
+	</filter>
+	<!-- 根据日志Owner生成标签 -->
+	<filter>
+		<type>Huiyugeng</type>
+		<label>Owner</label>
+		<value>Hui</value>
+	</filter>
+	<filter>
+		<type>Pinae</type>
+		<label>Owner</label>
+		<value>Logmesh</value>
+	</filter>
+	<!-- 根据日志时间生成标签 -->
+	<filter>
+		<type>WorkTime</type>
+		<label>Time</label>
+		<value>10:00:00-23:00:00</value>
+	</filter>
+	<!-- 根据日志内容生成标签 -->
+	<filter>
+		<type>Firewall</type>
+		<label>Content</label>
+		<value>Firewall Log.*</value>
+		<value>(ASA|PIX) Log.*</value>
+	</filter>
+</filters>

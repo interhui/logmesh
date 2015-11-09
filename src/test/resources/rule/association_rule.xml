@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<import file="expression_rule.xml"/>
+<import file="regex_rule.xml"/>
+
+<rules>
+	<rule>
+		<name>LOG_A</name>
+		<timeout>1000</timeout>
+		<sequence>
+			<step>
+				<expect>FWLogAlert</expect>
+			</step>
+			<step>
+				<expect>FWLogAlert2</expect>
+				<expect>FWLogAlert3</expect>
+			</step>
+			<step>
+				<expect>FWLogAlert4</expect>
+			</step>
+		</sequence>
+		<alert>Warning: Attack From {$IP}</alert>
+	</rule>
+</rules>

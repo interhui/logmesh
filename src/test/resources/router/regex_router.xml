@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route>
+	<rule>
+		<name>RULE_ROOT</name>
+		<filter>
+			<startup>1</startup>
+			<name>IPFilter</name>
+			<enable>false</enable>
+			<class>org.pinae.logmesh.component.filter.IPFilter</class>
+			<parameters>
+				<parameter key="file" value="filter/ip_filter.xml"/>
+				<parameter key="pass" value="true"/>
+			</parameters>
+		</filter>
+		<filter>
+			<startup>2</startup>
+			<name>KeywordFilter</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.filter.KeywordFilter</class>
+			<parameters>
+				<parameter key="file" value="filter/keyword_filter.xml"/>
+				<parameter key="pass" value="true"/>
+			</parameters>
+		</filter>
+	</rule>
+	<rule>
+		<name>RULE1</name>
+		<extend>RULE_ROOT</extend>
+		<condition>
+			<type>regex</type>
+			<value>.*(Firewall).*</value>
+		</condition>
+
+		<processor>
+			<name>Processor</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.router.processor.TestProcessor</class>
+			<parameters>
+				<parameter key="type" value="REGEX_ROUTER"/>
+			</parameters>
+		</processor>
+		<output>
+			<name>Output</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.router.processor.TestOutputor</class>
+		</output>
+	</rule>
+	
+	<rule>
+		<name>RULE2</name>
+		<extend>RULE_ROOT</extend>
+		<condition>
+			<type>regex</type>
+			<value>.*(ASA|PIX).*</value>
+		</condition>
+
+		<processor>
+			<name>Processor</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.router.processor.TestProcessor</class>
+			<parameters>
+				<parameter key="type" value="REGEX_ROUTER"/>
+			</parameters>
+		</processor>
+		<output>
+			<name>Output</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.router.processor.TestOutputor</class>
+		</output>
+	</rule>
+</route>
