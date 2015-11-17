@@ -119,7 +119,7 @@
 	<counter>
 		<parameters>
 			<!--是否激活消息计数器:true/false-->
-			<parameter key="enable" value="false"/> 
+			<parameter key="enable" value="true"/> 
 			<!--消息计数器技术类型：时间计数(time)/所有者计数(owner)/IP(ip)/日志类型计数(type)，多个计数采用|分割-->
 			<parameter key="counter" value="time|owner|ip|type"/> 
 			 <!--计数周期（s）-->
