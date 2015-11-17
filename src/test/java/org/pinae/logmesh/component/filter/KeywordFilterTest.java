@@ -13,7 +13,7 @@ public class KeywordFilterTest {
 	
 	@Test
 	public void testFilter() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("file", "filter/keyword_filter.xml");
 		parameters.put("pass", "true");
 		

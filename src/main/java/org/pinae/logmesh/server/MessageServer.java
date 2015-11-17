@@ -31,9 +31,9 @@ import org.pinae.ndb.Statement;
  * @author Huiyugeng
  * 
  */
-public class LogServer {
+public class MessageServer {
 
-	private static Logger log = Logger.getLogger(LogServer.class);
+	private static Logger log = Logger.getLogger(MessageServer.class);
 
 	private String filename; // 配置文件
 	private Map<String, Object> config; // 配置信息
@@ -43,11 +43,11 @@ public class LogServer {
 	
 	private MessageCounter messageCounter = null; 
 
-	public LogServer(String filename) {
+	public MessageServer(String filename) {
 		this.filename = filename;
 	}
 
-	public LogServer(Map<String, Object> config) {
+	public MessageServer(Map<String, Object> config) {
 		this.config = config;
 	}
 
@@ -135,7 +135,7 @@ public class LogServer {
 
 			String name = "";
 
-			Map<String, String> startupConfig = ProcessorFactory.createParameter(receiverConfig);
+			Map<String, Object> startupConfig = ProcessorFactory.createParameter(receiverConfig);
 			// 进行参数格式转换
 			for (Entry<String, Object> entry : receiverConfig.entrySet()) {
 				startupConfig.put(entry.getKey(), entry.getValue().toString());
@@ -195,8 +195,8 @@ public class LogServer {
 		long startTime = System.currentTimeMillis();
 
 		Map<String, Object> originalConfig = (Map<String, Object>) statement.execute(config, "one:original");
+		
 		OriginalMessageStore messageStorer = new OriginalMessageStore(ProcessorFactory.createParameter(originalConfig));
-
 		messageStorer.start();
 
 		long startupTime = System.currentTimeMillis() - startTime;
@@ -240,18 +240,24 @@ public class LogServer {
 	public void startFilter(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		int filterCount = 1;
-
 		Map<String, Object> filterConfig = (Map<String, Object>) statement.execute(config, "one:thread->filter");
-		try {
-			filterCount = Integer.parseInt((String) filterConfig.get("count"));
-		} catch (NumberFormatException e) {
-			filterCount = 1;
+		
+		int filterCounter = 1;
+		if (filterConfig != null && filterConfig.containsKey("count")) {
+			try {
+				filterCounter = Integer.parseInt((String) filterConfig.get("count"));
+			} catch (NumberFormatException e) {
+				filterCounter = 1;
+			}
+		}
+		// 过滤器最小数量为1
+		if (filterCounter < 1) {
+			filterCounter = 1;
 		}
 
-		log.info(String.format("Starting message filter, filter count is %d", filterCount));
+		log.info(String.format("Starting message filter, filter count is %d", filterCounter));
 
-		for (int i = 0; i < filterCount; i++) {
+		for (int i = 0; i < filterCounter; i++) {
 			new FilterProcessor(config).start("filter-" + Integer.toString(i));
 		}
 
@@ -268,18 +274,25 @@ public class LogServer {
 	public void startRouter(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		int routerCount = 1;
-
 		Map<String, Object> routerConfig = (Map<String, Object>) statement.execute(config, "one:thread->router");
-		try {
-			routerCount = Integer.parseInt((String) routerConfig.get("count"));
-		} catch (NumberFormatException e) {
-			routerCount = 1;
+		
+		int routerCounter = 1;
+		if (routerConfig != null && routerConfig.containsKey("count")) {
+			try {
+				routerCounter = Integer.parseInt((String) routerConfig.get("count"));
+			} catch (NumberFormatException e) {
+				routerCounter = 1;
+			}
+		}
+		
+		// 路由最小数量为1
+		if (routerCounter < 1) {
+			routerCounter = 1;
 		}
 
-		log.info(String.format("Starting message router, router count is %d", routerCount));
+		log.info(String.format("Starting message router, router count is %d", routerCounter));
 
-		for (int i = 0; i < routerCount; i++) {
+		for (int i = 0; i < routerCounter; i++) {
 			new RouterProcessor(config).start("router-" + Integer.toString(i));
 		}
 
@@ -327,19 +340,25 @@ public class LogServer {
 	public void startCustomProcessor(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		int processorCount = 1;
-
 		Map<String, Object> processorConfig = (Map<String, Object>) statement.execute(config, "one:thread->processor");
-
-		try {
-			processorCount = Integer.parseInt((String) processorConfig.get("count"));
-		} catch (NumberFormatException e) {
-			processorCount = 1;
+		
+		int processorCounter = 1;
+		if (processorConfig != null && processorConfig.containsKey("count")) {
+			try {
+				processorCounter = Integer.parseInt((String) processorConfig.get("count"));
+			} catch (NumberFormatException e) {
+				processorCounter = 1;
+			}
+		}
+		
+		// 过滤器最小数量为1
+		if (processorCounter < 1) {
+			processorCounter = 1;
 		}
 
-		log.info(String.format("Starting customer message processor, processor count is %d", processorCount));
+		log.info(String.format("Starting customer message processor, processor count is %d", processorCounter));
 
-		for (int i = 0; i < processorCount; i++) {
+		for (int i = 0; i < processorCounter; i++) {
 			new CustomProcessor(config).start("processor-" + Integer.toString(i));
 		}
 

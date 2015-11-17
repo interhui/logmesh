@@ -23,7 +23,7 @@ public abstract class NettyReceiver extends Receiver {
 	private String msgType; // 消息内容类型
 	private String codec; // 消息内容编码
 
-	public void init(Map<String, String> config) {
+	public void init(Map<String, Object> config) {
 		super.init(config);
 		try {
 			this.port = Integer.parseInt(getParameter("port"));

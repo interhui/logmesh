@@ -42,7 +42,7 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 	public void init() {
 		String path = ClassLoaderUtils.getResourcePath("");
-		String routerFile = getParameter("file");
+		String routerFile = getStringValue("file", "router.xml");
 
 		loadConfig(path, routerFile);
 	}
@@ -115,8 +115,8 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 		if (rule != null) {
 
 			// 执行消息过滤器
-			List<MessageFilter> filterList = this.filterMap.get(rule);
-			for (MessageFilter filter : filterList) {
+			List<MessageFilter> filters = this.filterMap.get(rule);
+			for (MessageFilter filter : filters) {
 				message = filter.filter(message);
 
 				if (message == null) {
@@ -126,16 +126,16 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 			if (message != null) {
 				// 执行自定义处理器
-				List<MessageProcessor> processorList = this.processorMap.get(rule);
-				for (MessageProcessor processor : processorList) {
+				List<MessageProcessor> processors = this.processorMap.get(rule);
+				for (MessageProcessor processor : processors) {
 					processor.porcess(message);
 				}
 			}
 			
 			if (message != null) {
 				// 执行消息转发器
-				List<MessageOutputor> outputorList = this.outputorMap.get(rule);
-				for (MessageOutputor outputor : outputorList) {
+				List<MessageOutputor> outputors = this.outputorMap.get(rule);
+				for (MessageOutputor outputor : outputors) {
 					outputor.showMessage(message);
 				}
 			}

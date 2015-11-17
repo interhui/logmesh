@@ -38,14 +38,14 @@ public class FileStorer implements Storer {
 
 	private FileCreator fileCreator = new FileCreator(); // 文件存储线程
 
-	private Map<String, String> config;
+	private Map<String, Object> config;
 	private MessageQueue messageQueue;
 
-	public FileStorer(Map<String, String> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? config.get("queue") : "FILE_STORE_QUEUE"));
+	public FileStorer(Map<String, Object> config) {
+		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "FILE_STORE_QUEUE"));
 	}
 
-	public FileStorer(Map<String, String> config, MessageQueue messageQueue) {
+	public FileStorer(Map<String, Object> config, MessageQueue messageQueue) {
 		this.config = config;
 		this.messageQueue = messageQueue;
 	}
@@ -55,17 +55,17 @@ public class FileStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.path = config.containsKey("path") ? config.get("path") : "";
-		this.fileTitle = config.containsKey("title") ? config.get("title") : "message";
-		this.fileExt = config.containsKey("ext") ? config.get("ext") : "log";
-		this.encoding = config.containsKey("encoding") ? config.get("encoding") : "utf8";
+		this.path = config.containsKey("path") ? (String)config.get("path") : "";
+		this.fileTitle = config.containsKey("title") ? (String)config.get("title") : "message";
+		this.fileExt = config.containsKey("ext") ? (String)config.get("ext") : "log";
+		this.encoding = config.containsKey("encoding") ? (String)config.get("encoding") : "utf8";
 
 		if (config.containsKey("dir")) {
-			this.dirPattern = new SimpleDateFormat(config.get("dir"));
+			this.dirPattern = new SimpleDateFormat((String)config.get("dir"));
 		}
-		this.filePattern = new SimpleDateFormat(config.containsKey("pattern") ? config.get("pattern") : "yyyy-MM-dd-hh");
+		this.filePattern = new SimpleDateFormat(config.containsKey("pattern") ? (String)config.get("pattern") : "yyyy-MM-dd-hh");
 
-		this.cycle = config.containsKey("cycle") ? Integer.parseInt(config.get("cycle")) : 5000;
+		this.cycle = config.containsKey("cycle") ? Integer.parseInt((String)config.get("cycle")) : 5000;
 
 		if (messageQueue != null) {
 			synchronized (messageQueue) {

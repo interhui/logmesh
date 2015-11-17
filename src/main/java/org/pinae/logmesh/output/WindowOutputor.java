@@ -43,12 +43,8 @@ public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
 		initGUI(); // 初始化GUI元素
 
 		initEvent(); // 初始化GUI事件
-
-		try {
-			maxRows = Integer.parseInt(getParameter("rows"));
-		} catch (NumberFormatException e) {
-			maxRows = 100;
-		}
+		
+		this.maxRows = getIntegerValue("rows", 100);
 		bufferRows = maxRows / 10;
 	}
 
@@ -95,22 +91,22 @@ public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent event) {
-				frame.setTitle(getParameter("title"));
+				frame.setTitle(getStringValue("title", "Logmesh"));
 
-				int width = Integer.parseInt(getParameter("width"));
-				int height = Integer.parseInt(getParameter("height"));
+				int width = getIntegerValue("width", 800);
+				int height = getIntegerValue("height", 600);
 				frame.setBounds(frame.getX(), frame.getY(), width, height);
 				scrollPane.setBounds(0, 5, width - 15, height - 35);
 				txtConsole.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(),
 						scrollPane.getHeight());
 
-				int columns = Integer.parseInt(getParameter("columns"));
+				int columns = getIntegerValue("columns", 50);
 
 				txtConsole.setColumns(columns);
 				txtConsole.setRows(maxRows);
 
-				txtConsole.setBackground(Color.decode(getParameter("background")));
-				txtConsole.setForeground(Color.decode(getParameter("foreground")));
+				txtConsole.setBackground(Color.decode(getStringValue("background", "#000000")));
+				txtConsole.setForeground(Color.decode(getStringValue("foreground", "#00ff00")));
 			}
 
 			@Override

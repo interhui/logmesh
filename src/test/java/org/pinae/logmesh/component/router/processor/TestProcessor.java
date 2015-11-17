@@ -9,7 +9,7 @@ public class TestProcessor extends ProcessorInfo implements MessageProcessor {
 	private String routerType = null;
 	
 	public void init() {
-		this.routerType = getParameter("type");
+		this.routerType = getStringValue("type", "");
 	}
 
 	public void porcess(Message message) {

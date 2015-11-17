@@ -13,7 +13,7 @@ public class TextDecodeFilterTest {
 	
 	@Test
 	public void testFilter() throws UnsupportedEncodingException {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("file", "filter/text_decode_filter.xml");
 		
 		TextDecodeFilter filter = new TextDecodeFilter();

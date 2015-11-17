@@ -17,7 +17,7 @@ import org.pinae.logmesh.processor.ProcessorPool;
  */
 public abstract class Receiver implements Processor {
 
-	private Map<String, String> configMap = new HashMap<String, String>();
+	private Map<String, Object> configMap = new HashMap<String, Object>();
 
 	private boolean isRecordOriginal = false; // 是否记录原始日志
 
@@ -36,7 +36,7 @@ public abstract class Receiver implements Processor {
 		this.owner = owner;
 	}
 
-	public void init(Map<String, String> config) {
+	public void init(Map<String, Object> config) {
 
 		this.configMap = config;
 

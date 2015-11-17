@@ -34,15 +34,15 @@ public class JMSReceiver extends Receiver {
 	private String type = "queue";
 	private String target = "default";
 
-	public void init(Map<String, String> config) {
+	public void init(Map<String, Object> config) {
 		super.init(config);
 
-		String username = config.containsKey("username") ? config.get("username") : ActiveMQConnection.DEFAULT_USER;
-		String password = config.containsKey("password") ? config.get("password") : ActiveMQConnection.DEFAULT_PASSWORD;
+		String username = config.containsKey("username") ? (String)config.get("username") : ActiveMQConnection.DEFAULT_USER;
+		String password = config.containsKey("password") ? (String)config.get("password") : ActiveMQConnection.DEFAULT_PASSWORD;
 
-		brokerURL = config.containsKey("url") ? config.get("url") : "tcp://localhost:61616";
-		type = config.containsKey("type") ? config.get("type") : "queue";
-		target = config.containsKey("target") ? config.get("target") : "default";
+		this.brokerURL = config.containsKey("url") ? (String)config.get("url") : "tcp://localhost:61616";
+		this.type = config.containsKey("type") ? (String)config.get("type") : "queue";
+		this.target = config.containsKey("target") ? (String)config.get("target") : "default";
 
 		try {
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);

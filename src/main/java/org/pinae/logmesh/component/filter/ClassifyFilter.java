@@ -25,31 +25,40 @@ import org.pinae.ndb.Statement;
 public class ClassifyFilter extends AbstractFilter {
 
 	private Statement statement = new Statement();
-	
-	private String classifyTypes[] = {"ip", "time", "owner", "content"};
+
+	private String classifyTypes[] = { "ip", "time", "owner", "content" };
 	private Map<String, Map<String, String>> classifyMap = new HashMap<String, Map<String, String>>(); // 分类信息列表
 
 	public ClassifyFilter() {
-		//初始化分类列表
+		// 初始化分类列表
 		for (String classifyType : classifyTypes) {
 			classifyMap.put(classifyType, new HashMap<String, String>());
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() {
-		String path = ClassLoaderUtils.getResourcePath("");
-		String classifyFile = getParameter("file");
-
-		load(path, classifyFile);
+		if (hasParameter("file")) {
+			String path = ClassLoaderUtils.getResourcePath("");
+			String classifyFile = getStringValue("file", "filter/classify_filter.xml");
+			if (StringUtils.isNoneEmpty(classifyFile)) {
+				load(path, classifyFile);
+			}
+		} else if (hasParameter("filter")) {
+			Object filter = getValue("filter");
+			if (filter != null && filter instanceof Map) {
+				this.classifyMap = (Map<String, Map<String, String>>)filter;
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void load(String path, String filename) {
-		Map<String, Object> classifyFilterConfig = loadConfig(path, filename);
+		Map<String, Object> filterConfig = loadConfig(path, filename);
 
-		if (classifyFilterConfig != null && classifyFilterConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(classifyFilterConfig, "select:import->file");
+		if (filterConfig != null && filterConfig.containsKey("import")) {
+			List<String> importList = (List<String>) statement.execute(filterConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -57,14 +66,14 @@ public class ClassifyFilter extends AbstractFilter {
 			}
 		}
 
-		if (classifyFilterConfig != null && classifyFilterConfig.containsKey("filter")) {
-			List<Object> classifyFilterList = (List<Object>)statement.execute(classifyFilterConfig, "select:filter");
+		if (filterConfig != null && filterConfig.containsKey("filter")) {
+			List<Object> classifyFilterList = (List<Object>) statement.execute(filterConfig, "select:filter");
 			for (Object classifyFilter : classifyFilterList) {
 				String label = (String) statement.execute(classifyFilter, "one:label");
-				
+
 				String type = (String) statement.execute(classifyFilter, "one:type");
 				List<String> valueList = (List<String>) statement.execute(classifyFilter, "select:value");
-				
+
 				if (label != null) {
 					label = label.toLowerCase();
 					if (classifyMap.containsKey(label)) {
@@ -77,38 +86,38 @@ public class ClassifyFilter extends AbstractFilter {
 			}
 		}
 	}
-	
+
 	@Override
 	public Message filter(Message message) {
-		
+
 		List<String> msgTypeList = new ArrayList<String>();
-		
+
 		Object msgContent = message.getMessage();
 		String msgIP = message.getIP();
 		String msgOwner = message.getOwner();
 		long msgTimestamp = message.getTimestamp();
-		
+
 		for (String classifyType : classifyTypes) {
 			Map<String, String> classifyList = classifyMap.get(classifyType);
-			
-			Set<Entry<String, String>> classifyEntrySet =  classifyList.entrySet();
+
+			Set<Entry<String, String>> classifyEntrySet = classifyList.entrySet();
 			for (Entry<String, String> classifyEntry : classifyEntrySet) {
 				String pattern = classifyEntry.getKey();
 				String type = classifyEntry.getValue();
-				
-				if (classifyType.endsWith("ip")){
+
+				if (classifyType.endsWith("ip")) {
 					if (MatchUtils.matchString(pattern, msgIP)) {
 						msgTypeList.add(type);
 					}
-				} else if (StringUtils.isNotEmpty(msgOwner) && classifyType.endsWith("owner")){
+				} else if (StringUtils.isNotEmpty(msgOwner) && classifyType.endsWith("owner")) {
 					if (MatchUtils.matchString(pattern, msgOwner)) {
 						msgTypeList.add(type);
 					}
-				} else if (msgContent != null && StringUtils.isNotEmpty(msgContent.toString()) && classifyType.endsWith("content")){
+				} else if (msgContent != null && StringUtils.isNotEmpty(msgContent.toString()) && classifyType.endsWith("content")) {
 					if (MatchUtils.matchString(pattern, msgContent.toString())) {
 						msgTypeList.add(type);
 					}
-				} else if (classifyType.endsWith("time")){
+				} else if (classifyType.endsWith("time")) {
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String logTime = dateFormat.format(new Date(msgTimestamp));
 					if (MatchUtils.matchTime(pattern, logTime)) {
@@ -117,14 +126,14 @@ public class ClassifyFilter extends AbstractFilter {
 				}
 			}
 		}
-		
+
 		if (msgTypeList.size() == 0) {
 			msgTypeList.add("unknow");
 		}
 		message.setType(StringUtils.join(msgTypeList, "|"));
-		
+
 		return message;
 
 	}
-	
+
 }

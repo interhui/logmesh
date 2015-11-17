@@ -1,6 +1,7 @@
 package org.pinae.logmesh.component.filter;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,27 +22,50 @@ import org.pinae.ndb.Statement;
 public class TextDecodeFilter extends AbstractFilter {
 
 	private Statement statement = new Statement();
-	
-	private Map<String, String> decodeMap = new HashMap<String, String>(); // IP地址-解码对应
+
+	/* IP地址-解码对应 */
+	private Map<String, String> decodeMap = new HashMap<String, String>();
 
 	public TextDecodeFilter() {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() {
-		String path = ClassLoaderUtils.getResourcePath("");
-		String ipFile = getParameter("file");
-
-		load(path, ipFile);
+		if (hasParameter("file")) {
+			String path = ClassLoaderUtils.getResourcePath("");
+			String decodeFile = getStringValue("file", "filter/text_decode_filter.xml");
+			if (StringUtils.isNoneEmpty(decodeFile)) {
+				load(path, decodeFile);
+			}
+		} else if (hasParameter("filter")) {
+			Object filter = getValue("filter");
+			if (filter != null) {
+				if (filter instanceof String) {
+					String filterStr = (String)filter;
+					if (StringUtils.isNoneEmpty(filterStr)) {
+						String decodePairs[] = filterStr.split("\\|");
+						for (String decodePair : decodePairs) {
+							String decode[] = decodePair.split("=");
+							if (decode.length == 2 && decode[0] != null && decode[1] != null) {
+								this.decodeMap.put(decode[0].trim(), decode[1].trim());
+							}
+						}
+					}
+				} else if (filter instanceof Map) {
+					this.decodeMap = (Map<String,String>)filter;
+				}
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private void load(String path, String filename) {
-		Map<String, Object> decodeConfig = loadConfig(path, filename);
+		Map<String, Object> filterConfig = loadConfig(path, filename);
 
-		if (decodeConfig != null && decodeConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(decodeConfig, "select:import->file");
+		if (filterConfig != null && filterConfig.containsKey("import")) {
+			List<String> importList = (List<String>) statement.execute(filterConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -49,9 +73,8 @@ public class TextDecodeFilter extends AbstractFilter {
 			}
 		}
 
-		if (decodeConfig != null && decodeConfig.containsKey("filter")) {
-			List<Map<String, Object>> filterList = (List<Map<String, Object>>) statement.execute(decodeConfig,
-					"select:filter");
+		if (filterConfig != null && filterConfig.containsKey("filter")) {
+			List<Map<String, Object>> filterList = (List<Map<String, Object>>) statement.execute(filterConfig, "select:filter");
 			for (Map<String, Object> filter : filterList) {
 				String code = filter.containsKey("code") ? (String) filter.get("code") : "utf8";
 				List<String> ipList = (List<String>) statement.execute(filter, "select:ip");
@@ -78,7 +101,7 @@ public class TextDecodeFilter extends AbstractFilter {
 						try {
 							if (msgContent instanceof byte[]) {
 								msgContent = new String((byte[]) msgContent, code);
-							} 
+							}
 						} catch (UnsupportedEncodingException e) {
 
 						}

@@ -23,7 +23,7 @@ public class StoreOutputor extends ProcessorInfo implements MessageOutputor {
 
 	public void init() {
 
-		String type = hasParameter("type") ? getParameter("type") : "file";
+		String type = getStringValue("type", "file");
 
 		try {
 			if (type.equalsIgnoreCase("file")) {

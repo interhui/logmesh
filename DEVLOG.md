@@ -12,3 +12,4 @@
 - 2012-11-21 支持GUI输出
 - 2015-08-12 重构logmesh代码架构, 优化代码和注释信息
 - 2015-11-09 完善单元测试, 发布1.0版本
+- 2015-11-17 修改ProcessInfo中Map<String, String> 为 Map<String, Object>

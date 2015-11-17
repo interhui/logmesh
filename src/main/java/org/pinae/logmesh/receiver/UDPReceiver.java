@@ -26,7 +26,7 @@ public class UDPReceiver extends NettyReceiver {
 
 	private ConnectionlessBootstrap bootstrap = null;
 
-	public void init(Map<String, String> config) {
+	public void init(Map<String, Object> config) {
 		super.init(config);
 
 		log.info(String.format("Start UDP Receiver AT %d", port));

@@ -40,16 +40,16 @@ public class OriginalMessageStore {
 	private String path; // 压缩路径
 	private String dirPattern; // 压缩文件夹命名模式
 
-	private Map<String, String> config;
+	private Map<String, Object> config;
 
-	public OriginalMessageStore(Map<String, String> config) {
+	public OriginalMessageStore(Map<String, Object> config) {
 		this.config = config;
 	}
 
 	public void start() {
 
 		if (config != null) {
-			this.msgPattern = config.containsKey("msgPattern") ? config.get("msgPattern") : "$time : $ip : $message";
+			this.msgPattern = config.containsKey("msgPattern") ? (String)config.get("msgPattern") : "$time : $ip : $message";
 
 			if (msgPattern.contains("$time")) {
 				this.isRecordTime = true;
@@ -63,12 +63,12 @@ public class OriginalMessageStore {
 				this.isRecordMsg = true;
 			}
 
-			if (config.containsKey("zip") && config.get("zip").equalsIgnoreCase("true")) {
+			if (config.containsKey("zip") && ((String)config.get("zip")).equalsIgnoreCase("true")) {
 				this.isZip = true;
 			}
 
-			this.path = config.containsKey("path") ? config.get("path") : "";
-			this.dirPattern = config.containsKey("dir") ? config.get("dir") : "yyyy-MM-dd";
+			this.path = config.containsKey("path") ? (String)config.get("path") : "";
+			this.dirPattern = config.containsKey("dir") ? (String)config.get("dir") : "yyyy-MM-dd";
 		}
 
 		MessageStore messageStore = new MessageStore(config, MessagePool.ORIGINAL_QUEUE);
@@ -91,10 +91,11 @@ public class OriginalMessageStore {
 
 		private String encoding = "utf8";
 
-		public MessageStore(Map<String, String> config, MessageQueue messageQueue) {
+		public MessageStore(Map<String, Object> config, MessageQueue messageQueue) {
 			super(config, messageQueue);
-
-			this.encoding = config.containsKey("encoding") ? config.get("encoding") : "utf8";
+			if (config != null) {
+				this.encoding = config.containsKey("encoding") ? (String) config.get("encoding") : "utf8";
+			}
 		}
 
 		public String handleMessage(Message message) {
@@ -116,8 +117,7 @@ public class OriginalMessageStore {
 						String formattedMsg = msgPattern;
 
 						if (isRecordTime) {
-							formattedMsg = msgPattern.replaceAll("\\$time",
-									timeFormat.format(new Date(message.getTimestamp())));
+							formattedMsg = msgPattern.replaceAll("\\$time", timeFormat.format(new Date(message.getTimestamp())));
 						}
 						if (isRecordIP) {
 							formattedMsg = formattedMsg.replaceAll("\\$ip", message.getIP());
@@ -128,8 +128,7 @@ public class OriginalMessageStore {
 						return formattedMsg;
 
 					} catch (Exception e) {
-						log.error(String.format("OriginalMessageStore Exception: exception=%s, encoding=%s",
-								e.getMessage(), this.encoding));
+						log.error(String.format("OriginalMessageStore Exception: exception=%s, encoding=%s", e.getMessage(), this.encoding));
 					}
 				}
 			}

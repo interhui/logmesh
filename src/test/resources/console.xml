@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+	<!--日志所有者-->
+	<owner>Pinae</owner>
+
+	<!--窗口消息输出器配置-->
+	<output>
+		<!--输出器名称-->
+		<name>window</name>
+		<!--是否启动输出器:true/false-->
+		<enable>true</enable>
+		<!--输出器类:窗口输出器-->
+		<class>org.pinae.logmesh.output.WindowOutputor</class>
+		<parameters>
+			<!--窗口标题-->
+			<parameter key="title" value="logmesh --- Free Log Collector"/>
+			<!--窗口初始宽度-->
+			<parameter key="width" value="900"/>
+			<!--窗口初始高度-->
+			<parameter key="height" value="600"/>
+			<!--窗口初始列数-->
+			<parameter key="columns" value="80"/>
+			<!--窗口初始行数-->
+			<parameter key="rows" value="100"/>
+			<!--窗口背景色-->
+			<parameter key="background" value="#000000"/>
+			<!--窗口文字颜色-->
+			<parameter key="foreground" value="#00ff00"/>
+		</parameters>
+	</output>
+
+</server>

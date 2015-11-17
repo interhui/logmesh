@@ -1,85 +1,81 @@
 package org.pinae.logmesh.server;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.server.helper.MessageCounter;
+import org.pinae.logmesh.sender.SendException;
+import org.pinae.logmesh.sender.Sender;
+import org.pinae.logmesh.sender.UDPSender;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 
 public class ServerTest {
+	
 	private static Logger logger = Logger.getLogger(ServerTest.class);
 
 	public static void main(String[] args) {
 
 		String path = ClassLoaderUtils.getResourcePath("");
-		LogServer server = new LogServer(path + "server.xml");
+		MessageServer server = new MessageServer(path + "server.xml");
 		// 启动日志采集
 		server.start();
-
-		Thread shower = new Thread(new MessageShower(server));
-		shower.start();
 		
-		/*
-		// 规则重载
 		try {
-			Thread.sleep(60000);
+			TimeUnit.SECONDS.sleep(5);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ComponentPool.reloadComponent(IPFilter.class);
-
-		try {
-			Thread.sleep(60000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		ComponentPool.reloadComponent(IPFilter.class);
-
-		// 采集器停止
-		if (server.isStartup()) {
-			server.stop();
+			logger.error(e.getMessage());
 		}
 		
-		System.exit(0);
-		*/
+		// 启动日志发送
+		new Thread(new MessageSender()).start();
 	}
-
-	public static class MessageShower implements Runnable {
-		private static Logger log = Logger.getLogger(MessageShower.class);
-
-		private MessageCounter messageCounter;
-
-		public MessageShower(LogServer server) {
-			if (server.getMessageCounter() != null) {
-				this.messageCounter = server.getMessageCounter();
+	
+	public static class MessageSender implements Runnable {
+		
+		private static Logger logger = Logger.getLogger(MessageSender.class);
+		
+		private Sender sender;
+		
+		public MessageSender() {
+			try {
+				this.sender = new UDPSender("127.0.0.1", 514);
+				this.sender.connect();
+			} catch (SendException e) {
+				logger.error(e.getMessage());
 			}
-
 		}
-
+		
 		public void run() {
-			while (true) {
-				if (messageCounter != null) {
-					Map<String, Long> counter = messageCounter.getCounter("ip", "127.0.0.1");
-					if (counter != null) {
-						Set<Entry<String, Long>> ipSet = counter.entrySet();
-						for (Entry<String, Long> ip : ipSet) {
-							log.info(ip.getKey() + ":" + ip.getValue());
-						}
-					}
+			try {
+				while(true) {
+					String message = getMessage();
+					sender.send(message);
+					logger.info(message);
+					TimeUnit.SECONDS.sleep(3);
 				}
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
 			}
-
 		}
-
+		
+		private String messages[] = {
+			"Firewall Log: 192.168.78.32 inbound stream",
+			"Database Log: 192.168.33.12(PL/SQL) used SYSTEM connect Test-DB(Oracle 11.0.2.0)",
+			"Host Log: 192.168.33.12(SSH) used root connect Transfer-FS(Ubuntu 14.04.03)",
+			"ASA Log: keep alived used 100ms",
+			"PIX Log: 192.168.12.21 deny access 10.3.0.12"
+		};
+		
+		private String getMessage() {
+			Random random = new Random();
+			int index = random.nextInt(messages.length);
+			if (index < messages.length) {
+				return messages[index];
+			} else {
+				return messages[0];
+			}
+		}
+		
 	}
 
 }

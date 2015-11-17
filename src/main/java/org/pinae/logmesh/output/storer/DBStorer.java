@@ -36,18 +36,16 @@ public class DBStorer implements Storer {
 
 	private DBSaver dbSaver = null; // 数据库存储线程
 
-	private Map<String, String> config;
+	private Map<String, Object> config;
 	private MessageQueue messageQueue;
 
-	public DBStorer(Map<String, String> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? config.get("queue") : "DB_STORE_QUEUE"));
+	public DBStorer(Map<String, Object> config) {
+		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "DB_STORE_QUEUE"));
 	}
 
-	public DBStorer(Map<String, String> config, MessageQueue messageQueue) {
-
+	public DBStorer(Map<String, Object> config, MessageQueue messageQueue) {
 		this.config = config;
 		this.messageQueue = messageQueue;
-
 	}
 
 	public void connect() throws StorerException {
@@ -55,20 +53,20 @@ public class DBStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.driver = config.containsKey("driver") ? config.get("driver") : "";
-		this.url = config.containsKey("url") ? config.get("url") : "";
-		this.username = config.containsKey("username") ? config.get("username") : "";
-		this.password = config.containsKey("password") ? config.get("password") : "";
-		this.sqlTemplate = config.containsKey("sql") ? config.get("sql") : "";
+		this.driver = config.containsKey("driver") ? (String)config.get("driver") : "";
+		this.url = config.containsKey("url") ? (String)config.get("url") : "";
+		this.username = config.containsKey("username") ? (String)config.get("username") : "";
+		this.password = config.containsKey("password") ? (String)config.get("password") : "";
+		this.sqlTemplate = config.containsKey("sql") ? (String)config.get("sql") : "";
 
 		try {
-			this.cycle = config.containsKey("cycle") ? Long.parseLong(config.get("cycle")) : 5000;
+			this.cycle = config.containsKey("cycle") ? Long.parseLong((String)config.get("cycle")) : 5000;
 		} catch (NumberFormatException e) {
 			this.cycle = 5000;
 		}
 
 		try {
-			this.batchSize = config.containsKey("batchSize") ? Integer.parseInt(config.get("batchSize")) : 20;
+			this.batchSize = config.containsKey("batchSize") ? Integer.parseInt((String)config.get("batchSize")) : 20;
 		} catch (NumberFormatException e) {
 			this.batchSize = 20;
 		}

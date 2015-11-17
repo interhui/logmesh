@@ -19,6 +19,10 @@ public class ServerBuilder {
 	private Statement statement = new Statement();
 
 	private Map<String, Object> serverConfig = new HashMap<String, Object>();
+	
+	public static final String RECEIVER_UDP = "udp";
+	public static final String RECEIVER_TCP = "tcp";
+	public static final String RECEIVER_JMS = "jms";
 
 	/**
 	 * 获得日志服务配置信息
@@ -105,7 +109,7 @@ public class ServerBuilder {
 	 * @param original 是否采集原始日志
 	 * @param parameters 接收器参数
 	 */
-	public void addReceiver(String type, boolean active, boolean original, String codec, Map<String, String> parameters) {
+	public void addReceiver(String type, boolean active, boolean original, String codec, Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, String.format("select:server->receiver->type:%s", type));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			statement.execute(serverConfig, String.format("update:server->receiver->type:%s !! enable=%s, original=%s, codec=%s", type,
@@ -127,7 +131,7 @@ public class ServerBuilder {
 	 * 
 	 * @param parameters 日志计数器参数
 	 */
-	public void setCounter(Map<String, String> parameters) {
+	public void setCounter(Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, "select:server->counter");
 		if (result instanceof List && ((List<?>) result).size() == 0) {
 			statement.execute(serverConfig, String.format("insert:server->counter"));
@@ -144,7 +148,7 @@ public class ServerBuilder {
 	 * 
 	 * @param parameters 原始日志参数
 	 */
-	public void setOriginal(Map<String, String> parameters) {
+	public void setOriginal(Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, "select:server->original");
 		if (result instanceof List && ((List<?>) result).size() == 0) {
 			statement.execute(serverConfig, String.format("insert:server->original"));
@@ -166,7 +170,7 @@ public class ServerBuilder {
 	 * @param filterClass 过滤器执行类
 	 * @param parameters 过滤器参数
 	 */
-	public void addFilter(int startup, String name, boolean active, String filterClass, Map<String, String> parameters) {
+	public void addFilter(int startup, String name, boolean active, String filterClass, Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, String.format("select:server->filter->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			statement.execute(serverConfig, String.format("update:server->filter->name:%s !! startup=%s, enable=%s, kwClass=%s", name,
@@ -181,6 +185,10 @@ public class ServerBuilder {
 			setParameter((Map<?, ?>) filter, parameters);
 		}
 	}
+	
+	public void addFilter(int startup, String name, boolean active, Class<?> filterClass, Map<String, Object> parameters) {
+		addFilter(startup, name, active, filterClass.getName(), parameters);
+	}
 
 	/**
 	 * 增加消息处理器
@@ -190,7 +198,7 @@ public class ServerBuilder {
 	 * @param filterClass 处理器执行类
 	 * @param parameters 处理器参数
 	 */
-	public void addProcessor(String name, boolean active, String processorClass, Map<String, String> parameters) {
+	public void addProcessor(String name, boolean active, String processorClass, Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, String.format("select:server->processor->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			statement.execute(serverConfig,
@@ -205,6 +213,10 @@ public class ServerBuilder {
 			setParameter((Map<?, ?>) processor, parameters);
 		}
 	}
+	
+	public void addProcessor(String name, boolean active, Class<?> processorClass, Map<String, Object> parameters) {
+		addProcessor(name, active, processorClass.getName(), parameters);
+	}
 
 	/**
 	 * 增加消息路由器
@@ -214,7 +226,7 @@ public class ServerBuilder {
 	 * @param routerClass 路由器执行类
 	 * @param parameters 路由器参数
 	 */
-	public void addRouter(String name, boolean active, String routerClass, Map<String, String> parameters) {
+	public void addRouter(String name, boolean active, String routerClass, Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, String.format("select:server->router->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			statement.execute(serverConfig,
@@ -229,6 +241,10 @@ public class ServerBuilder {
 			setParameter((Map<?, ?>) router, parameters);
 		}
 	}
+	
+	public void addRouter(String name, boolean active, Class<?> routerClass, Map<String, Object> parameters) {
+		addRouter(name, active, routerClass.getName(), parameters);
+	}
 
 	/**
 	 * 增加消息输出器
@@ -238,7 +254,7 @@ public class ServerBuilder {
 	 * @param outputClass 消息输出器执行类
 	 * @param parameters 消息输出器参数
 	 */
-	public void addOutputor(String name, boolean active, String outputClass, Map<String, String> parameters) {
+	public void addOutputor(String name, boolean active, String outputClass, Map<String, Object> parameters) {
 		Object result = statement.execute(serverConfig, String.format("select:server->output->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			statement.execute(serverConfig,
@@ -253,22 +269,28 @@ public class ServerBuilder {
 			setParameter((Map<?, ?>) output, parameters);
 		}
 	}
+	
+	public void addOutputor(String name, boolean active, Class<?> outputClass, Map<String, Object> parameters) {
+		addOutputor(name, active, outputClass.getName(), parameters);
+	}
 
 	/*
 	 * 参数转换
 	 * 将K-V格式的参数列表转换为参数列表
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Map<?, ?> setParameter(Map target, Map<String, String> parameters) {
+	private Map<?, ?> setParameter(Map target, Map<String, Object> parameters) {
 		if (parameters != null) {
 			List<Map<?, ?>> paramList = new ArrayList<Map<?, ?>>();
 
-			Set<String> paraKeySet = parameters.keySet();
+			Set<String> keySet = parameters.keySet();
 			
-			for (String paraKey : paraKeySet) {
+			for (String key : keySet) {
+				Object value = parameters.get(key);
+				
 				Map<String, Object> param = new HashMap<String, Object>();
-				param.put("key", paraKey);
-				param.put("value", parameters.get(paraKey));
+				param.put("key", key);
+				param.put("value", value);
 
 				paramList.add(param);
 			}

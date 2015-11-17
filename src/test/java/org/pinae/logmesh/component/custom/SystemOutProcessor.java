@@ -1,6 +1,7 @@
 package org.pinae.logmesh.component.custom;
 
 import java.io.UnsupportedEncodingException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.message.Message;
@@ -14,7 +15,8 @@ import org.pinae.logmesh.output.appender.OutStreamAppender;
  * 
  */
 public class SystemOutProcessor implements MessageProcessor {
-	private static int id = 1;
+	
+	private static AtomicInteger MSG_ID = new AtomicInteger(0);
 
 	public void init() {
 		System.setOut(new OutStreamAppender(System.out));
@@ -38,7 +40,7 @@ public class SystemOutProcessor implements MessageProcessor {
 		msg = message.getIP() + ":" + message.getType() + ":" + msg;
 
 		if (msg != null) {
-			System.out.print("MAIN_SERVER " + Integer.toString(id++) + " : " + msg + "\n");
+			System.out.print("MAIN_SERVER " + Integer.toString(MSG_ID.incrementAndGet()) + " : " + msg + "\n");
 		}
 	}
 

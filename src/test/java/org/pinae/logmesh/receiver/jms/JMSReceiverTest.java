@@ -8,19 +8,19 @@ import org.pinae.logmesh.receiver.JMSReceiver;
 import org.pinae.logmesh.receiver.Receiver;
 
 public class JMSReceiverTest {
+	
 	public static void main(String args[]) {
 		Receiver receiver = new JMSReceiver();
 
-		Map<String, String> config = new HashMap<String, String>();
-		config.put("username", ActiveMQConnectionFactory.DEFAULT_USER);
-		config.put("password", ActiveMQConnectionFactory.DEFAULT_PASSWORD);
-		config.put("url", "tcp://localhost:61616");
-		config.put("type", "queue");
-		config.put("target", "test");
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("username", ActiveMQConnectionFactory.DEFAULT_USER);
+		parameters.put("password", ActiveMQConnectionFactory.DEFAULT_PASSWORD);
+		parameters.put("url", "tcp://localhost:61616");
+		parameters.put("type", "queue");
+		parameters.put("target", "test");
 
-		receiver.init(config);
+		receiver.init(parameters);
 		receiver.start("Test");
-		// Thread thread = new Thread(receiver);
 
 	}
 }

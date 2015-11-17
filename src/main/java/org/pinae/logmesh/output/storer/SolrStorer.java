@@ -31,14 +31,14 @@ public class SolrStorer implements Storer {
 
 	private SolrPoster solrPoster = new SolrPoster(); // Solr存储线程
 
-	private Map<String, String> config;
+	private Map<String, Object> config;
 	private MessageQueue messageQueue;
 
-	public SolrStorer(Map<String, String> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? config.get("queue") : "SOLR_STORE_QUEUE"));
+	public SolrStorer(Map<String, Object> config) {
+		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "SOLR_STORE_QUEUE"));
 	}
 
-	public SolrStorer(Map<String, String> config, MessageQueue messageQueue) {
+	public SolrStorer(Map<String, Object> config, MessageQueue messageQueue) {
 		this.config = config;
 		this.messageQueue = messageQueue;
 	}
@@ -48,7 +48,7 @@ public class SolrStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.solrURL = config.containsKey("url") ? config.get("url") : "http://127.0.0.1:8983/solr";
+		this.solrURL = config.containsKey("url") ? (String)config.get("url") : "http://127.0.0.1:8983/solr";
 
 		if (messageQueue != null) {
 			synchronized (messageQueue) {

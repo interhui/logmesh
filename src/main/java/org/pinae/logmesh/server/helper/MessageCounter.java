@@ -23,22 +23,26 @@ import org.pinae.logmesh.processor.imp.FilterProcessor;
  * 
  */
 public class MessageCounter implements Processor {
-	private static Logger log = Logger.getLogger(FilterProcessor.class);
+	private static Logger logger = Logger.getLogger(FilterProcessor.class);
 
-	private Map<String, Map<String, Long>> counterPool = new ConcurrentHashMap<String, Map<String, Long>>(); // 计数器池
+	/* 计数器池: [计数器类型, [统计指标(IP地址/时间类型), 计数器值]] */
+	private Map<String, Map<String, Long>> counterPool = new ConcurrentHashMap<String, Map<String, Long>>(); 
 
-	private String counterTypes[] = { "time", "owner", "ip", "type" }; // 计数器类型
-	private String enableCounterTypes; // 启动的消息计数器
+	/* 计数器类型 */
+	private String counterTypes[] = { "time", "owner", "ip", "type" }; 
+	/* 启动的消息计数器类型 */
+	private String enableCounterTypes; 
+	/* 是否激活计数器 */
+	private boolean enable = true;
 
-	private boolean enable = true; // 是否激活计数器
-
-	private boolean isStop = false; // 是否停止过滤线程
-
-	private Map<String, String> config; // 原始消息存储器配置
+	/* 是否停止计数器线程 */
+	private boolean isStop = false;
+	/* 消息计数器配置 */
+	private Map<String, Object> config;
 
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd hh:MM");
 
-	public MessageCounter(Map<String, String> config) {
+	public MessageCounter(Map<String, Object> config) {
 		this.config = config;
 	}
 
@@ -87,21 +91,21 @@ public class MessageCounter implements Processor {
 	public void start(String name) {
 		// 初始化计数器池
 		for (String counterType : counterTypes) {
-			counterPool.put(counterType, new ConcurrentHashMap<String, Long>());
+			counterPool.put(counterType, new HashMap<String, Long>());
 		}
 
-		if (config.containsKey("enable") && config.get("enable").equalsIgnoreCase("true")) {
+		if (this.config != null && this.config.containsKey("enable") && ((String)this.config.get("enable")).equalsIgnoreCase("true")) {
 			this.enable = true;
 
-			if (config.containsKey("counter") && StringUtils.isNotEmpty(config.get("counter"))) {
-				this.enableCounterTypes = config.get("counter");
+			if (this.config.containsKey("counter") && StringUtils.isNotEmpty((String)this.config.get("counter"))) {
+				this.enableCounterTypes = (String)this.config.get("counter");
 			} else {
 				this.enableCounterTypes = StringUtils.join(counterTypes, "|");
 			}
 
-			log.info("Message Counter Enable");
+			logger.info("Message Counter Enable");
 		} else {
-			log.info("Message Counter Disable");
+			logger.info("Message Counter Disable");
 		}
 
 		this.isStop = false; // 设置线程启动标记
@@ -110,7 +114,7 @@ public class MessageCounter implements Processor {
 
 	public void stop() {
 		this.isStop = true; // 设置线程停止标记
-		log.info("Message Counter STOP");
+		logger.info("Message Counter STOP");
 	}
 
 	public void run() {
@@ -155,7 +159,7 @@ public class MessageCounter implements Processor {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				log.error(String.format("FilterProcessor Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("FilterProcessor Exception: exception=%s", e.getMessage()));
 			}
 		}
 	}

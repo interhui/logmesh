@@ -19,7 +19,7 @@ public class TextMessageLoader extends Receiver {
 
 	private boolean isStop;
 
-	public void init(Map<String, String> config) {
+	public void init(Map<String, Object> config) {
 		super.init(config);
 
 		this.path = getParameter("path");

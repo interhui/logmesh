@@ -12,7 +12,7 @@ public class RegexRouterTest {
 	
 	@Test
 	public void testRoute() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("file", "router/regex_router.xml");
 		
 		RegexRouter router = new RegexRouter();

@@ -2,6 +2,9 @@ package org.pinae.logmesh.receiver.tcp;
 
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ExceptionEvent;
@@ -13,16 +16,22 @@ import org.pinae.logmesh.sender.Sender;
 import org.pinae.logmesh.sender.TCPNIOSender;
 
 public class TCPNIOSenderTest {
+	private static Logger logger = Logger.getLogger(TCPNIOSenderTest.class);
 	@Test
 	public void testSend() {
+		
 		String message = "Hello World";
+		
 		try {
 			Sender sender = new TCPNIOSender("192.168.1.101", 514, 3, new Processor());
 			sender.connect();
+			
 			sender.send(message);
-			Thread.sleep(1000);
+			TimeUnit.SECONDS.sleep(1);
+			
 			sender.send(message);
-			Thread.sleep(1000);
+			TimeUnit.SECONDS.sleep(1);
+			
 			sender.close();
 		} catch (SendException e) {
 			fail(e.getMessage());
@@ -37,13 +46,13 @@ public class TCPNIOSenderTest {
 			ChannelBuffer buffer = (ChannelBuffer) event.getMessage();
 			byte[] message = buffer.copy().toByteBuffer().array();
 			if (message instanceof byte[]) {
-				System.out.println(new String((byte[]) message));
+				logger.info(new String((byte[]) message));
 			}
 		}
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			System.out.println(e.getCause());
+			logger.error(e.getCause());
 		}
 	}
 }

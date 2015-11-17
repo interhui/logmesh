@@ -28,6 +28,7 @@ public class ComponentPool {
 
 	/**
 	 * 注册组件
+	 * 一种类型的组件仅能注册一次
 	 * 
 	 * @param component 组件信息
 	 */
@@ -72,10 +73,10 @@ public class ComponentPool {
 	/**
 	 * 重新加载指定类型的组件
 	 * 
-	 * @param clazz 需要获取的组件类
+	 * @param clazz 重新加载的组件类
 	 */
-	public static void reloadComponent(Class<?> clazz) {
-		log.info(String.format("Reload %s Component.", clazz.getSimpleName()));
+	public synchronized static void reloadComponent(Class<?> clazz) {
+		log.info(String.format("Reload %s Component", clazz.getSimpleName()));
 
 		List<Object> componentList = getComponent(clazz);
 		for (Object component : componentList) {
@@ -83,6 +84,8 @@ public class ComponentPool {
 				((MessageFilter) component).init();
 			} else if (component instanceof MessageProcessor) {
 				((MessageProcessor) component).init();
+			} else if (component instanceof MessageRouter) {
+				((MessageRouter) component).init();
 			}
 		}
 	}

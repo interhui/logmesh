@@ -16,16 +16,16 @@ import org.pinae.logmesh.processor.ProcessorPool;
  */
 public class Log4jAppender extends AppenderSkeleton {
 
-	private List<MessageOutputor> outputorList = ProcessorPool.OUTPUTOR_LIST;
+	private List<MessageOutputor> outputors = ProcessorPool.OUTPUTOR_LIST;
 
 	@Override
 	protected void append(LoggingEvent event) {
 
 		String message = this.layout.format(event);
 
-		if (message != null && outputorList != null) {
-			for (MessageOutputor outputor : outputorList) {
-				if (outputor != null && outputorList != null) {
+		if (message != null && this.outputors != null) {
+			for (MessageOutputor outputor : this.outputors) {
+				if (outputor != null && this.outputors != null) {
 					outputor.showMessage(new Message(message));
 				}
 			}

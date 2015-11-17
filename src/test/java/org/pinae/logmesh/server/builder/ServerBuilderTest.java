@@ -3,7 +3,7 @@ package org.pinae.logmesh.server.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pinae.logmesh.server.LogServer;
+import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.ServerBuilder;
 
 public class ServerBuilderTest {
@@ -22,7 +22,7 @@ public class ServerBuilderTest {
 		addProcessor();
 		addOutput();
 
-		LogServer server = new LogServer(builder.build());
+		MessageServer server = new MessageServer(builder.build());
 		server.start();
 	}
 
@@ -51,14 +51,14 @@ public class ServerBuilderTest {
 	}
 
 	public void addReceiver() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("port", "514");
 		parameters.put("message", "string");
 		builder.addReceiver("udp", true, false , "utf8", parameters);
 	}
 
 	public void setOriginal() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("msgFormat", "$time : $ip : $message");
 		parameters.put("path", "d:\\TestData\\original");
 		parameters.put("dir", "yyyy-MM-dd-HH-mm");
@@ -72,25 +72,25 @@ public class ServerBuilderTest {
 	}
 
 	public void setCounter() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("enable", "true");
 		parameters.put("counter", "time|owner|ip|type");
 		builder.setCounter(parameters);
 	}
 
 	public void addFilter() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("file", "filter/filter_ip.xml");
 		parameters.put("pass", "true");
-		builder.addFilter(1, "IPFilter", true, "com.logmesh.filter.IPFilter", parameters);
+		builder.addFilter(1, "IPFilter", true, org.pinae.logmesh.component.filter.IPFilter.class, parameters);
 	}
 
 	public void addProcessor() {
-		builder.addProcessor("SystemOutProcessor", true, "test.com.logmesh.SystemOutProcessor", null);
+		builder.addProcessor("SystemOutProcessor", true, org.pinae.logmesh.component.custom.SystemOutProcessor.class, null);
 	}
 
 	public void addOutput() {
-		Map<String, String> parameters = new HashMap<String, String>();
+		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("title", "logmesh --- Free Log Collector");
 		parameters.put("width", "900");
 		parameters.put("height", "600");
@@ -98,6 +98,6 @@ public class ServerBuilderTest {
 		parameters.put("rows", "100");
 		parameters.put("background", "#000000");
 		parameters.put("foreground", "#00ff00");
-		builder.addOutputor("WindowsTest", true, "com.logmesh.output.WindowOutputor", parameters);
+		builder.addOutputor("WindowsTest", true, org.pinae.logmesh.output.WindowOutputor.class, parameters);
 	}
 }

@@ -2,6 +2,7 @@ package org.pinae.logmesh.component.filter;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ import org.pinae.ndb.Statement;
 public class KeywordFilter extends AbstractFilter {
 
 	private Statement statement = new Statement();
-	
+
 	private List<String> keywordList = new ArrayList<String>(); // 关键字列表
 
 	private boolean pass = true; // 匹配通过
@@ -29,26 +30,39 @@ public class KeywordFilter extends AbstractFilter {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void init() {
-		String path = ClassLoaderUtils.getResourcePath("");
-		String keywordFile = getParameter("file");
-
-		try {
-			this.pass = Boolean.parseBoolean(getParameter("pass"));
-		} catch (Exception e) {
-			this.pass = true;
+		
+		this.pass = getBooleanValue("pass", true);
+		
+		if (hasParameter("file")) {
+			String path = ClassLoaderUtils.getResourcePath("");
+			String keywordFile = getStringValue("file", "filter/keyword_filter.xml");
+			if (StringUtils.isNoneEmpty(keywordFile)) {
+				load(path, keywordFile);
+			}
+		} else if (hasParameter("filter")) {
+			Object filter = getValue("filter");
+			if (filter != null) {
+				if (filter instanceof String) {
+					String filterStr = (String)filter;
+					if (StringUtils.isNoneEmpty(filterStr)) {
+						this.keywordList.addAll(Arrays.asList(filterStr.split("\\|")));
+					}
+				} else if (filter instanceof List) {
+					this.keywordList = (List<String>)filter;
+				}
+			}
 		}
-
-		load(path, keywordFile);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void load(String path, String filename) {
-		Map<String, Object> keywordFilterConfig = loadConfig(path, filename);
+		Map<String, Object> filterConfig = loadConfig(path, filename);
 
-		if (keywordFilterConfig != null && keywordFilterConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(keywordFilterConfig, "select:import->file");
+		if (filterConfig != null && filterConfig.containsKey("import")) {
+			List<String> importList = (List<String>) statement.execute(filterConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -56,8 +70,8 @@ public class KeywordFilter extends AbstractFilter {
 			}
 		}
 
-		if (keywordFilterConfig != null && keywordFilterConfig.containsKey("filter")) {
-			this.keywordList = (List<String>) statement.execute(keywordFilterConfig, "select:filter->keyword");
+		if (filterConfig != null && filterConfig.containsKey("filter")) {
+			this.keywordList = (List<String>) statement.execute(filterConfig, "select:filter->keyword");
 		}
 	}
 

@@ -27,15 +27,10 @@ public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 
 	public void init() {
 
-		String protocol = hasParameter("protocol") ? getParameter("protocol") : "udp";
-		String destination = hasParameter("destination") ? getParameter("destination") : "127.0.0.1";
+		String protocol = getStringValue("protocol", "udp");
+		String destination = getStringValue("destination", "127.0.0.1");
 
-		int dstPort = 514;
-		try {
-			dstPort = Integer.parseInt(getParameter("port"));
-		} catch (NumberFormatException e) {
-			dstPort = 514;
-		}
+		int dstPort = getIntegerValue("port", 514);
 
 		try {
 			if (protocol.equalsIgnoreCase("tcp")) {

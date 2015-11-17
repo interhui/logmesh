@@ -23,7 +23,7 @@ public class ProcessorFactory {
 
 		String name = (String) processorMap.get("name");
 		String className = (String) processorMap.get("kwClass");
-		Map<String, String> parameters = createParameter(processorMap);
+		Map<String, Object> parameters = createParameter(processorMap);
 
 		Object processor = null;
 		try {
@@ -51,24 +51,19 @@ public class ProcessorFactory {
 	 * @return 参数列表
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, String> createParameter(Object parameter) {
-		Map<String, String> parameterMap = new HashMap<String, String>();
-
-		if (parameter == null || parameter instanceof String) {
-			return null;
-		}
+	public static Map<String, Object> createParameter(Object parameter) {
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
 
 		if (parameter instanceof Map) {
 			Statement statement = new Statement();
 
-			List<?> parameters = (List<?>) statement.execute((Map<String, Object>) parameter,
-					"select:parameters->parameter");
+			List<?> paramItems = (List<?>) statement.execute((Map<String, Object>) parameter, "select:parameters->parameter");
 
-			for (Object _parameter : parameters) {
-				if (_parameter instanceof Map) {
-					Map<String, String> _parameterMap = (Map<String, String>) _parameter;
-					if (_parameterMap.containsKey("key") && _parameterMap.containsKey("value")) {
-						parameterMap.put(_parameterMap.get("key"), _parameterMap.get("value"));
+			for (Object paramItem : paramItems) {
+				if (paramItem instanceof Map) {
+					Map<String, String> paramMap = (Map<String, String>) paramItem;
+					if (paramMap.containsKey("key") && paramMap.containsKey("value")) {
+						parameterMap.put(paramMap.get("key"), paramMap.get("value"));
 					}
 				}
 

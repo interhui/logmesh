@@ -25,8 +25,8 @@ public class OutStreamAppender extends PrintStream {
 	public void write(byte[] buf, int off, int len) {
 		String message = new String(buf, off, len);
 
-		if (message != null && outputors != null) {
-			for (MessageOutputor outputor : outputors) {
+		if (message != null && this.outputors != null) {
+			for (MessageOutputor outputor : this.outputors) {
 				outputor.showMessage(new Message(message));
 			}
 		}

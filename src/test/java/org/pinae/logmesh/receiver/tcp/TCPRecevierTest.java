@@ -15,11 +15,11 @@ import org.pinae.logmesh.receiver.TCPReceiver;
  */
 public class TCPRecevierTest {
 	public static void main(String arg[]) {
-		Map<String, String> config = new HashMap<String, String>();
-		config.put("por", "514");
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("por", "514");
 
 		Receiver receiver = new TCPReceiver();
-		receiver.init(config);
+		receiver.init(parameters);
 		receiver.start("TCPReceiver");
 	}
 }
