@@ -11,7 +11,6 @@ import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
 import org.pinae.nala.xb.exception.UnmarshalException;
-import org.pinae.nala.xb.unmarshal.Unmarshaller;
 import org.pinae.ndb.Statement;
 
 /**

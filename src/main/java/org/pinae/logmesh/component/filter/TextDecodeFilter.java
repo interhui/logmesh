@@ -1,7 +1,6 @@
 package org.pinae.logmesh.component.filter;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

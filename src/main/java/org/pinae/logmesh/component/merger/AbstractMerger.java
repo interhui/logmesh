@@ -6,8 +6,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.nala.xb.Xml;
-import org.pinae.nala.xb.exception.NoSuchPathException;
-import org.pinae.nala.xb.exception.UnmarshalException;
 
 /**
  * 消息合并抽象类
