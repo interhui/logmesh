@@ -23,7 +23,7 @@ import org.pinae.logmesh.processor.ProcessorFactory;
  * 
  */
 public class DBStorer implements Storer {
-	private static Logger log = Logger.getLogger(FileStorer.class);
+	private static Logger logger = Logger.getLogger(FileStorer.class);
 
 	private String driver; // JDBC驱动
 	private String url; // 数据库连接地址
@@ -75,7 +75,7 @@ public class DBStorer implements Storer {
 			this.dbSaver = new DBSaver();
 			this.dbSaver.start(name);
 		} else {
-			log.error("DBStore's MessageQueue is NULL");
+			logger.error("DBStore's MessageQueue is NULL");
 		}
 	}
 
@@ -129,7 +129,7 @@ public class DBStorer implements Storer {
 				conn = DriverManager.getConnection(url, username, password);
 				stm = conn.createStatement();
 			} catch (Exception e) {
-				log.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 			}
 		}
 
@@ -155,13 +155,13 @@ public class DBStorer implements Storer {
 							stm.executeBatch();
 
 						} catch (Exception e) {
-							log.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+							logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 						}
 					}
 
 					Thread.sleep(cycle);
 				} catch (InterruptedException e) {
-					log.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+					logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 				}
 			}
 
@@ -173,14 +173,14 @@ public class DBStorer implements Storer {
 					conn.close();
 				}
 			} catch (SQLException e) {
-				log.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 			}
 		}
 
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
 
-			log.info("DB Store STOP");
+			logger.info("DB Store STOP");
 		}
 
 		public void start(String name) {

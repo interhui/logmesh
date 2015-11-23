@@ -26,7 +26,7 @@ import org.pinae.logmesh.util.ZipUtils;
  * 
  */
 public class OriginalMessageStore {
-	private static Logger log = Logger.getLogger(OriginalMessageStore.class);
+	private static Logger logger = Logger.getLogger(OriginalMessageStore.class);
 
 	private boolean enable = true; // 是否激活原始消息存储
 
@@ -75,7 +75,7 @@ public class OriginalMessageStore {
 		try {
 			messageStore.connect("OriginalMessageStore");
 		} catch (StorerException e) {
-			log.error(String.format("OriginalMessageStore Connect Fail: exception=%s", e.getMessage()));
+			logger.error(String.format("OriginalMessageStore Connect Fail: exception=%s", e.getMessage()));
 		}
 
 		if (this.isZip) {
@@ -128,7 +128,7 @@ public class OriginalMessageStore {
 						return formattedMsg;
 
 					} catch (Exception e) {
-						log.error(String.format("OriginalMessageStore Exception: exception=%s, encoding=%s", e.getMessage(), this.encoding));
+						logger.error(String.format("OriginalMessageStore Exception: exception=%s, encoding=%s", e.getMessage(), this.encoding));
 					}
 				}
 			}
@@ -163,7 +163,7 @@ public class OriginalMessageStore {
 							// 删除目录
 							FileUtils.deleteDirectory(new File(zipFile));
 						} catch (IOException e) {
-							log.error(String.format("IO Exception: exception=%s", e.getMessage()));
+							logger.error(String.format("IO Exception: exception=%s", e.getMessage()));
 						}
 						lastZipDir = zipDir;
 					}
@@ -172,7 +172,7 @@ public class OriginalMessageStore {
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
-					log.error(String.format("Compress Exception: exception=%s", e.getMessage()));
+					logger.error(String.format("Compress Exception: exception=%s", e.getMessage()));
 				}
 			}
 
@@ -181,7 +181,7 @@ public class OriginalMessageStore {
 		public void stop() {
 			this.isStop = true;
 
-			log.info("Original Message Store STOP");
+			logger.info("Original Message Store STOP");
 		}
 
 		public void start(String name) {

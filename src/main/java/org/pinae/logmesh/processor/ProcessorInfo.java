@@ -41,30 +41,36 @@ public abstract class ProcessorInfo {
 	
 	public boolean getBooleanValue(String key, boolean defaultValue) {
 		boolean value = defaultValue;
-		try {
-			value = Boolean.parseBoolean(getStringValue(key, "false"));
-		} catch (Exception e) {
-			value = defaultValue;
+		if (hasParameter(key)) {
+			try {
+				value = Boolean.parseBoolean((String)getValue(key));
+			} catch (Exception e) {
+				value = defaultValue;
+			}
 		}
 		return value;
 	}
 	
 	public int getIntegerValue(String key, int defaultValue) {
 		int value = defaultValue;
-		try {
-			value = Integer.parseInt(getStringValue(key, "0"));
-		} catch (Exception e) {
-			value = defaultValue;
+		if (hasParameter(key)) {
+			try {
+				value = Integer.parseInt((String)getValue(key));
+			} catch (Exception e) {
+				value = defaultValue;
+			}
 		}
 		return value;
 	}
 	
 	public long getLongValue(String key, long defaultValue) {
 		long value = defaultValue;
-		try {
-			value = Long.parseLong(getStringValue(key, "0"));
-		} catch (Exception e) {
-			value = defaultValue;
+		if (hasParameter(key)) {
+			try {
+				value = Long.parseLong((String)getValue(key));
+			} catch (Exception e) {
+				value = defaultValue;
+			}
 		}
 		return value;
 	}

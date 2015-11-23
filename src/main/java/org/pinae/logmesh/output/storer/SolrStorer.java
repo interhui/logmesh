@@ -24,7 +24,7 @@ import org.pinae.logmesh.processor.ProcessorFactory;
  * 
  */
 public class SolrStorer implements Storer {
-	private static Logger log = Logger.getLogger(FileStorer.class);
+	private static Logger logger = Logger.getLogger(FileStorer.class);
 
 	private String solrURL = "http://127.0.0.1:8983/solr/collection1"; // Solr地址
 	private long cycle; // 存储周期
@@ -55,7 +55,7 @@ public class SolrStorer implements Storer {
 				solrPoster.start(name);
 			}
 		} else {
-			log.error("SolrStore's MessageQueue is NULL");
+			logger.error("SolrStore's MessageQueue is NULL");
 		}
 	}
 
@@ -116,16 +116,16 @@ public class SolrStorer implements Storer {
 							httpSolrServer.add(docList);
 							UpdateResponse response = httpSolrServer.commit();// 将日志发送到Solr
 							if (response.getStatus() == 0) {
-								log.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
+								logger.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));
 							} else {
-								log.debug(String.format("commit document %s failure. cost time is %sms", docList.toArray().toString(),
+								logger.debug(String.format("commit document %s failure. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));
 							}
 						} catch (SolrServerException e) {
-							log.error(String.format("post Exception: exception=%s", e.getMessage()));
+							logger.error(String.format("post Exception: exception=%s", e.getMessage()));
 						} catch (IOException e) {
-							log.error(String.format("post Exception: exception=%s", e.getMessage()));
+							logger.error(String.format("post Exception: exception=%s", e.getMessage()));
 						} finally {
 							if (httpSolrServer != null)
 								httpSolrServer.shutdown();
@@ -134,7 +134,7 @@ public class SolrStorer implements Storer {
 
 					Thread.sleep(cycle);
 				} catch (InterruptedException e) {
-					log.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
+					logger.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class SolrStorer implements Storer {
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
 
-			log.info("Solr Store STOP");
+			logger.info("Solr Store STOP");
 		}
 
 		public void start(String name) {

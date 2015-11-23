@@ -1,9 +1,13 @@
 package org.pinae.logmesh.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.text.DecimalFormat;
+
+import org.apache.log4j.Logger;
+import org.codehaus.stax2.ri.typed.ValueDecoderFactory.DecimalDecoder;
 import org.junit.Test;
-import org.pinae.logmesh.util.CompressUtils;
 
 /**
  * 消息压缩工具类测试
@@ -13,22 +17,24 @@ import org.pinae.logmesh.util.CompressUtils;
  * 
  */
 public class CompressUtilsTest {
+	private static Logger logger = Logger.getLogger(CompressUtilsTest.class);
 
 	@Test
 	public void testCompressUtils() {
 
-		for (int j = 0; j < 10000; j++) {
-			String word = "";
-
-			for (int i = 0; i < 100; i++) {
-				word += "Hello ";
-			}
-
-			byte data[] = CompressUtils.compress(word.getBytes());
-
-			String newword = new String(CompressUtils.uncompress(data));
-
-			assertEquals(word, newword);
+		String data = "";
+		for (int i = 0; i < 100; i++) {
+			data += "Hello ";
 		}
+
+		int originalDataLength = data.getBytes().length;
+		byte compressData[] = CompressUtils.compress(data.getBytes());
+		int compressDataLength = compressData.length;
+		String uncompressData = new String(CompressUtils.uncompress(compressData));
+
+		assertEquals(data, uncompressData);
+		assertTrue(compressDataLength < originalDataLength);
+		logger.info("Compress Rate: " + new DecimalFormat("#.00")
+				.format(((double) compressDataLength / (double) originalDataLength) * 100) + "%");
 	}
 }

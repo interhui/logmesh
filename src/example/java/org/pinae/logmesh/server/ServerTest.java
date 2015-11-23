@@ -15,7 +15,7 @@ public class ServerTest {
 
 		// 5秒后启动日志发送
 		TimeUnit.SECONDS.sleep(5);
-		new Thread(new MessageSenderExample(3, true)).start();
+		new Thread(new MessageSenderExample(3, true), "MessageSender").start();
 	}
 
 }

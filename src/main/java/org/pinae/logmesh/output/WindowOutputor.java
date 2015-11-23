@@ -43,7 +43,7 @@ public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
 		initGUI(); // 初始化GUI元素
 
 		initEvent(); // 初始化GUI事件
-		
+
 		this.maxRows = getIntegerValue("rows", 100);
 		bufferRows = maxRows / 10;
 	}
@@ -93,14 +93,14 @@ public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
 			public void windowOpened(WindowEvent event) {
 				frame.setTitle(getStringValue("title", "Logmesh"));
 
-				int width = getIntegerValue("width", 800);
+				int width = getIntegerValue("width", 900);
 				int height = getIntegerValue("height", 600);
 				frame.setBounds(frame.getX(), frame.getY(), width, height);
 				scrollPane.setBounds(0, 5, width - 15, height - 35);
 				txtConsole.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(),
 						scrollPane.getHeight());
 
-				int columns = getIntegerValue("columns", 50);
+				int columns = getIntegerValue("columns", 80);
 
 				txtConsole.setColumns(columns);
 				txtConsole.setRows(maxRows);

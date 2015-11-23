@@ -21,7 +21,7 @@ import org.pinae.logmesh.component.router.MessageRouter;
  * 
  */
 public class ComponentPool {
-	private static Logger log = Logger.getLogger(ComponentPool.class);
+	private static Logger logger = Logger.getLogger(ComponentPool.class);
 
 	private static Map<String, Object> COMPONENT_POOL = new ConcurrentHashMap<String, Object>();
 	private static AtomicInteger COMPONENT_COUNT = new AtomicInteger();
@@ -76,7 +76,7 @@ public class ComponentPool {
 	 * @param clazz 重新加载的组件类
 	 */
 	public synchronized static void reloadComponent(Class<?> clazz) {
-		log.info(String.format("Reload %s Component", clazz.getSimpleName()));
+		logger.info(String.format("Reload %s Component", clazz.getSimpleName()));
 
 		List<Object> componentList = getComponent(clazz);
 		for (Object component : componentList) {

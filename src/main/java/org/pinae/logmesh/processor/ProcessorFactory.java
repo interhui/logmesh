@@ -10,7 +10,7 @@ import org.pinae.ndb.Statement;
 
 public class ProcessorFactory {
 
-	private static Logger log = Logger.getLogger(ProcessBuilder.class);
+	private static Logger logger = Logger.getLogger(ProcessBuilder.class);
 
 	/**
 	 * 构建处理器
@@ -38,7 +38,7 @@ public class ProcessorFactory {
 				info.setParameters(parameters);
 			}
 		} catch (Exception e) {
-			log.error(String.format("Create Processor Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Create Processor Exception: exception=%s", e.getMessage()));
 		}
 		return processor;
 	}

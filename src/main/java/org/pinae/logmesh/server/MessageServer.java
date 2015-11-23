@@ -33,7 +33,7 @@ import org.pinae.ndb.Statement;
  */
 public class MessageServer {
 
-	private static Logger log = Logger.getLogger(MessageServer.class);
+	private static Logger logger = Logger.getLogger(MessageServer.class);
 
 	private String filename; // 配置文件
 	private Map<String, Object> config; // 配置信息
@@ -59,7 +59,7 @@ public class MessageServer {
 
 		// 载入配置
 		if (this.config == null) {
-			this.config = loadConfig();
+			this.config = loadConfig(new File(this.filename));
 		}
 
 		// 载入消息队列
@@ -92,7 +92,7 @@ public class MessageServer {
 		this.startup = true;
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start Logmesh in %d ms", startupTime));
+		logger.info(String.format("Start Logmesh in %d ms", startupTime));
 	}
 
 	/**
@@ -101,21 +101,21 @@ public class MessageServer {
 	 * @return Logmesh配置信息
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> loadConfig() {
+	public Map<String, Object> loadConfig(File file) {
 		long startTime = System.currentTimeMillis();
 
-		log.info(String.format("Loading Server Config: %s", filename));
+		logger.info(String.format("Loading Server Config: %s", file.getAbsolutePath()));
 
 		Map<String, Object> serverConfig = new HashMap<String, Object>();
 
 		try {
-			serverConfig = (Map<String, Object>) Xml.toMap(new File(filename), "UTF8");
+			serverConfig = (Map<String, Object>) Xml.toMap(file, "UTF8");
 		} catch (Exception e) {
-			log.error(String.format("Load Server Config Error: exception=%s", e.getMessage()));
+			logger.error(String.format("Load Server Config Error: exception=%s", e.getMessage()));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Load Server Config Finished in %d ms", startupTime));
+		logger.info(String.format("Load Server Config Finished in %d ms", startupTime));
 
 		return serverConfig;
 	}
@@ -169,7 +169,7 @@ public class MessageServer {
 						}
 					}
 				} catch (Exception e) {
-					log.error(String.format("Start Receiver Fail: exception=%s", e.getMessage()));
+					logger.error(String.format("Start Receiver Fail: exception=%s", e.getMessage()));
 				}
 			}
 
@@ -200,7 +200,7 @@ public class MessageServer {
 		messageStorer.start();
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start origina message storer in %d ms", startupTime));
+		logger.info(String.format("Start origina message storer in %d ms", startupTime));
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class MessageServer {
 		messageCounter.start("MessageCounter");
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start message counter in %d ms", startupTime));
+		logger.info(String.format("Start message counter in %d ms", startupTime));
 	}
 	
 	/**
@@ -255,14 +255,14 @@ public class MessageServer {
 			filterCounter = 1;
 		}
 
-		log.info(String.format("Starting message filter, filter count is %d", filterCounter));
+		logger.info(String.format("Starting message filter, filter count is %d", filterCounter));
 
 		for (int i = 0; i < filterCounter; i++) {
 			new FilterProcessor(config).start("filter-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start message filter in %d ms", startupTime));
+		logger.info(String.format("Start message filter in %d ms", startupTime));
 	}
 
 	/**
@@ -290,14 +290,14 @@ public class MessageServer {
 			routerCounter = 1;
 		}
 
-		log.info(String.format("Starting message router, router count is %d", routerCounter));
+		logger.info(String.format("Starting message router, router count is %d", routerCounter));
 
 		for (int i = 0; i < routerCounter; i++) {
 			new RouterProcessor(config).start("router-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start message router in %d ms", startupTime));
+		logger.info(String.format("Start message router in %d ms", startupTime));
 	}
 
 	/**
@@ -324,9 +324,9 @@ public class MessageServer {
 			new MergerProcessor(mergerConfig).start("merger");
 
 			long startupTime = System.currentTimeMillis() - startTime;
-			log.info(String.format("Start message merger in %d ms", startupTime));
+			logger.info(String.format("Start message merger in %d ms", startupTime));
 		} else {
-			log.info("Merger Processor is Disable");
+			logger.info("Merger Processor is Disable");
 		}
 
 	}
@@ -356,14 +356,14 @@ public class MessageServer {
 			processorCounter = 1;
 		}
 
-		log.info(String.format("Starting customer message processor, processor count is %d", processorCounter));
+		logger.info(String.format("Starting customer message processor, processor count is %d", processorCounter));
 
 		for (int i = 0; i < processorCounter; i++) {
 			new CustomProcessor(config).start("processor-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start customer message processor in %d ms", startupTime));
+		logger.info(String.format("Start customer message processor in %d ms", startupTime));
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class MessageServer {
 		new OutputorProcessor(config).start("outputor");
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		log.info(String.format("Start outputor in %d ms", startupTime));
+		logger.info(String.format("Start outputor in %d ms", startupTime));
 	}
 
 	/**
@@ -386,7 +386,7 @@ public class MessageServer {
 	public void stop() {
 		ProcessorPool.stopAll();
 
-		log.info("Logmesh STOP");
+		logger.info("Logmesh STOP");
 	}
 
 	/**

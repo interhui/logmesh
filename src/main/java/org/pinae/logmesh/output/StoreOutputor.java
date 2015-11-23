@@ -17,7 +17,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  */
 public class StoreOutputor extends ProcessorInfo implements MessageOutputor {
 
-	private static Logger log = Logger.getLogger(ForwardOutputor.class);
+	private static Logger logger = Logger.getLogger(ForwardOutputor.class);
 
 	private Storer store;
 
@@ -38,7 +38,7 @@ public class StoreOutputor extends ProcessorInfo implements MessageOutputor {
 				store.connect(); // 存储器连接
 			}
 		} catch (StorerException e) {
-			log.error(String.format("StoreOutputor Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("StoreOutputor Exception: exception=%s", e.getMessage()));
 		}
 	}
 

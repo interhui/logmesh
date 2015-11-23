@@ -16,7 +16,7 @@ import org.pinae.ndb.Statement;
 
 public class RouterProcessor implements Processor {
 
-	private static Logger log = Logger.getLogger(RouterProcessor.class);
+	private static Logger logger = Logger.getLogger(RouterProcessor.class);
 
 	private Map<String, Object> config; // 消息路由器配置信息
 	private List<MessageRouter> routerList = new ArrayList<MessageRouter>(); // 消息路由器列表
@@ -78,7 +78,7 @@ public class RouterProcessor implements Processor {
 	public void stop() {
 		this.isStop = true; // 设置线程停止标记
 
-		log.info("Message ROUTE STOP");
+		logger.info("Message ROUTE STOP");
 
 	}
 
@@ -93,7 +93,7 @@ public class RouterProcessor implements Processor {
 							try {
 								route.porcess(message.clone());
 							} catch (CloneNotSupportedException e) {
-								log.error("RouterProcessor Message Clone Exception: exception=" + e.getMessage());
+								logger.error("RouterProcessor Message Clone Exception: exception=" + e.getMessage());
 							}
 						}
 					}
@@ -103,7 +103,7 @@ public class RouterProcessor implements Processor {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				log.error("RouterProcessor InterruptedException: exception=" + e.getMessage());
+				logger.error("RouterProcessor InterruptedException: exception=" + e.getMessage());
 			}
 		}
 	}

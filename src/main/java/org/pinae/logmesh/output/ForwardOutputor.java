@@ -17,7 +17,7 @@ import org.pinae.logmesh.sender.UDPSender;
  */
 public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 
-	private static Logger log = Logger.getLogger(ForwardOutputor.class);
+	private static Logger logger = Logger.getLogger(ForwardOutputor.class);
 
 	private Sender sender;
 
@@ -48,7 +48,7 @@ public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 				sender.connect(); // 转发器连接
 			}
 		} catch (SendException e) {
-			log.error(String.format("ForwardOutputor Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("ForwardOutputor Exception: exception=%s", e.getMessage()));
 		}
 	}
 
@@ -57,7 +57,7 @@ public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 			try {
 				sender.send(message.toString());
 			} catch (SendException e) {
-				log.error(String.format("SendMessage Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("SendMessage Exception: exception=%s", e.getMessage()));
 			}
 		}
 	}

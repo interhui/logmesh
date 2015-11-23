@@ -25,7 +25,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class FilterProcessor implements Processor {
-	private static Logger log = Logger.getLogger(FilterProcessor.class);
+	private static Logger logger = Logger.getLogger(FilterProcessor.class);
 
 	private Map<String, Object> config; // 消息过滤器配置信息
 
@@ -109,7 +109,7 @@ public class FilterProcessor implements Processor {
 	public void stop() {
 		this.isStop = true; // 设置线程停止标记
 
-		log.info("Message Filter STOP");
+		logger.info("Message Filter STOP");
 	}
 
 	public void run() {
@@ -142,7 +142,7 @@ public class FilterProcessor implements Processor {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				log.error(String.format("FilterProcessor Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("FilterProcessor Exception: exception=%s", e.getMessage()));
 			}
 		}
 

@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.pinae.logmesh.server.MessageServer;
-import org.pinae.logmesh.server.builder.ServerBuilder;
+import org.pinae.logmesh.server.builder.MessageServerBuilder;
 
 public class ServerBuilderTest {
 
-	private ServerBuilder builder = new ServerBuilder();
+	private MessageServerBuilder builder = new MessageServerBuilder();
 
 	public void start() {
 		setOwner();

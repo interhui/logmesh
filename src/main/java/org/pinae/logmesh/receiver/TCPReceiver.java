@@ -22,14 +22,14 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
  * 
  */
 public class TCPReceiver extends NettyReceiver {
-	private static Logger log = Logger.getLogger(TCPReceiver.class.getName());
+	private static Logger logger = Logger.getLogger(TCPReceiver.class.getName());
 
 	private ServerBootstrap bootstrap = null;
 
 	public void init(Map<String, Object> config) {
 		super.init(config);
 
-		log.info(String.format("Start TCP Receiver AT %d", port));
+		logger.info(String.format("Start TCP Receiver AT %d", port));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class TCPReceiver extends NettyReceiver {
 		bootstrap.releaseExternalResources();
 		isStop = true;
 
-		log.info("Netty TCP Receiver STOP");
+		logger.info("Netty TCP Receiver STOP");
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class TCPReceiver extends NettyReceiver {
 
 		@Override
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			log.info(e.getCause().getMessage());
+			logger.info(e.getCause().getMessage());
 		}
 	}
 

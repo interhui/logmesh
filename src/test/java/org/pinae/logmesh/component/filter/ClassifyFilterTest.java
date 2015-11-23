@@ -25,7 +25,7 @@ public class ClassifyFilterTest {
 		
 		message = new Message("192.168.0.107", "Hui", "Firewall Log: 192.168.78.32 inbound stream");
 		message = filter.filter(message);
-		assertEquals(message.getType(), "NOC|WorkTime|Hui|Firewall");
+		assertEquals(message.getType(), "NOC|WorkTime|Huiyugeng|Firewall");
 		
 		message = new Message("192.168.0.106", "Liu", "Database Log: 192.168.33.12(PL/SQL) used SYSTEM connect Test-DB(Oracle 11.0.2.0)");
 		message = filter.filter(message);

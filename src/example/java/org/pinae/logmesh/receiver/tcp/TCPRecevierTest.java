@@ -14,6 +14,7 @@ import org.pinae.logmesh.receiver.TCPReceiver;
  * 
  */
 public class TCPRecevierTest {
+	
 	public static void main(String arg[]) {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("por", "514");
@@ -22,4 +23,5 @@ public class TCPRecevierTest {
 		receiver.init(parameters);
 		receiver.start("TCPReceiver");
 	}
+	
 }

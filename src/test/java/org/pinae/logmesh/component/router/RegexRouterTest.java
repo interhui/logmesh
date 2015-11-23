@@ -23,7 +23,7 @@ public class RegexRouterTest {
 		
 		message = new Message("192.168.0.105", "Hui", "Firewall Log: 192.168.78.32 inbound stream");
 		router.porcess(message);
-		assertEquals(message.getMessage(), "192.168.0.105 Hui Firewall Log: 192.168.78.32 inbound stream");
+		assertEquals(message.getMessage(), "REGEX_ROUTER:192.168.0.105 Hui Firewall Log: 192.168.78.32 inbound stream");
 		
 		message = new Message("192.168.0.106", "Liu", "Database Log: 192.168.33.12(PL/SQL) used SYSTEM connect Test-DB(Oracle 11.0.2.0)");
 		router.porcess(message);
@@ -35,10 +35,10 @@ public class RegexRouterTest {
 		
 		message = new Message("192.168.0.104", "Liu", "ASA Log: keep alived used 100ms");
 		router.porcess(message);
-		assertEquals(message.getMessage(), "192.168.0.104 Liu ASA Log: keep alived used 100ms");
+		assertEquals(message.getMessage(), "REGEX_ROUTER:192.168.0.104 Liu ASA Log: keep alived used 100ms");
 		
 		message = new Message("192.168.0.103", "Liu", "PIX Log: 192.168.12.21 deny access 10.3.0.12");
 		router.porcess(message);
-		assertEquals(message.getMessage(), "192.168.0.103 Liu PIX Log: 192.168.12.21 deny access 10.3.0.12");
+		assertEquals(message.getMessage(), "REGEX_ROUTER:192.168.0.103 Liu PIX Log: 192.168.12.21 deny access 10.3.0.12");
 	}
 }

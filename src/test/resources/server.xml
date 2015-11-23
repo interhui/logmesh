@@ -4,43 +4,9 @@
 	<!--日志所有者-->
 	<owner>Pinae</owner>
 	
-	<!--自定义日志队列配置-->
-	<queue>
-		<!--文件存储队列-->
-		<name>FILE_STORE_QUEUE</name>
-		<!--队列最大值-->
-		<size>50000</size>
-	</queue>
-	<queue>
-		<!--Solr存储队列-->
-		<name>SOLR_STORE_QUEUE</name>
-		<size>50000</size>
-	</queue>
-	<queue>
-		<!--数据库存储队列-->
-		<name>DB_STORE_QUEUE</name>
-		<size>50000</size>
-	</queue>
-	
-	<!--日志处理器线程配置-->
-	<thread>
-		<!--消息过滤器数量和休眠周期(ms)-->
-		<filter>
-			<count>10</count>
-			<delay>100</delay>
-		</filter>
-		<!--消息路由器数量和休眠周期(ms)-->
-		<router>
-			<count>10</count>
-			<delay>100</delay>
-		</router>
-		<!--消息处理器数量和休眠周期(ms)-->
-		<processor>
-			<count>5</count>
-			<delay>100</delay>
-		</processor>
-	</thread>
-	
+	<!-- 引入其他Server配置文件 -->
+	<import>root.xml</import>
+
 	<!--日志归并配置-->
 	<merger>
 		<!--是否启动归并:true/false-->
@@ -50,7 +16,7 @@
 		<parameters>
 			<!--归并规则 -->
 			<parameter key="file" value="merger/merger_regex.xml"/>
-			<!--归并周期-->
+			<!--归并周期 (ms)-->
 			<parameter key="cycle" value="5000"/>
 		</parameters>
 	</merger>
@@ -122,7 +88,7 @@
 			<parameter key="enable" value="true"/> 
 			<!--消息计数器技术类型：时间计数(time)/所有者计数(owner)/IP(ip)/日志类型计数(type)，多个计数采用|分割-->
 			<parameter key="counter" value="time|owner|ip|type"/> 
-			 <!--计数周期（s）-->
+			 <!--计数周期 (s) -->
 			<parameter key="cycle" value="60"/>
 		</parameters>
 	</counter>
@@ -144,7 +110,7 @@
 			<parameter key="ext" value="log"/>
 			<!--消息文件编码-->
 			<parameter key="encoding" value="utf8"/>
-			<!--消息文件写入周期(ms)-->
+			<!--消息文件写入周期 (ms)-->
 			<parameter key="cycle" value="5000"/> 
 			<!--是否启用消息压缩，当启用消息压缩时，旧的压缩文件会被压缩为zip格式-->
 			<parameter key="zip" value="true"/>
@@ -271,7 +237,7 @@
 			<parameter key="ext" value="log"/>
 			<!--文件存储编码-->
 			<parameter key="encoding" value="utf-8"/>
-			<!--文件存储周期-->
+			<!--文件存储周期 (ms)-->
 			<parameter key="cycle" value="3000"/>
 		</parameters>
 	</processor>

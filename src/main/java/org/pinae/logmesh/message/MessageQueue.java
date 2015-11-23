@@ -31,16 +31,18 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	@Override
 	public boolean offer(Message message) {
 		// 如果超出预定容量则根据FIFO原则进行弹出
-		if (super.size() >= this.size) {
-			super.poll();
-		}
+		synchronized (this) {
+			if (super.size() >= this.size) {
+				super.poll();
+			}
 
-		boolean result = super.offer(message);
-		if (result) {
-			count++;
-		}
+			boolean result = super.offer(message);
+			if (result) {
+				count++;
+			}
 
-		return result;
+			return result;
+		}
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	 * 
 	 * @return 消息队列处理数量
 	 */
-	public long resetCount() {
+	public long resetCounter() {
 		long _count = count;
 		count = 0;
 		return _count;
@@ -73,7 +75,7 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	 * 
 	 * @return 消息计数
 	 */
-	public long getCount() {
+	public long count() {
 		return count;
 	}
 

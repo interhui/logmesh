@@ -25,7 +25,7 @@ import org.pinae.logmesh.processor.ProcessorFactory;
  * 
  */
 public class FileStorer implements Storer {
-	private static Logger log = Logger.getLogger(FileStorer.class);
+	private static Logger logger = Logger.getLogger(FileStorer.class);
 
 	private String path; // 文件路径
 	private String fileTitle; // 文件标题
@@ -72,18 +72,18 @@ public class FileStorer implements Storer {
 				this.fileCreator.start(name);
 			}
 		} else {
-			log.error("FileStore's MessageQueue is NULL");
+			logger.error("FileStore's MessageQueue is NULL");
 		}
 	}
 
 	public void save(Message message) {
-		if (messageQueue != null) {
-			messageQueue.add(message);
+		if (this.messageQueue != null) {
+			this.messageQueue.add(message);
 		}
 	}
 
 	public void close() throws StorerException {
-		fileCreator.stop();
+		this.fileCreator.stop();
 	}
 
 	public String handleMessage(Message message) {
@@ -94,7 +94,7 @@ public class FileStorer implements Storer {
 					String msg = new String(msgContent.toString().getBytes(encoding), "utf-8");
 					return msg.trim();
 				} catch (UnsupportedEncodingException e) {
-					log.error(String.format("FileStorer Exception: exception=%s, encoding=%s", e.getMessage(), encoding));
+					logger.error(String.format("FileStorer Exception: exception=%s, encoding=%s", e.getMessage(), encoding));
 				}
 			}
 		}
@@ -134,13 +134,13 @@ public class FileStorer implements Storer {
 						fileWriter.close();
 
 					} catch (IOException e) {
-						log.error(String.format("FileStorer Exception: exception=%s", e.getMessage()));
+						logger.error(String.format("FileStorer Exception: exception=%s", e.getMessage()));
 					}
 				}
 				try {
 					Thread.sleep(cycle);
 				} catch (InterruptedException e) {
-					log.error(String.format("FileStorer Exception: exception=%s", e.getMessage()));
+					logger.error(String.format("FileStorer Exception: exception=%s", e.getMessage()));
 				}
 			}
 		}
@@ -148,7 +148,7 @@ public class FileStorer implements Storer {
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
 
-			log.info("File Store STOP");
+			logger.info("File Store STOP");
 		}
 
 		public void start(String name) {

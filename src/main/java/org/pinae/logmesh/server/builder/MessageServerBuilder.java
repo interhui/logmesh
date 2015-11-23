@@ -14,7 +14,7 @@ import org.pinae.ndb.Statement;
  * @author Huiyugeng
  * 
  */
-public class ServerBuilder {
+public class MessageServerBuilder {
 
 	private Statement statement = new Statement();
 

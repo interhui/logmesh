@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+
+	<!--自定义日志队列配置-->
+	<queue>
+		<!--文件存储队列-->
+		<name>FILE_STORE_QUEUE</name>
+		<!--队列最大值-->
+		<size>50000</size>
+	</queue>
+	<queue>
+		<!--Solr存储队列-->
+		<name>SOLR_STORE_QUEUE</name>
+		<size>50000</size>
+	</queue>
+	<queue>
+		<!--数据库存储队列-->
+		<name>DB_STORE_QUEUE</name>
+		<size>50000</size>
+	</queue>
+	
+	
+	<!--日志处理器线程配置-->
+	<thread>
+		<!--消息过滤器数量和休眠周期(ms)-->
+		<filter>
+			<count>10</count>
+			<delay>100</delay>
+		</filter>
+		<!--消息路由器数量和休眠周期(ms)-->
+		<router>
+			<count>10</count>
+			<delay>100</delay>
+		</router>
+		<!--消息处理器数量和休眠周期(ms)-->
+		<processor>
+			<count>5</count>
+			<delay>100</delay>
+		</processor>
+	</thread>
+
+</server>

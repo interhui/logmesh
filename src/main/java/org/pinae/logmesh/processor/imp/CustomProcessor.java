@@ -24,7 +24,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class CustomProcessor implements Processor {
-	private static Logger log = Logger.getLogger(CustomProcessor.class);
+	private static Logger logger = Logger.getLogger(CustomProcessor.class);
 
 	private Map<String, Object> config; // 消息处理器配置信息
 
@@ -100,7 +100,7 @@ public class CustomProcessor implements Processor {
 	public void stop() {
 		this.isStop = true; // 设置线程停止标记
 
-		log.info("Custom Processor STOP");
+		logger.info("Custom Processor STOP");
 	}
 
 	public void run() {
@@ -119,7 +119,7 @@ public class CustomProcessor implements Processor {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				log.error(String.format("CustomProcessor Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("CustomProcessor Exception: exception=%s", e.getMessage()));
 			}
 		}
 	}

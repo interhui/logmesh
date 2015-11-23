@@ -19,7 +19,7 @@ public class UDPSenderTest {
 	@Test
 	public void testSend() {
 
-		String message = "Log<WARN>: name=\"RAC-001\"";
+		String message = "Hello World";
 
 		try {
 			Sender sender = new UDPSender("127.0.0.1", 514);

@@ -25,7 +25,7 @@ import org.pinae.logmesh.message.Message;
  * 
  */
 public class JMSReceiver extends Receiver {
-	private static Logger log = Logger.getLogger(JMSReceiver.class.getName());
+	private static Logger logger = Logger.getLogger(JMSReceiver.class.getName());
 
 	private Session session;// 一个发送或接收消息的线程
 	private Destination destination;// 消息的目的地;
@@ -82,7 +82,7 @@ public class JMSReceiver extends Receiver {
 	@Override
 	public void stop() {
 		isStop = true;
-		log.info("JMS Receiver STOP");
+		logger.info("JMS Receiver STOP");
 	}
 
 	@Override

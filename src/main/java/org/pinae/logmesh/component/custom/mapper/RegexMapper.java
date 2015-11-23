@@ -25,7 +25,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class RegexMapper {
-	private static Logger log = Logger.getLogger(RegexMapper.class);
+	private static Logger logger = Logger.getLogger(RegexMapper.class);
 
 	private Statement statement = new Statement();
 
@@ -48,16 +48,16 @@ public class RegexMapper {
 
 	@SuppressWarnings("unchecked")
 	private void load(String path, String filename) {
-		log.info(String.format("Loading Regex Map File: %s", path + filename));
+		logger.info(String.format("Loading Regex Map File: %s", path + filename));
 
 		Map<String, Object> mapperConfig = null;
 
 		try {
 			mapperConfig = (Map<String, Object>) Xml.toMap(new File(path + filename), "UTF8");
 		} catch (UnmarshalException e) {
-			log.error(String.format("Regex Mapper Load Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Regex Mapper Load Exception: exception=%s", e.getMessage()));
 		} catch (NoSuchPathException e) {
-			log.error(String.format("Regex Mapper Load Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Regex Mapper Load Exception: exception=%s", e.getMessage()));
 		}
 
 		if (mapperConfig != null && mapperConfig.containsKey("import")) {

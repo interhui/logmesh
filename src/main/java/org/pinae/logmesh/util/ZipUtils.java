@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * @author Huiyugeng
  */
 public class ZipUtils {
-	private final static Logger log = Logger.getLogger(ZipUtils.class);
+	private final static Logger logger = Logger.getLogger(ZipUtils.class);
 
 	/**
 	 * 清理并创建目录
@@ -80,7 +80,7 @@ public class ZipUtils {
 		try {
 			mkdir(outDir);
 		} catch (IOException e) {
-			log.error(String.format("Mkdir %s Fail: exception=%s", outDir, e.getMessage()));
+			logger.error(String.format("Mkdir %s Fail: exception=%s", outDir, e.getMessage()));
 		}
 
 		File inputFile = new File(zipfile);
@@ -104,12 +104,12 @@ public class ZipUtils {
 			}
 			zipFileStream.close();
 		} catch (IOException e) {
-			log.error(String.format("IO Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("IO Exception: exception=%s", e.getMessage()));
 		} catch (ArchiveException e) {
-			log.error(String.format("Unzip Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Unzip Exception: exception=%s", e.getMessage()));
 		} finally {
 			org.apache.commons.io.IOUtils.closeQuietly(is);
-			log.debug(String.format("unzip success source %s to %s", inputFile.getAbsolutePath(), outDir));
+			logger.debug(String.format("unzip success source %s to %s", inputFile.getAbsolutePath(), outDir));
 		}
 	}
 
@@ -152,7 +152,7 @@ public class ZipUtils {
 				}
 				zipStream.finish();
 			} catch (Exception e) {
-				log.error(String.format("Zip Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("Zip Exception: exception=%s", e.getMessage()));
 			} finally {
 				org.apache.commons.io.IOUtils.closeQuietly(zipStream);
 			}

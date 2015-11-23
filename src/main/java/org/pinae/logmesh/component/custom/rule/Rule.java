@@ -21,7 +21,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public abstract class Rule {
-	private static Logger log = Logger.getLogger(Rule.class);
+	private static Logger logger = Logger.getLogger(Rule.class);
 	
 	private Statement statement = new Statement();
 
@@ -29,16 +29,16 @@ public abstract class Rule {
 	
 	@SuppressWarnings("unchecked")
 	protected void load(String path, String filename) {
-		log.info(String.format("Loading Alert Rule File: %s", path + filename));
+		logger.info(String.format("Loading Alert Rule File: %s", path + filename));
 
 		Map<String, Object> ruleConfig = null;
 
 		try {
 			ruleConfig = (Map<String, Object>)Xml.toMap(new File(path + filename), "UTF8");
 		} catch (NoSuchPathException e) {
-			log.error(String.format("Rule Load Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Rule Load Exception: exception=%s", e.getMessage()));
 		} catch (UnmarshalException e) {
-			log.error(String.format("Rule Load Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Rule Load Exception: exception=%s", e.getMessage()));
 		}
 
 		if (ruleConfig != null && ruleConfig.containsKey("import")) {

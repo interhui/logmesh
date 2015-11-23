@@ -28,7 +28,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public abstract class AbstractRouter extends ProcessorInfo implements MessageRouter {
-	private static Logger log = Logger.getLogger(AbstractRouter.class);
+	private static Logger logger = Logger.getLogger(AbstractRouter.class);
 
 	protected Statement statement = new Statement();
 
@@ -53,7 +53,7 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 		try {
 			this.routerConfig = (Map<String, Object>) Xml.toMap(new File(path + filename), "UTF8");
 		} catch (Exception e) {
-			log.error(String.format("Router Load Exception: exception=%s", e.getMessage()));
+			logger.error(String.format("Router Load Exception: exception=%s", e.getMessage()));
 		} 
 
 		if (this.routerConfig != null && this.routerConfig.containsKey("import")) {
