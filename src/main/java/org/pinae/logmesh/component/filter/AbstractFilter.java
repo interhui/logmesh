@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.processor.ProcessorInfo;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 
 /**
@@ -25,7 +26,10 @@ public abstract class AbstractFilter extends ProcessorInfo implements MessageFil
 		Map<String, Object> config = null;
 
 		try {
-			config = (Map<String, Object>) Xml.toMap(new File(path + filename), "UTF8");
+			File configFile = FileUtils.getFile(path, filename);
+			if (configFile != null) {
+				config = (Map<String, Object>) Xml.toMap(configFile, "UTF8");
+			}
 		} catch (Exception e) {
 			logger.error(String.format("Filter Load Exception: exception=%s", e.getMessage()));
 		}

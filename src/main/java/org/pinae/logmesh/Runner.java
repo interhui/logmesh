@@ -31,7 +31,7 @@ public class Runner {
 			e.printStackTrace();
 		}
 
-		MessageServer server = new MessageServer(path + serverFile);
+		MessageServer server = new MessageServer(path, serverFile);
 		server.start();
 
 	}

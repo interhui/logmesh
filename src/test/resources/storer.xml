@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+	
+	<processor>
+		<name>FileStorerProcessor</name>
+		<enable>false</enable>
+		<class>org.pinae.logmesh.output.storer.FileStorerProcessorTest</class>
+		<parameters>
+			<!--文件名例子: /var/log/logmesh/message-2015-10-12-23-57.log -->
+			<!--文件存储路径-->
+			<parameter key="path" value="/var/log/logmesh/"/>
+			<!--文件名标题-->
+			<parameter key="title" value="message"/>
+			<!--文件名格式-->
+			<parameter key="pattern" value="yyyy-MM-dd-HH-mm"/>
+			<!--文件名扩展名-->
+			<parameter key="ext" value="log"/>
+			<!--文件存储编码-->
+			<parameter key="encoding" value="utf-8"/>
+			<!--文件存储周期 (ms)-->
+			<parameter key="cycle" value="3000"/>
+		</parameters>
+	</processor>
+	<processor>
+		<name>DBStorerProcessor</name>
+		<enable>false</enable>
+		<class>org.pinae.logmesh.output.storer.DBStorerProcessorTest</class>
+		<parameters>
+			<!--JDBC驱动类-->
+			<parameter key="driver" value="com.mysql.jdbc.Driver"/>
+			<!--数据库URL路径-->
+			<parameter key="url" value="jdbc:mysql://localhost:3306/test"/>
+			<!--数据库用户名-->
+			<parameter key="username" value="test"/>
+			<!--数据库密码-->
+			<parameter key="password" value="test"/>
+			<!--数据库SQL语句-->
+			<parameter key="sql" value="insert into EVENT_:date(time, ip, message) values (':time', ':ip', ':message')"/>
+			<!--数据库存储周期-->
+			<parameter key="cycle" value="3000"/>
+		</parameters>
+	</processor>
+	
+</server>

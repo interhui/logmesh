@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<route>
+	<rule>
+		<name>RULE_ROOT</name>
+		<filter>
+			<startup>1</startup>
+			<name>IPFilter</name>
+			<enable>false</enable>
+			<class>org.pinae.logmesh.component.filter.IPFilter</class>
+			<parameters>
+				<parameter key="file" value="filter/ip_filter.xml"/>
+				<parameter key="pass" value="true"/>
+			</parameters>
+		</filter>
+		<filter>
+			<startup>2</startup>
+			<name>KeywordFilter</name>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.component.filter.KeywordFilter</class>
+			<parameters>
+				<parameter key="file" value="filter/keyword_filter.xml"/>
+				<parameter key="pass" value="true"/>
+			</parameters>
+		</filter>
+	</rule>
+</route>

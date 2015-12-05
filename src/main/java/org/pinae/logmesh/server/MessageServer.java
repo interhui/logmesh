@@ -22,8 +22,11 @@ import org.pinae.logmesh.receiver.TCPReceiver;
 import org.pinae.logmesh.receiver.UDPReceiver;
 import org.pinae.logmesh.server.helper.MessageCounter;
 import org.pinae.logmesh.server.helper.OriginalMessageStore;
+import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.ndb.Statement;
+import org.pinae.ndb.common.MapHelper;
 
 /**
  * 日志采集服务器
@@ -35,15 +38,30 @@ public class MessageServer {
 
 	private static Logger logger = Logger.getLogger(MessageServer.class);
 
-	private String filename; // 配置文件
+	private String path; //配置文件路径
+	private String filename; // 配置文件名
 	private Map<String, Object> config; // 配置信息
+	
 	private boolean startup = false; // 是否启动完成
 
 	private Statement statement = new Statement();
 	
 	private MessageCounter messageCounter = null; 
 
+	public MessageServer() {
+		
+	}
+	
 	public MessageServer(String filename) {
+		this(null, filename);
+	}
+	
+	public MessageServer(String path, String filename) {
+		if (path == null) {
+			this.path = ClassLoaderUtils.getResourcePath("");
+		} else {
+			this.path = path;
+		}
 		this.filename = filename;
 	}
 
@@ -59,40 +77,53 @@ public class MessageServer {
 
 		// 载入配置
 		if (this.config == null) {
-			this.config = loadConfig(new File(this.filename));
+			if (StringUtils.isNotEmpty(this.filename)) {
+				File configFile = FileUtils.getFile(this.path, this.filename);
+				if (configFile != null) {
+					this.config = loadConfig(configFile);
+				} else {
+					logger.error(String.format("Load Server Config %s%s FAIL", this.path, this.filename));
+				}
+			} else {
+				logger.error("Server Config File is NULL");
+			}
 		}
-
-		// 载入消息队列
-		MessagePool.init(config);
-
-		// 启动消息展示器
-		startOutputor(config);
-
-		// 启动自定义处理器
-		startCustomProcessor(config);
-
-		// 启动消息路由器
-		startRouter(config);
-
-		// 启动归并器
-		startMerger(config);
-
-		// 启动过滤器
-		startFilter(config);
-
-		// 启动消息计数器
-		startMessageCounter(config);
-
-		// 启动原始消息存储器
-		startOriginaMessageStorer(config);
-
-		// 启动接收器
-		startReceiver(config);
-
-		this.startup = true;
-
-		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start Logmesh in %d ms", startupTime));
+		
+		if (this.config != null) {
+			// 载入消息队列
+			MessagePool.init(config);
+	
+			// 启动消息展示器
+			startOutputor(config);
+	
+			// 启动自定义处理器
+			startCustomProcessor(config);
+	
+			// 启动消息路由器
+			startRouter(config);
+	
+			// 启动归并器
+			startMerger(config);
+	
+			// 启动过滤器
+			startFilter(config);
+	
+			// 启动消息计数器
+			startMessageCounter(config);
+	
+			// 启动原始消息存储器
+			startOriginaMessageStorer(config);
+	
+			// 启动接收器
+			startReceiver(config);
+	
+			this.startup = true;
+	
+			long startupTime = System.currentTimeMillis() - startTime;
+			logger.info(String.format("Start Logmesh in %d ms", startupTime));
+		} else {
+			logger.error("Server Configurtion is NULL and Start Logmesh FAIL");
+		}
 	}
 
 	/**
@@ -116,6 +147,15 @@ public class MessageServer {
 
 		long startupTime = System.currentTimeMillis() - startTime;
 		logger.info(String.format("Load Server Config Finished in %d ms", startupTime));
+		
+		List<String> importFilenameList = (List<String>)statement.execute(serverConfig, "select:import->file");
+		for (String importFilename : importFilenameList) {
+			File importFile = FileUtils.getFile(this.path, importFilename);
+			if (importFile != null) {
+				Map<String, Object> importConfig = loadConfig(importFile);
+				MapHelper.join(serverConfig, importConfig);
+			}
+		}
 
 		return serverConfig;
 	}
@@ -169,7 +209,7 @@ public class MessageServer {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(String.format("Start Receiver Fail: exception=%s", e.getMessage()));
+					logger.error(String.format("Start Receiver Errork: exception=%s", e.getMessage()));
 				}
 			}
 

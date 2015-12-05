@@ -17,6 +17,7 @@ import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.ndb.Statement;
 
@@ -51,7 +52,10 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 	private void loadConfig(String path, String filename) {
 
 		try {
-			this.routerConfig = (Map<String, Object>) Xml.toMap(new File(path + filename), "UTF8");
+			File configFile = FileUtils.getFile(path, filename);
+			if (configFile != null) {
+				this.routerConfig = (Map<String, Object>) Xml.toMap(configFile, "UTF8");
+			}
 		} catch (Exception e) {
 			logger.error(String.format("Router Load Exception: exception=%s", e.getMessage()));
 		} 

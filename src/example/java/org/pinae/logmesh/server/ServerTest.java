@@ -9,7 +9,7 @@ public class ServerTest {
 	public static void main(String[] args) throws InterruptedException {
 
 		String path = ClassLoaderUtils.getResourcePath("");
-		MessageServer server = new MessageServer(path + "server.xml");
+		MessageServer server = new MessageServer(path, "server.xml");
 		// 启动日志采集
 		server.start();
 

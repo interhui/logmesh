@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server>
 
+	<import file="storer.xml"/>
+
 	<!--自定义日志队列配置-->
 	<queue>
 		<!--文件存储队列-->
