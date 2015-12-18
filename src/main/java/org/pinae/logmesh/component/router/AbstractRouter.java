@@ -43,64 +43,76 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 	public void init() {
 		String path = ClassLoaderUtils.getResourcePath("");
-		String routerFile = getStringValue("file", "router.xml");
+		String routerFilename = getStringValue("file", "router.xml");
 
-		loadConfig(path, routerFile);
+		File routerFile = FileUtils.getFile(path, routerFilename);
+		if (routerFile != null) {
+			loadConfig(routerFile);
+		} else {
+			logger.error(String.format("Router Load Exception: exception=File doesn't extis, file=%s/%s", path, routerFilename));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadConfig(String path, String filename) {
+	private void loadConfig(File routerFile) {
 
 		try {
-			File configFile = FileUtils.getFile(path, filename);
-			if (configFile != null) {
-				this.routerConfig = (Map<String, Object>) Xml.toMap(configFile, "UTF8");
-			}
+			if (routerFile != null) {
+				this.routerConfig = (Map<String, Object>) Xml.toMap(routerFile, "UTF8");
+				
+				if (this.routerConfig != null && this.routerConfig.containsKey("import")) {
+					List<String> importFilenameList = (List<String>) statement.execute(this.routerConfig, "select:import->file");
+					for (String importFilename : importFilenameList) {
+						if (StringUtils.isNotEmpty(importFilename)) {
+							File importFile = FileUtils.getFile(routerFile.getParent(), importFilename);
+							if (importFile != null) {
+								loadConfig(importFile);
+							} else {
+								logger.error(String.format("Router Load Exception: exception=File doesn't extis, source=%s, import=%s/%s", 
+										routerFile.getPath(), routerFile.getAbsolutePath(), importFilename));
+							}
+							
+						}
+					}
+				}
+
+				if (this.routerConfig != null && this.routerConfig.containsKey("rule")) {
+					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) statement.execute(this.routerConfig,
+							"select:rule");
+					for (Map<String, Object> ruleConfig : ruleConfigList) {
+
+						String name = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig
+								.toString();
+
+						this.routerRuleMap.put(name, (Map<String, Object>) statement.execute(ruleConfig, "one:condition"));
+
+						List<MessageFilter> filterList = new ArrayList<MessageFilter>();
+						List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
+						List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
+
+						String extend = ruleConfig.containsKey("extend") ? ruleConfig.get("extend").toString() : null;
+
+						if (extend != null) {
+							filterList.addAll(this.filterMap.get(extend));
+							processorList.addAll(this.processorMap.get(extend));
+							outputorList.addAll(this.outputorMap.get(extend));
+						}
+
+						filterList.addAll(FilterProcessor.load(ruleConfig));
+						processorList.addAll(CustomProcessor.load(ruleConfig));
+						outputorList.addAll(OutputorProcessor.load(ruleConfig));
+
+						this.filterMap.put(name, filterList);
+						this.processorMap.put(name, processorList);
+						this.outputorMap.put(name, outputorList);
+					}
+				}
+			} 
 		} catch (Exception e) {
 			logger.error(String.format("Router Load Exception: exception=%s", e.getMessage()));
 		} 
 
-		if (this.routerConfig != null && this.routerConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(this.routerConfig, "select:import->file");
-			for (String file : importList) {
-				if (StringUtils.isNotEmpty(file)) {
-					loadConfig(path, file);
-				}
-			}
-		}
 
-		if (this.routerConfig != null && this.routerConfig.containsKey("rule")) {
-			List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) statement.execute(this.routerConfig,
-					"select:rule");
-			for (Map<String, Object> ruleConfig : ruleConfigList) {
-
-				String name = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig
-						.toString();
-
-				this.routerRuleMap.put(name, (Map<String, Object>) statement.execute(ruleConfig, "one:condition"));
-
-				List<MessageFilter> filterList = new ArrayList<MessageFilter>();
-				List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
-				List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
-
-				String extend = ruleConfig.containsKey("extend") ? ruleConfig.get("extend").toString() : null;
-
-				if (extend != null) {
-					filterList.addAll(this.filterMap.get(extend));
-					processorList.addAll(this.processorMap.get(extend));
-					outputorList.addAll(this.outputorMap.get(extend));
-				}
-
-				filterList.addAll(FilterProcessor.load(ruleConfig));
-				processorList.addAll(CustomProcessor.load(ruleConfig));
-				outputorList.addAll(OutputorProcessor.load(ruleConfig));
-
-				this.filterMap.put(name, filterList);
-				this.processorMap.put(name, processorList);
-				this.outputorMap.put(name, outputorList);
-
-			}
-		}
 	}
 
 	/**
@@ -120,27 +132,33 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 			// 执行消息过滤器
 			List<MessageFilter> filters = this.filterMap.get(rule);
-			for (MessageFilter filter : filters) {
-				message = filter.filter(message);
-
-				if (message == null) {
-					break;
+			if (filters != null) {
+				for (MessageFilter filter : filters) {
+					message = filter.filter(message);
+	
+					if (message == null) {
+						break;
+					}
 				}
 			}
 
 			if (message != null) {
 				// 执行自定义处理器
 				List<MessageProcessor> processors = this.processorMap.get(rule);
-				for (MessageProcessor processor : processors) {
-					processor.porcess(message);
+				if (processors != null) {
+					for (MessageProcessor processor : processors) {
+						processor.porcess(message);
+					}
 				}
 			}
 			
 			if (message != null) {
 				// 执行消息转发器
 				List<MessageOutputor> outputors = this.outputorMap.get(rule);
-				for (MessageOutputor outputor : outputors) {
-					outputor.showMessage(message);
+				if (outputors != null) {
+					for (MessageOutputor outputor : outputors) {
+						outputor.showMessage(message);
+					}
 				}
 			}
 		}

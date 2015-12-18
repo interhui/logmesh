@@ -26,7 +26,7 @@ import org.pinae.logmesh.processor.ProcessorFactory;
 public class SolrStorer implements Storer {
 	private static Logger logger = Logger.getLogger(FileStorer.class);
 
-	private String solrURL = "http://127.0.0.1:8983/solr/collection1"; // Solr地址
+	private String solrURL = "http://127.0.0.1:8983/solr/logmesh"; // Solr地址
 	private long cycle; // 存储周期
 
 	private SolrPoster solrPoster = new SolrPoster(); // Solr存储线程

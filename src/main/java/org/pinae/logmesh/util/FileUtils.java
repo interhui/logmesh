@@ -9,7 +9,7 @@ public class FileUtils {
 		if (file.exists() && file.isFile()) {
 			return file;
 		}
-		file = new File(path + filename);
+		file = new File(path + File.separator + filename);
 		if (file.exists() && file.isFile()) {
 			return file;
 		}

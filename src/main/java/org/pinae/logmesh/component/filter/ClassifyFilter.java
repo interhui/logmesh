@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.filter;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,8 +11,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.ndb.Statement;
 
@@ -23,6 +26,7 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class ClassifyFilter extends AbstractFilter {
+	private static Logger logger = Logger.getLogger(ClassifyFilter.class);
 
 	private Statement statement = new Statement();
 
@@ -41,27 +45,38 @@ public class ClassifyFilter extends AbstractFilter {
 	public void init() {
 		if (hasParameter("file")) {
 			String path = ClassLoaderUtils.getResourcePath("");
-			String classifyFile = getStringValue("file", "filter/classify_filter.xml");
-			if (StringUtils.isNoneEmpty(classifyFile)) {
-				load(path, classifyFile);
+			String filterFilename = getStringValue("file", "filter/classify_filter.xml");
+			if (StringUtils.isNoneEmpty(filterFilename)) {
+				File filterFile = FileUtils.getFile(path, filterFilename);
+				if (filterFile != null) {
+					load(filterFile);
+				} else {
+					logger.error(String.format("ClassifyFilter Load Exception: exception=File doesn't extis, file=%s/%s", path, filterFilename));
+				}
 			}
 		} else if (hasParameter("filter")) {
 			Object filter = getValue("filter");
 			if (filter != null && filter instanceof Map) {
-				this.classifyMap = (Map<String, Map<String, String>>)filter;
+				this.classifyMap = (Map<String, Map<String, String>>) filter;
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void load(String path, String filename) {
-		Map<String, Object> filterConfig = loadConfig(path, filename);
+	private void load(File filterFile) {
+		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(filterConfig, "select:import->file");
-			for (String file : importList) {
-				if (StringUtils.isNotEmpty(file)) {
-					load(path, file);
+			List<String> importFilenameList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			for (String importFilename : importFilenameList) {
+				if (StringUtils.isNotEmpty(importFilename)) {
+					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
+					if (importFile != null) {
+						loadConfig(importFile);
+					} else {
+						logger.error(String.format("ClassifyFilter Load Exception: exception=File doesn't extis, source=%s, import=%s/%s",
+								filterFile.getPath(), filterFile.getAbsolutePath(), importFilename));
+					}
 				}
 			}
 		}
