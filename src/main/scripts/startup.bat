@@ -1,5 +1,7 @@
 @echo off
 
+rem Logmesh Startup Script for Windows
+
 if not "%JRE_HOME%" == "" goto gotJreHome
 if not "%JAVA_HOME%" == "" goto gotJavaHome
 echo Neither the JAVA_HOME nor the JRE_HOME environment variable is defined
