@@ -59,12 +59,12 @@ public class TCPReceiver extends NettyReceiver {
 		bootstrap.releaseExternalResources();
 		isStop = true;
 
-		logger.info("Netty TCP Receiver STOP");
+		logger.info("TCP Receiver STOP");
 	}
 
 	@Override
 	public String getName() {
-		return "Netty TCP Receiver AT" + Integer.toString(port);
+		return "TCP Receiver AT " + Integer.toString(port);
 	}
 
 	private class TCPMessageHandler extends SimpleChannelHandler {

@@ -15,6 +15,7 @@ import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.message.MessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * Solr存储
@@ -31,7 +32,7 @@ public class SolrStorer implements Storer {
 
 	private SolrPoster solrPoster = new SolrPoster(); // Solr存储线程
 
-	private Map<String, Object> config;
+	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
 
 	public SolrStorer(Map<String, Object> config) {
@@ -39,7 +40,9 @@ public class SolrStorer implements Storer {
 	}
 
 	public SolrStorer(Map<String, Object> config, MessageQueue messageQueue) {
-		this.config = config;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
+		}
 		this.messageQueue = messageQueue;
 	}
 
@@ -48,7 +51,7 @@ public class SolrStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.solrURL = config.containsKey("url") ? (String)config.get("url") : "http://127.0.0.1:8983/solr";
+		this.solrURL = this.config.getString("url", "http://127.0.0.1:8983/solr");
 
 		if (messageQueue != null) {
 			synchronized (messageQueue) {
@@ -103,7 +106,6 @@ public class SolrStorer implements Storer {
 						while (!messageQueue.isEmpty()) {
 							Message message = messageQueue.poll();
 							SolrInputDocument doc = handleMessage(message);
-							System.out.println(doc);
 							if (doc != null) {
 								docList.add(doc);
 
@@ -141,7 +143,6 @@ public class SolrStorer implements Storer {
 
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
-
 			logger.info("Solr Store STOP");
 		}
 

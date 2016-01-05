@@ -3,16 +3,17 @@ package org.pinae.logmesh.receiver.custom;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.receiver.Receiver;
 
 public class TextMessageLoader extends Receiver {
+	private static Logger logger = Logger.getLogger(TextMessageLoader.class);
 
 	private String path;
 	private long cycle;
@@ -22,12 +23,8 @@ public class TextMessageLoader extends Receiver {
 	public void init(Map<String, Object> config) {
 		super.init(config);
 
-		this.path = getParameter("path");
-		try {
-			this.cycle = Integer.parseInt(getParameter("cycle"));
-		} catch (NumberFormatException e) {
-			this.cycle = 30 * 1000;
-		}
+		this.path = super.config.getString("path", "");
+		this.cycle = super.config.getLong("cycle", 30 * 1000);
 	}
 
 	@Override
@@ -67,7 +64,6 @@ public class TextMessageLoader extends Receiver {
 		List<String> messageFileList = getMessageFileList(this.path);
 		try {
 			for (String messageFile : messageFileList) {
-				System.out.println(messageFile);
 				BufferedReader br = new BufferedReader(new FileReader(messageFile));
 				String message = "";
 				while ((message = br.readLine()) != null) {
@@ -81,10 +77,8 @@ public class TextMessageLoader extends Receiver {
 				br.close();
 			}
 			Thread.sleep(cycle);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("Handle Message Error : " + e.getMessage());
 		}
 
 		this.isStop = true;

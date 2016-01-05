@@ -57,12 +57,12 @@ public class UDPReceiver extends NettyReceiver {
 		bootstrap.releaseExternalResources();
 		isStop = true;
 
-		logger.info("Netty UDP Receiver STOP");
+		logger.info("UDP Receiver STOP");
 	}
 
 	@Override
 	public String getName() {
-		return "Netty UDP Receiver AT" + Integer.toString(port);
+		return "UDP Receiver AT " + Integer.toString(port);
 	}
 
 	private class UDPMessageHandler extends SimpleChannelHandler {

@@ -1,6 +1,5 @@
 package org.pinae.logmesh.receiver;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +7,7 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorPool;
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * 消息接收器
@@ -17,14 +17,14 @@ import org.pinae.logmesh.processor.ProcessorPool;
  */
 public abstract class Receiver implements Processor {
 
-	private Map<String, Object> configMap = new HashMap<String, Object>();
-
 	private boolean isRecordOriginal = false; // 是否记录原始日志
 
 	protected boolean isStop = false; // 接收器是否停止
 
 	private String owner; // 日志所有者
 
+	protected ConfigMap<String, Object> config;
+	
 	public Receiver() {
 
 	}
@@ -37,22 +37,11 @@ public abstract class Receiver implements Processor {
 	}
 
 	public void init(Map<String, Object> config) {
-
-		this.configMap = config;
-
-		try {
-			this.isRecordOriginal = Boolean.parseBoolean(getParameter("original"));
-		} catch (Exception e) {
-			this.isRecordOriginal = false;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
 		}
-	}
 
-	public String getParameter(String key) {
-		if (configMap.containsKey(key)) {
-			return (String) configMap.get(key);
-		} else {
-			return null;
-		}
+		this.isRecordOriginal = this.config.getBoolean("original", false);
 	}
 
 	protected void addMessage(Message message) {

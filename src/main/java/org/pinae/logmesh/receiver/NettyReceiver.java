@@ -25,14 +25,10 @@ public abstract class NettyReceiver extends Receiver {
 
 	public void init(Map<String, Object> config) {
 		super.init(config);
-		try {
-			this.port = Integer.parseInt(getParameter("port"));
-		} catch (Exception e) {
-			this.port = 514;
-		}
-		this.msgType = getParameter("message");
-		this.codec = getParameter("codec");
-
+		
+		this.port = super.config.getInt("port", 514);
+		this.msgType = super.config.getString("message", "String");
+		this.codec = super.config.getString("codec", "utf8");
 	}
 
 	/**
@@ -61,10 +57,7 @@ public abstract class NettyReceiver extends Receiver {
 			}
 
 			Object msg = message;
-			if (this.msgType != null && this.msgType.equalsIgnoreCase("string")) {
-				if (this.codec == null) {
-					this.codec = "utf8";
-				}
+			if ("String".equalsIgnoreCase(this.msgType)) {
 				try {
 					msg = new String(message, this.codec);
 				} catch (UnsupportedEncodingException e) {
@@ -79,7 +72,6 @@ public abstract class NettyReceiver extends Receiver {
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
 		
 	}
 }

@@ -29,13 +29,13 @@
 			<!--JDBC驱动类-->
 			<parameter key="driver" value="com.mysql.jdbc.Driver"/>
 			<!--数据库URL路径-->
-			<parameter key="url" value="jdbc:mysql://localhost:3306/test"/>
+			<parameter key="url" value="jdbc:mysql://localhost:3306/log"/>
 			<!--数据库用户名-->
-			<parameter key="username" value="test"/>
+			<parameter key="username" value="log"/>
 			<!--数据库密码-->
-			<parameter key="password" value="test"/>
+			<parameter key="password" value="log"/>
 			<!--数据库SQL语句-->
-			<parameter key="sql" value="insert into EVENT_:date(time, ip, message) values (':time', ':ip', ':message')"/>
+			<parameter key="sql" value="insert into EVENT(time, ip, message) values (':time', ':ip', ':message')"/>
 			<!--数据库存储周期-->
 			<parameter key="cycle" value="3000"/>
 		</parameters>

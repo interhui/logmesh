@@ -160,4 +160,11 @@ public class ConfigMapTest {
 		assertTrue(configMap.equalsIgnoreCase("String", "STRING"));
 		assertTrue(configMap.equalsIgnoreCase("Boolean", "TRUE"));
 	}
+	
+	@Test
+	public void testNullMap() {
+		ConfigMap<String, Object> configMap = new ConfigMap<String, Object>(null);
+		assertEquals(configMap.getString("null", "NULL"), "NULL");
+		assertEquals(configMap.getString("Null", "NULL"), "NULL");
+	}
 }

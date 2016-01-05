@@ -27,22 +27,27 @@ import org.pinae.logmesh.message.Message;
 public class JMSReceiver extends Receiver {
 	private static Logger logger = Logger.getLogger(JMSReceiver.class.getName());
 
-	private Session session;// 一个发送或接收消息的线程
-	private Destination destination;// 消息的目的地;
+	/* 一个发送或接收消息的线程 */
+	private Session session; 
+	/* 消息的目的地 */
+	private Destination destination;
 
-	private String brokerURL = "tcp://localhost:61616";
-	private String type = "queue";
-	private String target = "default";
+	/* JMS 服务器地址 */
+	private String brokerURL;
+	/* 消息目标类型: queue 队列, topic 主题 */
+	private String type;
+	/* 消息目标 */
+	private String target;
 
 	public void init(Map<String, Object> config) {
 		super.init(config);
 
-		String username = config.containsKey("username") ? (String)config.get("username") : ActiveMQConnection.DEFAULT_USER;
-		String password = config.containsKey("password") ? (String)config.get("password") : ActiveMQConnection.DEFAULT_PASSWORD;
+		String username = super.config.getString("username", ActiveMQConnection.DEFAULT_USER);
+		String password = super.config.getString("password", ActiveMQConnection.DEFAULT_PASSWORD);
 
-		this.brokerURL = config.containsKey("url") ? (String)config.get("url") : "tcp://localhost:61616";
-		this.type = config.containsKey("type") ? (String)config.get("type") : "queue";
-		this.target = config.containsKey("target") ? (String)config.get("target") : "default";
+		this.brokerURL = super.config.getString("url", "tcp://localhost:61616");
+		this.type = super.config.getString("type", "queue");
+		this.target = super.config.getString("target", "default");
 
 		try {
 			ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(username, password, brokerURL);
@@ -58,7 +63,8 @@ public class JMSReceiver extends Receiver {
 			}
 
 		} catch (JMSException e) {
-
+			logger.error(String.format("JMS Receiver Started Error : url=%s, type=%s, target=%s, exception=%s", 
+					brokerURL, type, target, e.getMessage()));
 		}
 
 	}
@@ -70,7 +76,7 @@ public class JMSReceiver extends Receiver {
 			MessageConsumer messageConsumer = session.createConsumer(destination);
 			messageConsumer.setMessageListener(new JMSMessageHandler());
 		} catch (JMSException e) {
-
+			logger.error(String.format("JMS Receiver Started Error: %s", e.getMessage()));
 		}
 
 	}
@@ -87,7 +93,7 @@ public class JMSReceiver extends Receiver {
 
 	@Override
 	public String getName() {
-		return String.format("JMS Receiver AT %s - %s's %s", brokerURL, type, target);
+		return String.format("JMS Receiver AT %s - %s %s", brokerURL, type, target);
 	}
 
 	private class JMSMessageHandler implements MessageListener {
@@ -98,7 +104,6 @@ public class JMSReceiver extends Receiver {
 				if (message instanceof TextMessage) {
 
 					String msgContent = ((TextMessage) message).getText();
-					System.out.println(msgContent);
 
 					message.acknowledge();
 					if (msgContent != null && msgContent.matches("\\d+.\\d+.\\d+.\\d+:.*")) {
@@ -116,7 +121,7 @@ public class JMSReceiver extends Receiver {
 					}
 				}
 			} catch (JMSException e) {
-
+				logger.error(String.format("JMS Message Handle Error: %s ", e.getMessage()));
 			}
 
 		}

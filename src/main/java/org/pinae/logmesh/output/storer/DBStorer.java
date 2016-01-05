@@ -14,6 +14,7 @@ import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.message.MessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * 数据库存储
@@ -36,7 +37,7 @@ public class DBStorer implements Storer {
 
 	private DBSaver dbSaver = null; // 数据库存储线程
 
-	private Map<String, Object> config;
+	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
 
 	public DBStorer(Map<String, Object> config) {
@@ -44,7 +45,9 @@ public class DBStorer implements Storer {
 	}
 
 	public DBStorer(Map<String, Object> config, MessageQueue messageQueue) {
-		this.config = config;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
+		}
 		this.messageQueue = messageQueue;
 	}
 
@@ -53,23 +56,14 @@ public class DBStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.driver = config.containsKey("driver") ? (String)config.get("driver") : "";
-		this.url = config.containsKey("url") ? (String)config.get("url") : "";
-		this.username = config.containsKey("username") ? (String)config.get("username") : "";
-		this.password = config.containsKey("password") ? (String)config.get("password") : "";
-		this.sqlTemplate = config.containsKey("sql") ? (String)config.get("sql") : "";
+		this.driver = this.config.getString("driver", "com.mysql.jdbc.Driver");
+		this.url = this.config.getString("url", "cjdbc:mysql://localhost:3306/log");
+		this.username = this.config.getString("username", "log");
+		this.password = this.config.getString("password", "log");
+		this.sqlTemplate = this.config.getString("sql", "insert into EVENT(time, ip, message) values (':time', ':ip', ':message')");
 
-		try {
-			this.cycle = config.containsKey("cycle") ? Long.parseLong((String)config.get("cycle")) : 5000;
-		} catch (NumberFormatException e) {
-			this.cycle = 5000;
-		}
-
-		try {
-			this.batchSize = config.containsKey("batchSize") ? Integer.parseInt((String)config.get("batchSize")) : 20;
-		} catch (NumberFormatException e) {
-			this.batchSize = 20;
-		}
+		this.cycle = this.config.getLong("cycle", 5000);
+		this.batchSize = this.config.getInt("batchSize", 100);
 
 		if (messageQueue != null) {
 			this.dbSaver = new DBSaver();

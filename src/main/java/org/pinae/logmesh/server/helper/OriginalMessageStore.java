@@ -17,6 +17,7 @@ import org.pinae.logmesh.output.storer.FileStorer;
 import org.pinae.logmesh.output.storer.StorerException;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
+import org.pinae.logmesh.util.ConfigMap;
 import org.pinae.logmesh.util.ZipUtils;
 
 /**
@@ -28,28 +29,42 @@ import org.pinae.logmesh.util.ZipUtils;
 public class OriginalMessageStore {
 	private static Logger logger = Logger.getLogger(OriginalMessageStore.class);
 
-	private boolean enable = true; // 是否激活原始消息存储
+	/* 是否激活原始消息存储 */
+	private boolean enable = true;
 
-	private String msgPattern; // 记录的原始消息样式
-	private boolean isRecordTime = false; // 原始消息样式中包含日期信息
-	private boolean isRecordIP = false; // 原始消息样式中包含IP信息
-	private boolean isRecordMsg = false; // 原始消息样式中包含消息体
+	/* 记录的原始消息样式 */
+	private String msgPattern;
+	
+	/* 原始消息样式中包含日期信息 */
+	private boolean isRecordTime = false;
+	
+	/* 原始消息样式中包含IP信息 */
+	private boolean isRecordIP = false;
+	
+	/* 原始消息样式中包含消息体 */
+	private boolean isRecordMsg = false;
 
-	private boolean isZip = false; // 是否进行消息压缩
+	/* 是否进行消息压缩 */
+	private boolean isZip = false;
 
-	private String path; // 压缩路径
-	private String dirPattern; // 压缩文件夹命名模式
+	/* 压缩路径 */
+	private String zipDirPath;
+	
+	/* 压缩文件夹命名模式 */
+	private String zipDirPattern;
 
-	private Map<String, Object> config;
+	private ConfigMap<String, Object> config;
 
 	public OriginalMessageStore(Map<String, Object> config) {
-		this.config = config;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
+		}
 	}
 
 	public void start() {
 
 		if (config != null) {
-			this.msgPattern = config.containsKey("msgPattern") ? (String)config.get("msgPattern") : "$time : $ip : $message";
+			this.msgPattern = config.getString("msgPattern", "$time : $ip : $message");
 
 			if (msgPattern.contains("$time")) {
 				this.isRecordTime = true;
@@ -63,12 +78,12 @@ public class OriginalMessageStore {
 				this.isRecordMsg = true;
 			}
 
-			if (config.containsKey("zip") && ((String)config.get("zip")).equalsIgnoreCase("true")) {
+			if (config.equalsIgnoreCase("zip", "true")) {
 				this.isZip = true;
 			}
 
-			this.path = config.containsKey("path") ? (String)config.get("path") : "";
-			this.dirPattern = config.containsKey("dir") ? (String)config.get("dir") : "yyyy-MM-dd";
+			this.zipDirPath = config.getString("path", "");
+			this.zipDirPattern = config.getString("dir", "yyyy-MM-dd");
 		}
 
 		MessageStore messageStore = new MessageStore(config, MessagePool.ORIGINAL_QUEUE);
@@ -91,10 +106,10 @@ public class OriginalMessageStore {
 
 		private String encoding = "utf8";
 
-		public MessageStore(Map<String, Object> config, MessageQueue messageQueue) {
+		public MessageStore(ConfigMap<String, Object> config, MessageQueue messageQueue) {
 			super(config, messageQueue);
 			if (config != null) {
-				this.encoding = config.containsKey("encoding") ? (String) config.get("encoding") : "utf8";
+				this.encoding = config.getString("encoding", "utf8");
 			}
 		}
 
@@ -142,7 +157,7 @@ public class OriginalMessageStore {
 		private String lastZipDir = "";
 
 		public MessageCompress() {
-			dirFormat = new SimpleDateFormat(dirPattern);
+			dirFormat = new SimpleDateFormat(zipDirPattern);
 		}
 
 		private boolean isStop = false; // 处理线程是否停止
@@ -157,7 +172,7 @@ public class OriginalMessageStore {
 				} else {
 					if (!zipDir.equals(lastZipDir) && isZip) {
 						try {
-							String zipFile = String.format("%s\\%s", path, lastZipDir);
+							String zipFile = String.format("%s\\%s", zipDirPath, lastZipDir);
 							// 压缩目录
 							ZipUtils.zip(zipFile + ".zip", zipFile);
 							// 删除目录

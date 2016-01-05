@@ -16,6 +16,7 @@ import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.message.MessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * 文件存储
@@ -38,7 +39,7 @@ public class FileStorer implements Storer {
 
 	private FileCreator fileCreator = new FileCreator(); // 文件存储线程
 
-	private Map<String, Object> config;
+	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
 
 	public FileStorer(Map<String, Object> config) {
@@ -46,7 +47,9 @@ public class FileStorer implements Storer {
 	}
 
 	public FileStorer(Map<String, Object> config, MessageQueue messageQueue) {
-		this.config = config;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
+		}
 		this.messageQueue = messageQueue;
 	}
 
@@ -55,17 +58,15 @@ public class FileStorer implements Storer {
 	}
 
 	public void connect(String name) throws StorerException {
-		this.path = config.containsKey("path") ? (String)config.get("path") : "";
-		this.fileTitle = config.containsKey("title") ? (String)config.get("title") : "message";
-		this.fileExt = config.containsKey("ext") ? (String)config.get("ext") : "log";
-		this.encoding = config.containsKey("encoding") ? (String)config.get("encoding") : "utf8";
+		this.path = this.config.getString("path", "");
+		this.fileTitle = this.config.getString("title", "message");
+		this.fileExt = this.config.getString("ext", "log");
+		this.encoding = this.config.getString("encoding", "utf8");
 
-		if (config.containsKey("dir")) {
-			this.dirPattern = new SimpleDateFormat((String)config.get("dir"));
-		}
-		this.filePattern = new SimpleDateFormat(config.containsKey("pattern") ? (String)config.get("pattern") : "yyyy-MM-dd-hh");
+		this.dirPattern = new SimpleDateFormat(this.config.getString("dir", "yyyy-MM-dd"));
+		this.filePattern = new SimpleDateFormat(this.config.getString("pattern", "yyyy-MM-dd-HH-mm"));
 
-		this.cycle = config.containsKey("cycle") ? Integer.parseInt((String)config.get("cycle")) : 5000;
+		this.cycle = this.config.getLong("cycle", 5000);
 
 		if (messageQueue != null) {
 			synchronized (messageQueue) {

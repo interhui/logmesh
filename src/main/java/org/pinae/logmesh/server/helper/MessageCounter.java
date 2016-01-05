@@ -15,6 +15,7 @@ import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * 消息计数器
@@ -38,12 +39,14 @@ public class MessageCounter implements Processor {
 	/* 是否停止计数器线程 */
 	private boolean isStop = false;
 	/* 消息计数器配置 */
-	private Map<String, Object> config;
+	private ConfigMap<String, Object> config;
 
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd hh:MM");
 
 	public MessageCounter(Map<String, Object> config) {
-		this.config = config;
+		if (config != null) {
+			this.config = new ConfigMap<String, Object>(config);
+		}
 	}
 
 	/**
