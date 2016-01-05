@@ -21,9 +21,12 @@ import org.jboss.netty.util.CharsetUtil;
  * 
  */
 public class TCPNIOSender implements Sender {
-	private String ip; // 发送目标地址
-	private int port = 514; // 发送目标端口
-	private int tryTime = 3; // 重试次数（每次间隔1s）
+	/* 发送目标地址 */
+	private String ip; // 
+	/* 发送目标端口 */
+	private int port = 514;
+	/* 重试次数（每次间隔1s） */
+	private int retryTime = 3;
 
 	private ChannelFuture future;
 	private ClientBootstrap bootstrap;
@@ -40,7 +43,7 @@ public class TCPNIOSender implements Sender {
 		this.ip = ip;
 		this.port = port;
 		this.handler = handler;
-		this.tryTime = tryTime;
+		this.retryTime = tryTime;
 	}
 
 	public void connect() throws SendException {
@@ -62,7 +65,7 @@ public class TCPNIOSender implements Sender {
 	}
 
 	public void send(Object message) throws SendException {
-		for (int i = 0; i < tryTime; i++) {
+		for (int i = 0; i < retryTime; i++) {
 			if (future != null && future.getChannel().isConnected()) {
 				future.getChannel().write(message);
 				break;
@@ -70,7 +73,7 @@ public class TCPNIOSender implements Sender {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					throw new SendException("Wait Fail");
+					throw new SendException(e);
 				}
 			}
 		}

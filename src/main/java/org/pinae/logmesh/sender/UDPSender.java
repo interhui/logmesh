@@ -17,9 +17,10 @@ import org.pinae.logmesh.util.ObjectUtils;
  * 
  */
 public class UDPSender implements Sender {
-
-	private String ip; // 发送目标地址
-	private int port = 514; // 发送目标端口
+	/* 发送目标地址 */
+	private String ip;
+	/* 发送目标端口 */
+	private int port = 514;
 
 	private DatagramSocket socket = null;
 	private InetAddress address = null;
@@ -62,12 +63,12 @@ public class UDPSender implements Sender {
 					data = ObjectUtils.getBytes(message);
 				}
 			}
-			if (socket == null) {
-				throw new SendException("No connect server");
+			if (this.socket == null) {
+				throw new SendException("Socket is NULL, No connect to any server");
 			}
 			if (data != null) {
 				DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-				socket.send(packet);
+				this.socket.send(packet);
 			}
 		} catch (IOException e) {
 			throw new SendException(e);
@@ -78,6 +79,6 @@ public class UDPSender implements Sender {
 	 * 关闭连接
 	 */
 	public void close() {
-		socket.close();
+		this.socket.close();
 	}
 }

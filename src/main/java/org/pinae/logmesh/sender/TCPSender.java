@@ -12,11 +12,12 @@ import org.pinae.logmesh.util.ObjectUtils;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class TCPSender implements Sender {
-	private String ip; // 发送目标地址
-	private int port = 514; // 发送目标端口
+	/* 发送目标地址 */
+	private String ip;
+	/* 发送目标端口 */
+	private int port = 514;
 
 	private Socket socket = null;
 	private DataOutputStream output = null;
@@ -34,8 +35,8 @@ public class TCPSender implements Sender {
 
 	public void connect() throws SendException {
 		try {
-			socket = new Socket(ip, port);// 根据服务器名和端口号建立Socket
-			output = new DataOutputStream(socket.getOutputStream());// 获得Socket的输出流
+			this.socket = new Socket(ip, port);// 根据服务器名和端口号建立Socket
+			this.output = new DataOutputStream(socket.getOutputStream());// 获得Socket的输出流
 		} catch (UnknownHostException e) {
 			throw new SendException(e);
 		} catch (IOException e) {
@@ -53,12 +54,12 @@ public class TCPSender implements Sender {
 					data = ObjectUtils.getBytes(message);
 				}
 			}
-			if (output == null) {
+			if (this.output == null) {
 				throw new SendException("No connect server");
 			}
 			if (data != null) {
-				output.write(data);
-				output.flush();
+				this.output.write(data);
+				this.output.flush();
 			}
 		} catch (IOException e) {
 			throw new SendException(e);
@@ -67,8 +68,8 @@ public class TCPSender implements Sender {
 
 	public void close() throws SendException {
 		try {
-			output.close();
-			socket.close();
+			this.output.close();
+			this.socket.close();
 		} catch (IOException e) {
 			throw new SendException(e);
 		}
