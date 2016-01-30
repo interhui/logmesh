@@ -13,9 +13,9 @@ public class ServerTest {
 		// 启动日志采集
 		server.start();
 
-		// 5秒后启动日志发送
-		TimeUnit.SECONDS.sleep(5);
-		new Thread(new MessageSenderExample(3, true), "MessageSender").start();
+		// 5秒后启动日志发送(UDP方式)
+		// TimeUnit.SECONDS.sleep(5);
+		// new Thread(new MessageSenderExample(3, true), "MessageSender").start();
 	}
 
 }

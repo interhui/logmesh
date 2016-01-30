@@ -34,7 +34,7 @@ public class MessageServerTest {
 			assertEquals(filterList.size(), 5);
 			
 			List<Map<String, Object>> receiverList = (List<Map<String, Object>>)config.get("receiver");
-			assertEquals(receiverList.size(), 4);
+			assertEquals(receiverList.size(), 5);
 			
 			List<Map<String, Object>> outputorList = (List<Map<String, Object>>)config.get("output");
 			assertEquals(outputorList.size(), 2);

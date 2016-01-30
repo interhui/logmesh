@@ -1,7 +1,8 @@
 package org.pinae.logmesh.processor;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import org.pinae.logmesh.util.ConfigMap;
 
 /**
  * 处理器信息
@@ -11,9 +12,11 @@ import java.util.Map;
  * 
  */
 public abstract class ProcessorInfo {
-	private String name; // 处理器名称
+	/* 处理器名称 */
+	private String name;
 
-	private Map<String, Object> parameters = new HashMap<String, Object>(); // 处理器参数
+	/* 处理器参数 */
+	private ConfigMap<String, Object> parameters = new ConfigMap<String, Object>();
 
 	public String getName() {
 		return name;
@@ -32,51 +35,23 @@ public abstract class ProcessorInfo {
 	}
 
 	public String getStringValue(String key, String defaultValue) {
-		String value = defaultValue;
-		if (parameters.containsKey(key)) {
-			value = (String)parameters.get(key);
-		}
-		return value;
+		return parameters.getString(key, defaultValue);
 	}
 	
 	public boolean getBooleanValue(String key, boolean defaultValue) {
-		boolean value = defaultValue;
-		if (hasParameter(key)) {
-			try {
-				value = Boolean.parseBoolean((String)getValue(key));
-			} catch (Exception e) {
-				value = defaultValue;
-			}
-		}
-		return value;
+		return parameters.getBoolean(key, defaultValue);
 	}
 	
 	public int getIntegerValue(String key, int defaultValue) {
-		int value = defaultValue;
-		if (hasParameter(key)) {
-			try {
-				value = Integer.parseInt((String)getValue(key));
-			} catch (Exception e) {
-				value = defaultValue;
-			}
-		}
-		return value;
+		return parameters.getInt(key, defaultValue);
 	}
 	
 	public long getLongValue(String key, long defaultValue) {
-		long value = defaultValue;
-		if (hasParameter(key)) {
-			try {
-				value = Long.parseLong((String)getValue(key));
-			} catch (Exception e) {
-				value = defaultValue;
-			}
-		}
-		return value;
+		return parameters.getLong(key, defaultValue);
 	}
 
 	public void setParameters(Map<String, Object> parameters) {
-		this.parameters = parameters;
+		this.parameters = new ConfigMap<String, Object>(parameters);
 	}
 
 	public Map<String, Object> getParameters() {

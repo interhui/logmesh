@@ -97,15 +97,15 @@ public class JMSReceiver extends Receiver {
 	}
 
 	private class JMSMessageHandler implements MessageListener {
-
+		
 		public void onMessage(javax.jms.Message message) {
-
+			
 			try {
+				
 				if (message instanceof TextMessage) {
 
 					String msgContent = ((TextMessage) message).getText();
 
-					message.acknowledge();
 					if (msgContent != null && msgContent.matches("\\d+.\\d+.\\d+.\\d+:.*")) {
 
 						int split = msgContent.indexOf(":");
@@ -113,12 +113,17 @@ public class JMSReceiver extends Receiver {
 						String text = msgContent.substring(split + 1);
 
 						addMessage(new Message(ip, text));
+					} else {
+						addMessage(new Message(message));
 					}
+					
+					message.acknowledge();
 				} else if (message instanceof ObjectMessage) {
 					Object msgContent = ((ObjectMessage) message).getObject();
 					if (msgContent != null && msgContent instanceof Message) {
 						addMessage((Message) msgContent);
 					}
+					message.acknowledge();
 				}
 			} catch (JMSException e) {
 				logger.error(String.format("JMS Message Handle Error: %s ", e.getMessage()));

@@ -120,6 +120,11 @@
 			<artifactId>commons-compress</artifactId>
 			<version>1.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.9.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<organization>

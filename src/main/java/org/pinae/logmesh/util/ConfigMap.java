@@ -2,6 +2,7 @@ package org.pinae.logmesh.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -76,7 +77,6 @@ public class ConfigMap<K, V> extends HashMap<K, V> {
 		}
 		return defaultValue;
 	}
-
 
 	public boolean isNotBlank(K key) {
 		V v = get(key);

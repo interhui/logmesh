@@ -33,13 +33,15 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 	protected Statement statement = new Statement();
 
-	private Map<String, Object> routerConfig; // 消息路由器配置
+	// 消息过滤器列表, (路由器名称, 消息过滤器)
+	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>(); 
+	// 消息处理器列表, (路由器名称, 消息处理器)
+	private Map<String, List<MessageProcessor>> processorMap = new HashMap<String, List<MessageProcessor>>(); 
+	 // 消息转发器列表, (路由器名称, 消息转发器)
+	private Map<String, List<MessageOutputor>> outputorMap = new HashMap<String, List<MessageOutputor>>();
 
-	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>(); // 消息过滤器列表
-	private Map<String, List<MessageProcessor>> processorMap = new HashMap<String, List<MessageProcessor>>(); // 消息处理器列表
-	private Map<String, List<MessageOutputor>> outputorMap = new HashMap<String, List<MessageOutputor>>(); // 消息转发器列表
-
-	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); // 消息路由条件
+	// 消息路由条件
+	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); 
 
 	public void init() {
 		String path = ClassLoaderUtils.getResourcePath("");
@@ -55,13 +57,13 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 	@SuppressWarnings("unchecked")
 	private void loadConfig(File routerFile) {
-
+		Map<String, Object> routerConfig = null;
 		try {
 			if (routerFile != null) {
-				this.routerConfig = (Map<String, Object>) Xml.toMap(routerFile, "UTF8");
+				routerConfig = (Map<String, Object>) Xml.toMap(routerFile, "UTF8");
 				
-				if (this.routerConfig != null && this.routerConfig.containsKey("import")) {
-					List<String> importFilenameList = (List<String>) statement.execute(this.routerConfig, "select:import->file");
+				if (routerConfig != null && routerConfig.containsKey("import")) {
+					List<String> importFilenameList = (List<String>) statement.execute(routerConfig, "select:import->file");
 					for (String importFilename : importFilenameList) {
 						if (StringUtils.isNotEmpty(importFilename)) {
 							File importFile = FileUtils.getFile(routerFile.getParent(), importFilename);
@@ -76,14 +78,14 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 					}
 				}
 
-				if (this.routerConfig != null && this.routerConfig.containsKey("rule")) {
-					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) statement.execute(this.routerConfig,
+				if (routerConfig != null && routerConfig.containsKey("rule")) {
+					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) statement.execute(routerConfig,
 							"select:rule");
 					for (Map<String, Object> ruleConfig : ruleConfigList) {
 
 						String name = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig
 								.toString();
-
+						
 						this.routerRuleMap.put(name, (Map<String, Object>) statement.execute(ruleConfig, "one:condition"));
 
 						List<MessageFilter> filterList = new ArrayList<MessageFilter>();
@@ -113,15 +115,6 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 		} 
 
 
-	}
-
-	/**
-	 * 获取消息路由器配置信息
-	 * 
-	 * @return 消息路由配置信息
-	 */
-	public Map<String, Object> getRouteConfig() {
-		return this.routerConfig;
 	}
 
 	public void porcess(Message message) {

@@ -17,6 +17,7 @@ import org.pinae.logmesh.processor.imp.MergerProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.processor.imp.RouterProcessor;
 import org.pinae.logmesh.receiver.JMSReceiver;
+import org.pinae.logmesh.receiver.KafkaReceiver;
 import org.pinae.logmesh.receiver.Receiver;
 import org.pinae.logmesh.receiver.TCPReceiver;
 import org.pinae.logmesh.receiver.UDPReceiver;
@@ -147,12 +148,13 @@ public class MessageServer {
 
 		long startupTime = System.currentTimeMillis() - startTime;
 		logger.info(String.format("Load Server Config Finished in %d ms", startupTime));
-		
+
 		List<String> importFilenameList = (List<String>)statement.execute(serverConfig, "select:import->file");
 		for (String importFilename : importFilenameList) {
 			File importFile = FileUtils.getFile(this.path, importFilename);
 			if (importFile != null) {
 				Map<String, Object> importConfig = loadConfig(importFile);
+				
 				MapHelper.join(serverConfig, importConfig);
 			}
 		}
@@ -182,6 +184,7 @@ public class MessageServer {
 			}
 			
 			if (receiverConfig.containsKey("type")) {
+				// 使用预置接收器
 				String type = (String) receiverConfig.get("type");
 
 				if (type.equalsIgnoreCase("TCP")) {
@@ -193,9 +196,13 @@ public class MessageServer {
 				} else if (type.equalsIgnoreCase("JMS")) {
 					receiver = new JMSReceiver();
 					name = "JMSReceiver";
+				} else if (type.equalsIgnoreCase("Kafka")) {
+					receiver = new KafkaReceiver();
+					name = "KafkaReceiver";
 				}
-
+			
 			} else if (receiverConfig.containsKey("kwClass")) {
+				// 使用自定义接收器
 				String className = (String) receiverConfig.get("kwClass");
 				name = receiverConfig.containsKey("name") ? (String) receiverConfig.get("name") : className;
 

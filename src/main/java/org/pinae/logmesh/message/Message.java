@@ -20,7 +20,7 @@ public class Message implements Cloneable {
 
 	public Message(Object message) {
 		this.message = message;
-		this.ip = "127.0.0.1";
+		this.ip = "0.0.0.0";
 	}
 
 	public Message(String ip, Object message) {

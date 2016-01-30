@@ -15,34 +15,48 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MatchUtils {
 	/**
-	 * 字符串匹配，如果规则字符串为空则判断条件忽略，但当规则不为空时日志字符串为空，则判断不匹配
+	 * 字符串匹配
+	 * 
+	 * @param rule 匹配规则, 支持正则表达式, 如果为空则判定字符串匹配
+	 * @param str 需要匹配的字符串
+	 * 
+	 * @return 字符串是否匹配
+	 * 
 	 **/
-	public static boolean matchString(String rule, String log) {
+	public static boolean matchString(String rule, String str) {
 		if (StringUtils.isBlank(rule)) {
 			return true;
 		}
-		if (StringUtils.isBlank(log)) {
+		if (StringUtils.isBlank(str)) {
 			return false;
 		}
 		if (rule.equals("*")) {
 			return true;
 		}
-		if (log.matches(rule)) {
+		if (str.matches(rule)) {
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * 匹配日志发生时间
+	 * 时间匹配
+	 * 
+	 * @param timeRange 时间区域包括绝对时间和相对时间
+	 * 					绝对时间: yyyy-mm-dd HH:MM:SS (开始时间) - yyyy-mm-dd HH:MM:SS (结束时间) 
+	 * 					相对时间: HH:MM:SS (开始时间) - HH:MM:SS (结束时间)
+	 * @param time 需要匹配的时间, 格式为: yyyy-mm-dd HH:MM:SS
+	 * 
+	 * @return 需要匹配的时间是否在时间区域内
+	 * 
 	 **/
-	public static boolean matchTime(String ruleTimeRange, String logTime) {
+	public static boolean matchTime(String timeRange, String time) {
 
-		if (StringUtils.isBlank(ruleTimeRange) || ruleTimeRange.trim().equals("*")) {
+		if (StringUtils.isBlank(timeRange) || timeRange.trim().equals("*")) {
 			return true;
 		}
 
-		if (StringUtils.isBlank(logTime)) {
+		if (StringUtils.isBlank(time)) {
 			return false;
 		}
 
@@ -58,19 +72,19 @@ public class MatchUtils {
 			Date endDate = new Date();
 			Date logDate = new Date();
 
-			if (ruleTimeRange.matches(absoluteTimeFormat)) {
+			if (timeRange.matches(absoluteTimeFormat)) {
 				Pattern pattern = Pattern.compile(absoluteTimeFormat);
-				java.util.regex.Matcher matcher = pattern.matcher(ruleTimeRange);
+				java.util.regex.Matcher matcher = pattern.matcher(timeRange);
 				if (matcher.find() && matcher.groupCount() == 4) {
 					startTime = String.format("%s %s", matcher.group(1), matcher.group(2));
 					endTime = String.format("%s %s", matcher.group(3), matcher.group(4));
 				}
-			} else if (ruleTimeRange.matches(periodTimeFormat)) {
+			} else if (timeRange.matches(periodTimeFormat)) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				String date = dateFormat.format(now);
 
 				Pattern pattern = Pattern.compile(periodTimeFormat);
-				java.util.regex.Matcher matcher = pattern.matcher(ruleTimeRange);
+				java.util.regex.Matcher matcher = pattern.matcher(timeRange);
 
 				if (matcher.find() && matcher.groupCount() == 2) {
 					startTime = String.format("%s %s", date, matcher.group(1));
@@ -80,9 +94,9 @@ public class MatchUtils {
 
 			// 验证格式字符串并进行转换
 			String timeFormat = "\\d+-\\d+-\\d+\\s+\\d+:\\d+:\\d+";
-			if (logTime.matches(timeFormat) && startTime.matches(timeFormat) && endTime.matches(timeFormat)) {
+			if (time.matches(timeFormat) && startTime.matches(timeFormat) && endTime.matches(timeFormat)) {
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				logDate = dateFormat.parse(logTime);
+				logDate = dateFormat.parse(time);
 				startDate = dateFormat.parse(startTime);
 				endDate = dateFormat.parse(endTime);
 			}
