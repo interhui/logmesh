@@ -13,7 +13,7 @@ public class Message implements Cloneable {
 	/* 消息所属者 */
 	private String owner = "system";
 	/* 消息类型 */
-	private String type = "unknow";
+	private String type = "unknown";
 	/* 消息内容 */
 	private Object message;
 	/* 消息发送地址 */

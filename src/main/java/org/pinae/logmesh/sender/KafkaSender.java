@@ -53,7 +53,7 @@ public class KafkaSender implements Sender {
 				msgContent = message.toString();
 			} else if (message instanceof Message) {
 				Message msg = (Message)message;
-				msgKey = StringUtils.join(new String[]{Long.toString(msg.getTimestamp()), msg.getIP(), msg.getOwner(), msg.getType()}, ",");
+				msgKey = StringUtils.join(new String[]{Long.toString(msg.getTimestamp()), msg.getIP(), msg.getOwner()}, "-");
 				msgContent = msg.getMessage().toString();
 			}
 			

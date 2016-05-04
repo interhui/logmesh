@@ -141,7 +141,7 @@ public class ClassifyFilter extends AbstractFilter {
 		}
 
 		if (msgTypeList.size() == 0) {
-			msgTypeList.add("unknow");
+			msgTypeList.add("unknown");
 		}
 		message.setType(StringUtils.join(msgTypeList, "|"));
 
