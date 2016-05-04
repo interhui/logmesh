@@ -6,9 +6,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.pinae.logmesh.component.ComponentPool;
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.custom.SystemOutProcessor;
 import org.pinae.logmesh.component.filter.IPFilter;
-import org.pinae.logmesh.output.WindowOutputor;
+import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 
 public class ServerTestWithReloadRules {
@@ -24,7 +25,7 @@ public class ServerTestWithReloadRules {
 		builder.addReceiver(MessageServerBuilder.RECEIVER_UDP, true, false, "utf-8", null);
 		builder.addProcessor("PrintProcessor", true, SystemOutProcessor.class, null);
 		
-		builder.addOutputor("Windows", true, WindowOutputor.class, null);
+		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 
 		MessageServer server = new MessageServer(builder.build());
 		// 启动日志采集
@@ -36,7 +37,7 @@ public class ServerTestWithReloadRules {
 		
 		// 20秒后重新载入IPFilter规则
 		TimeUnit.SECONDS.sleep(20);
-		List<Object> filters = ComponentPool.getComponent(IPFilter.class);
+		List<MessageComponent> filters = ComponentPool.getComponent(IPFilter.class);
 		ipFilterParameters.put("filter", "192.168.0.14|192.168.0.15|127.0.0.1");
 		for (Object filter : filters) {
 			if (filter instanceof IPFilter) {

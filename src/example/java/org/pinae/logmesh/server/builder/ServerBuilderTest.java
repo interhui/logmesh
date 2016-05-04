@@ -98,6 +98,6 @@ public class ServerBuilderTest {
 		parameters.put("rows", "100");
 		parameters.put("background", "#000000");
 		parameters.put("foreground", "#00ff00");
-		builder.addOutputor("WindowsTest", true, org.pinae.logmesh.output.WindowOutputor.class, parameters);
+		builder.addOutputor("WindowsTest", true, org.pinae.logmesh.output.ScreenOutputor.class, parameters);
 	}
 }

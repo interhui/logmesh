@@ -23,7 +23,6 @@ import org.pinae.logmesh.util.ConfigMap;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class FileStorer implements Storer {
 	private static Logger logger = Logger.getLogger(FileStorer.class);
@@ -73,7 +72,7 @@ public class FileStorer implements Storer {
 				this.fileCreator.start(name);
 			}
 		} else {
-			logger.error("FileStore's MessageQueue is NULL");
+			logger.error("FileStorer's MessageQueue is null");
 		}
 	}
 
@@ -149,7 +148,7 @@ public class FileStorer implements Storer {
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
 
-			logger.info("File Store STOP");
+			logger.info("FileStorer STOP");
 		}
 
 		public void start(String name) {

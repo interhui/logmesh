@@ -10,9 +10,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.receiver.Receiver;
+import org.pinae.logmesh.receiver.AbstractReceiver;
 
-public class TextMessageLoader extends Receiver {
+public class TextMessageLoader extends AbstractReceiver {
 	private static Logger logger = Logger.getLogger(TextMessageLoader.class);
 
 	private String path;
@@ -27,12 +27,10 @@ public class TextMessageLoader extends Receiver {
 		this.cycle = super.config.getLong("cycle", 30 * 1000);
 	}
 
-	@Override
 	public boolean isRunning() {
 		return !this.isStop;
 	}
 
-	@Override
 	public String getName() {
 		return "Text Message Loader";
 	}
@@ -85,7 +83,6 @@ public class TextMessageLoader extends Receiver {
 
 	}
 
-	@Override
 	public void stop() {
 
 	}

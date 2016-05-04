@@ -12,17 +12,18 @@ import org.pinae.ndb.Statement;
 
 /**
  * 
- * 消息展示器线程
+ * 消息输出器线程
  * 
  * @author Huiyugeng
- * 
  * 
  */
 public class OutputorProcessor implements Processor {
 
-	private Map<String, Object> config; // 消息展示器配置信息
+	/* 消息输出器配置信息 */
+	private Map<String, Object> config;
 
-	private List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>(); // 消息展示器列表
+	/* 消息输出组件列表 */
+	private List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
 
 	public OutputorProcessor(Map<String, Object> config) {
 		this.config = config;
@@ -37,9 +38,9 @@ public class OutputorProcessor implements Processor {
 	}
 
 	/**
-	 * 载入消息过滤器列表
+	 * 载入消息输出器列表
 	 * 
-	 * @return 消息过滤器列表
+	 * @return 消息输出器列表
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<MessageOutputor> load(Map<String, Object> config) {

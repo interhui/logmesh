@@ -18,7 +18,8 @@ import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.ndb.Statement;
 
 /**
- * 处理器线程管理
+ * 
+ * 自定义处理器线程
  * 
  * @author Huiyugeng
  * 
@@ -26,11 +27,14 @@ import org.pinae.ndb.Statement;
 public class CustomProcessor implements Processor {
 	private static Logger logger = Logger.getLogger(CustomProcessor.class);
 
-	private Map<String, Object> config; // 消息处理器配置信息
+	/* 消息处理器配置信息 */
+	private Map<String, Object> config;
 
-	private List<MessageProcessor> processorList = new ArrayList<MessageProcessor>(); // 消息处理器列表
+	/* 自定义消息处理组件列表 */
+	private List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
 
-	private boolean isStop = false; // 处理线程是否停止
+	/* 自定义消息处理线程是否停止 */
+	private boolean isStop = false;
 
 	public CustomProcessor(Map<String, Object> config) {
 		this.config = config;

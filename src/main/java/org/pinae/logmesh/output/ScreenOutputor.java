@@ -23,7 +23,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  * @author Huiyugeng
  * 
  */
-public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
+public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 
 	private JFrame frame;
 	private JTextArea txtConsole;
@@ -35,7 +35,7 @@ public class WindowOutputor extends ProcessorInfo implements MessageOutputor {
 	private int bufferRows = maxRows / 10; // 缓冲行数
 	private int bufferRowsCount = 0; // 缓冲行数计数器
 
-	public WindowOutputor() {
+	public ScreenOutputor() {
 
 	}
 

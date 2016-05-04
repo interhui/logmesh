@@ -15,7 +15,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  * @author huiyugeng
  * 
  */
-public class StoreOutputor extends ProcessorInfo implements MessageOutputor {
+public class StorerOutputor extends ProcessorInfo implements MessageOutputor {
 
 	private static Logger logger = Logger.getLogger(ForwardOutputor.class);
 

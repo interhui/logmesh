@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.pinae.logmesh.receiver.JMSReceiver;
-import org.pinae.logmesh.receiver.Receiver;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.event.JMSReceiver;
 
 public class JMSReceiverTest {
 	
 	public static void main(String args[]) {
-		Receiver receiver = new JMSReceiver();
+		AbstractReceiver receiver = new JMSReceiver();
 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("username", ActiveMQConnectionFactory.DEFAULT_USER);

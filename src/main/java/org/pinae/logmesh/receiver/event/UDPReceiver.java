@@ -1,4 +1,4 @@
-package org.pinae.logmesh.receiver;
+package org.pinae.logmesh.receiver.event;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -52,15 +52,12 @@ public class UDPReceiver extends NettyReceiver {
 		bootstrap.bind(new InetSocketAddress(port));
 	}
 
-	@Override
 	public void stop() {
 		bootstrap.releaseExternalResources();
 		isStop = true;
-
 		logger.info("UDP Receiver STOP");
 	}
 
-	@Override
 	public String getName() {
 		return "UDP Receiver AT " + Integer.toString(port);
 	}
@@ -76,8 +73,4 @@ public class UDPReceiver extends NettyReceiver {
 		}
 	}
 
-	@Override
-	public void run() {
-
-	}
 }

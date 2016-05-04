@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.filter;
 
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -9,7 +10,7 @@ import org.pinae.logmesh.message.Message;
  * 
  * 
  */
-public interface MessageFilter {
+public interface MessageFilter extends MessageComponent {
 
 	/**
 	 * 初始化过滤器

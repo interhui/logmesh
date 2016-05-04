@@ -1,4 +1,4 @@
-package org.pinae.logmesh.receiver;
+package org.pinae.logmesh.receiver.event;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -7,21 +7,25 @@ import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.MessageEvent;
 import org.pinae.logmesh.message.Message;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.EventDrivenReceiver;
 
 /**
  * 基于Netty的消息接收器
  * 
  * @author Huiyugeng
  * 
- * 
  */
-public abstract class NettyReceiver extends Receiver {
+public abstract class NettyReceiver extends AbstractReceiver implements EventDrivenReceiver {
 
 	protected ServerBootstrap bootstrap = null;
 
-	protected int port = 514; // 默认端口
-	private String msgType; // 消息内容类型
-	private String codec; // 消息内容编码
+	/* 消息采集端口 */
+	protected int port = 514;
+	/* 消息内容类型 */
+	private String msgType;
+	/* 消息内容编码 */
+	private String codec;
 
 	public void init(Map<String, Object> config) {
 		super.init(config);
@@ -35,6 +39,7 @@ public abstract class NettyReceiver extends Receiver {
 	 * 构造消息内容
 	 * 
 	 * @param event Netty消息事件
+	 * 
 	 * @return 消息内容
 	 */
 	protected Message getMessage(MessageEvent event) {
@@ -63,7 +68,6 @@ public abstract class NettyReceiver extends Receiver {
 				} catch (UnsupportedEncodingException e) {
 
 				}
-
 			}
 			return new Message(ip, msg);
 		}
@@ -71,7 +75,4 @@ public abstract class NettyReceiver extends Receiver {
 		return null;
 	}
 
-	public void run() {
-		
-	}
 }

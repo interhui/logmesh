@@ -8,10 +8,9 @@ import org.pinae.logmesh.message.Message;
  * @author Huiyugeng
  * 
  */
-public interface MessageProcessor {
+public interface MessageProcessor extends MessageComponent {
 	/**
 	 * 初始化消息处理器
-	 * 
 	 */
 	public void init();
 

@@ -14,16 +14,27 @@ import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.ndb.Statement;
 
+/**
+ * 
+ * 消息路由器线程
+ * 
+ * @author Huiyugeng
+ *
+ */
 public class RouterProcessor implements Processor {
 
 	private static Logger logger = Logger.getLogger(RouterProcessor.class);
 
-	private Map<String, Object> config; // 消息路由器配置信息
-	private List<MessageRouter> routerList = new ArrayList<MessageRouter>(); // 消息路由器列表
+	/* 消息路由器配置信息 */
+	private Map<String, Object> config;
+	
+	/* 消息路由处理组件列表  */
+	private List<MessageRouter> routerList = new ArrayList<MessageRouter>();
 
 	private Statement statement = new Statement();
 
-	private boolean isStop = false; // 是否停止路由线程
+	/* 消息路由线程是否停止 */
+	private boolean isStop = false; // 
 
 	public RouterProcessor(Map<String, Object> config) {
 		this.config = config;

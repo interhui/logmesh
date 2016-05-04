@@ -1,7 +1,7 @@
 package org.pinae.logmesh.output.appender;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.output.WindowOutputor;
+import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 
@@ -12,7 +12,7 @@ public class Log4jConsoleTest {
 	public static void main(String[] args) {
 		
 		MessageServerBuilder builder = new MessageServerBuilder();
-		builder.addOutputor("Windows", true, WindowOutputor.class, null);
+		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 		
 		MessageServer server = new MessageServer(builder.build());
 		server.start();

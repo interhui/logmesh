@@ -23,7 +23,7 @@
 	
 	<!--UDP采集器配置-->
 	<receiver>
-		<!--采集器类型 UDP/TCP/JMS-->
+		<!-- 采集器类型 udp/tcp/jms/kafka -->
 		<type>udp</type>
 		<!--是否启动采集器:true/false-->
 		<enable>false</enable>
@@ -33,8 +33,10 @@
 		<codec>gb2312</codec>
 		<!--TCP/UDP采集器配置参数-->
 		<parameters>
-			<parameter key="port" value="514"/> <!--TCP/UDP监听端口-->
-			<parameter key="message" value="string"/> <!--消息格式：string-->
+			<!--TCP/UDP监听端口-->
+			<parameter key="port" value="514"/>
+			<!--消息格式：string-->
+			<parameter key="message" value="string"/>
 		</parameters>
 	</receiver>
 	<!--TCP采集器配置-->
@@ -75,22 +77,20 @@
 		<enable>true</enable>
 		<original>true</original>
 		<codec>utf8</codec>
-		<!--Kafka采集器配置参数-->
+		<!--Kafka采集器配置参数
+			参考:http://kafka.apache.org/documentation.html#newconsumerconfigs
+		-->
 		<parameters>
-			<!--Kafka地址-->
-			<parameter key="url" value="192.168.228.129:9092"/>
-			<!--客户端编号-->
-			<parameter key="clientID" value="default-client"/>
-			<!--消息组编号-->
-			<parameter key="groupID" value="default-group"/>
 			<!--消息主题-->
 			<parameter key="topic" value="default"/>
+			<!--Kafka地址-->
+			<parameter key="bootstrap.servers" value="192.168.228.129:9092"/>
+			<!--消息组编号-->
+			<parameter key="ggroup.id" value="default-group"/>
 			<!--自动提交延迟-->
-			<parameter key="autoCommit" value="true"/>
+			<parameter key="enable.auto.commit" value="true"/>
 			<!--自动提交延迟-->
-			<parameter key="autoCommitInterval" value="1000"/>
-			<!--会话超时-->
-			<parameter key="timeout" value="60000"/>
+			<parameter key="auto.commit.interval.ms" value="1000"/>
 		</parameters>
 	</receiver>
 	
@@ -250,11 +250,11 @@
 	<!--窗口消息输出器配置-->
 	<output>
 		<!--输出器名称-->
-		<name>window</name>
+		<name>screen</name>
 		<!--是否启动输出器:true/false-->
 		<enable>true</enable>
 		<!--输出器类:窗口输出器-->
-		<class>org.pinae.logmesh.output.WindowOutputor</class>
+		<class>org.pinae.logmesh.output.ScreenOutputor</class>
 		<parameters>
 			<!--窗口标题-->
 			<parameter key="title" value="logmesh --- Free Log Collector"/>

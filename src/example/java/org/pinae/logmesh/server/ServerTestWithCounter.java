@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.custom.SystemOutProcessor;
-import org.pinae.logmesh.output.WindowOutputor;
+import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 import org.pinae.logmesh.server.helper.MessageCounter;
 
@@ -30,7 +30,7 @@ public class ServerTestWithCounter {
 		counterParameters.put("counter", "time|owner|ip|type");
 		builder.setCounter(counterParameters);
 		
-		builder.addOutputor("Windows", true, WindowOutputor.class, null);
+		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 		
 		// 启动日志采集
 		MessageServer server = new MessageServer(builder.build());

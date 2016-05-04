@@ -18,21 +18,25 @@ import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.ndb.Statement;
 
 /**
- * 消息过滤器线程管理
+ * 
+ * 消息过滤器线程
  * 
  * @author Huiyugeng
- * 
  * 
  */
 public class FilterProcessor implements Processor {
 	private static Logger logger = Logger.getLogger(FilterProcessor.class);
 
-	private Map<String, Object> config; // 消息过滤器配置信息
+	/* 消息过滤器配置信息 */
+	private Map<String, Object> config;
 
-	private List<MessageFilter> filterList = new ArrayList<MessageFilter>(); // 消息过滤器列表
+	/* 消息过滤组件列表 */
+	private List<MessageFilter> filterList = new ArrayList<MessageFilter>();
 
-	private boolean merger = false; // 是否启用归并日志
-	private boolean isStop = false; // 是否停止过滤线程
+	/* 是否启用归并日志 */
+	private boolean merger = false;
+	/* 消息过滤线程是否停止 */
+	private boolean isStop = false;
 
 	public FilterProcessor(Map<String, Object> config) {
 		this.config = config;
@@ -102,13 +106,15 @@ public class FilterProcessor implements Processor {
 			merger = true;
 		}
 
-		this.isStop = false; // 设置线程启动标记
-		ProcessorFactory.getThread(name, this).start(); // 启动消息过滤线程
+		// 设置线程启动标记
+		this.isStop = false;
+		// 启动消息过滤线程
+		ProcessorFactory.getThread(name, this).start();
 	}
 
 	public void stop() {
-		this.isStop = true; // 设置线程停止标记
-
+		// 设置线程停止标记
+		this.isStop = true;
 		logger.info("Message Filter STOP");
 	}
 

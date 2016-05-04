@@ -1,4 +1,4 @@
-package org.pinae.logmesh.receiver;
+package org.pinae.logmesh.receiver.event;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -54,7 +54,6 @@ public class TCPReceiver extends NettyReceiver {
 
 	}
 
-	@Override
 	public void stop() {
 		bootstrap.releaseExternalResources();
 		isStop = true;
@@ -62,7 +61,6 @@ public class TCPReceiver extends NettyReceiver {
 		logger.info("TCP Receiver STOP");
 	}
 
-	@Override
 	public String getName() {
 		return "TCP Receiver AT " + Integer.toString(port);
 	}
@@ -77,11 +75,6 @@ public class TCPReceiver extends NettyReceiver {
 		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
 			logger.info(e.getCause().getMessage());
 		}
-	}
-
-	@Override
-	public void run() {
-
 	}
 
 }

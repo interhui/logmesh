@@ -1,4 +1,4 @@
-package org.pinae.logmesh.receiver;
+package org.pinae.logmesh.receiver.event;
 
 import java.util.Map;
 
@@ -16,15 +16,16 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.EventDrivenReceiver;
 
 /**
  * JMS消息接收器
  * 
  * @author Huiyugeng
  * 
- * 
  */
-public class JMSReceiver extends Receiver {
+public class JMSReceiver extends AbstractReceiver implements EventDrivenReceiver {
 	private static Logger logger = Logger.getLogger(JMSReceiver.class.getName());
 
 	/* 一个发送或接收消息的线程 */
@@ -81,17 +82,11 @@ public class JMSReceiver extends Receiver {
 
 	}
 
-	public void run() {
-
-	}
-
-	@Override
 	public void stop() {
 		isStop = true;
 		logger.info("JMS Receiver STOP");
 	}
 
-	@Override
 	public String getName() {
 		return String.format("JMS Receiver AT %s - %s %s", brokerURL, type, target);
 	}

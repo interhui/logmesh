@@ -3,6 +3,7 @@ package org.pinae.logmesh.component.merger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -11,7 +12,7 @@ import org.pinae.logmesh.message.Message;
  * @author huiyugeng
  *
  */
-public interface MessageMerger {
+public interface MessageMerger extends MessageComponent {
 	
 	public static Map<String, Message> MERGER_POOL = new ConcurrentHashMap<String, Message>(); // 日志归并池
 	

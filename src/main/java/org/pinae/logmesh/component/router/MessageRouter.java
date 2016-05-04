@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.router;
 
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -8,7 +9,7 @@ import org.pinae.logmesh.message.Message;
  * @author Huiyugeng
  *
  */
-public interface MessageRouter {
+public interface MessageRouter extends MessageComponent {
 
 	/**
 	 * 初始化路由器

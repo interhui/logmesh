@@ -11,22 +11,25 @@ import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 
 /**
+ * 
  * 消息归并器线程
  * 
  * @author Huiyugeng
- * 
  * 
  */
 public class MergerProcessor implements Processor {
 	private static Logger logger = Logger.getLogger(MergerProcessor.class);
 
-	private Map<String, Object> config; // 消息归并器配置信息
+	/* 消息归并器配置信息 */
+	private Map<String, Object> config; 
 
-	private int cycle = 5000; // 归并周期
+	/* 归并周期 */
+	private int cycle = 5000; 
+	/* 消息归并线程是否停止 */
+	private boolean isStop;
 
-	private boolean isStop; // 处理线程是否停止
-
-	private MessageMerger merger; // 消息归并类
+	/* 消息归并组件 */
+	private MessageMerger merger; 
 	
 	public MergerProcessor(Map<String, Object> config) {
 		this.config = config;
@@ -57,9 +60,7 @@ public class MergerProcessor implements Processor {
 
 	public void stop() {
 		this.isStop = true;
-
 		logger.info("Message Merger STOP");
-
 	}
 
 	public void run() {
@@ -83,6 +84,9 @@ public class MergerProcessor implements Processor {
 					for (Message message : messages) {
 						MessagePool.ROUTE_QUEUE.offer(message);
 						MessagePool.PROCESSOR_QUEUE.offer(message);
+						
+						// 将消息填入统计队列中
+						MessagePool.COUNTER_QUEUE.offer(message); 
 					}
 					
 					// 清理日志归并池

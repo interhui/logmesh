@@ -24,6 +24,9 @@ public class ProcessorPool {
 	 */
 	public static List<MessageOutputor> OUTPUTOR_LIST = Collections.synchronizedList(new ArrayList<MessageOutputor>());
 
+	/**
+	 * 处理器: 过滤器/合并器/消息路由/自定义处理器
+	 */
 	private static Map<String, Processor> PROCESSOR_MAP = new HashMap<String, Processor>();
 
 	/**
@@ -90,7 +93,7 @@ public class ProcessorPool {
 	}
 
 	/**
-	 * 获取指定名称的处理器，如果处理器名称后含有*则获取此一类处理器
+	 * 获取指定名称的处理器, 如果处理器名称后含有*则获取此一类处理器
 	 * 
 	 * @param name 处理器名称
 	 * 

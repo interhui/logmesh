@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.pinae.logmesh.message.Message;
@@ -22,10 +23,9 @@ import org.pinae.logmesh.util.ConfigMap;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class SolrStorer implements Storer {
-	private static Logger logger = Logger.getLogger(FileStorer.class);
+	private static Logger logger = Logger.getLogger(SolrStorer.class);
 
 	private String solrURL = "http://127.0.0.1:8983/solr/logmesh"; // Solr地址
 	private long cycle; // 存储周期
@@ -108,15 +108,14 @@ public class SolrStorer implements Storer {
 							SolrInputDocument doc = handleMessage(message);
 							if (doc != null) {
 								docList.add(doc);
-
 							}
 						}
 
-						HttpSolrServer httpSolrServer = null;
+						SolrClient solr = null;
 						try {
-							httpSolrServer = new HttpSolrServer(solrURL);
-							httpSolrServer.add(docList);
-							UpdateResponse response = httpSolrServer.commit();// 将日志发送到Solr
+							solr = new HttpSolrClient(solrURL);
+							solr.add(docList);
+							UpdateResponse response = solr.commit();// 将日志发送到Solr
 							if (response.getStatus() == 0) {
 								logger.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));
@@ -129,8 +128,13 @@ public class SolrStorer implements Storer {
 						} catch (IOException e) {
 							logger.error(String.format("post Exception: exception=%s", e.getMessage()));
 						} finally {
-							if (httpSolrServer != null)
-								httpSolrServer.shutdown();
+							if (solr != null) {
+								try {
+									solr.close();
+								} catch (IOException e) {
+									
+								}
+							}
 						}
 					}
 

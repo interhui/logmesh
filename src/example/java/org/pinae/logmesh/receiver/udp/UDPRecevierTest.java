@@ -3,8 +3,8 @@ package org.pinae.logmesh.receiver.udp;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pinae.logmesh.receiver.Receiver;
-import org.pinae.logmesh.receiver.UDPReceiver;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.event.UDPReceiver;
 
 /**
  * UDP消息接收器测试类
@@ -18,7 +18,7 @@ public class UDPRecevierTest {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("por", "514");
 
-		Receiver receiver = new UDPReceiver();
+		AbstractReceiver receiver = new UDPReceiver();
 		receiver.init(parameters);
 		receiver.start("UDPReceiver");
 	}

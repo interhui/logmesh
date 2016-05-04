@@ -16,13 +16,13 @@ import org.pinae.logmesh.processor.imp.FilterProcessor;
 import org.pinae.logmesh.processor.imp.MergerProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.processor.imp.RouterProcessor;
-import org.pinae.logmesh.receiver.JMSReceiver;
-import org.pinae.logmesh.receiver.KafkaReceiver;
-import org.pinae.logmesh.receiver.Receiver;
-import org.pinae.logmesh.receiver.TCPReceiver;
-import org.pinae.logmesh.receiver.UDPReceiver;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.event.JMSReceiver;
+import org.pinae.logmesh.receiver.event.KafkaReceiver;
+import org.pinae.logmesh.receiver.event.TCPReceiver;
+import org.pinae.logmesh.receiver.event.UDPReceiver;
 import org.pinae.logmesh.server.helper.MessageCounter;
-import org.pinae.logmesh.server.helper.OriginalMessageStore;
+import org.pinae.logmesh.server.helper.OriginalMessageStorer;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
@@ -173,7 +173,7 @@ public class MessageServer {
 		List<Map<String, Object>> receiverConfigList = (List<Map<String, Object>>) statement.execute(config, "select:receiver->enable:true");
 
 		for (Map<String, Object> receiverConfig : receiverConfigList) {
-			Receiver receiver = null;
+			AbstractReceiver receiver = null;
 
 			String name = "";
 
@@ -211,8 +211,8 @@ public class MessageServer {
 						Class<?> clazz = Class.forName(className);
 						Object object = clazz.newInstance();
 
-						if (object != null && object instanceof Receiver) {
-							receiver = (Receiver) object;
+						if (object != null && object instanceof AbstractReceiver) {
+							receiver = (AbstractReceiver) object;
 						}
 					}
 				} catch (Exception e) {
@@ -243,7 +243,7 @@ public class MessageServer {
 
 		Map<String, Object> originalConfig = (Map<String, Object>) statement.execute(config, "one:original");
 		
-		OriginalMessageStore messageStorer = new OriginalMessageStore(ProcessorFactory.createParameter(originalConfig));
+		OriginalMessageStorer messageStorer = new OriginalMessageStorer(ProcessorFactory.createParameter(originalConfig));
 		messageStorer.start();
 
 		long startupTime = System.currentTimeMillis() - startTime;

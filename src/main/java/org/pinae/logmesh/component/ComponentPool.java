@@ -23,7 +23,7 @@ import org.pinae.logmesh.component.router.MessageRouter;
 public class ComponentPool {
 	private static Logger logger = Logger.getLogger(ComponentPool.class);
 
-	private static Map<String, Object> COMPONENT_POOL = new ConcurrentHashMap<String, Object>();
+	private static Map<String, MessageComponent> COMPONENT_POOL = new ConcurrentHashMap<String, MessageComponent>();
 	private static AtomicInteger COMPONENT_COUNT = new AtomicInteger();
 
 	/**
@@ -32,7 +32,7 @@ public class ComponentPool {
 	 * 
 	 * @param component 组件信息
 	 */
-	public static void registeComponent(Object component) {
+	public static void registeComponent(MessageComponent component) {
 
 		if (component instanceof MessageFilter || component instanceof MessageProcessor
 				|| component instanceof MessageRouter) {
@@ -53,8 +53,8 @@ public class ComponentPool {
 	 * 
 	 * @return 组件类列表
 	 */
-	public static List<Object> getComponent(Class<?> clazz) {
-		List<Object> componentList = new ArrayList<Object>();
+	public static List<MessageComponent> getComponent(Class<?> clazz) {
+		List<MessageComponent> componentList = new ArrayList<MessageComponent>();
 		String name = clazz.getSimpleName();
 
 		synchronized (COMPONENT_POOL) {
@@ -62,7 +62,7 @@ public class ComponentPool {
 
 			for (String componentName : componentNameSet) {
 				if (componentName.startsWith(name)) {
-					Object component = COMPONENT_POOL.get(componentName);
+					MessageComponent component = COMPONENT_POOL.get(componentName);
 					componentList.add(component);
 				}
 			}
@@ -78,8 +78,8 @@ public class ComponentPool {
 	public synchronized static void reloadComponent(Class<?> clazz) {
 		logger.info(String.format("Reload %s Component", clazz.getSimpleName()));
 
-		List<Object> componentList = getComponent(clazz);
-		for (Object component : componentList) {
+		List<MessageComponent> componentList = getComponent(clazz);
+		for (MessageComponent component : componentList) {
 			if (component instanceof MessageFilter) {
 				((MessageFilter) component).init();
 			} else if (component instanceof MessageProcessor) {

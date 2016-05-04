@@ -26,8 +26,8 @@ import org.pinae.logmesh.util.ZipUtils;
  * @author Huiyugeng
  * 
  */
-public class OriginalMessageStore {
-	private static Logger logger = Logger.getLogger(OriginalMessageStore.class);
+public class OriginalMessageStorer {
+	private static Logger logger = Logger.getLogger(OriginalMessageStorer.class);
 
 	/* 是否激活原始消息存储 */
 	private boolean enable = true;
@@ -55,7 +55,7 @@ public class OriginalMessageStore {
 
 	private ConfigMap<String, Object> config;
 
-	public OriginalMessageStore(Map<String, Object> config) {
+	public OriginalMessageStorer(Map<String, Object> config) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}

@@ -1,14 +1,17 @@
 package org.pinae.logmesh.output.storer;
 
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.context.Context;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.message.MessageQueue;
@@ -25,20 +28,30 @@ import org.pinae.logmesh.util.ConfigMap;
  */
 public class DBStorer implements Storer {
 	private static Logger logger = Logger.getLogger(FileStorer.class);
-
-	private String driver; // JDBC驱动
-	private String url; // 数据库连接地址
-	private String username; // 数据库登录用户名
-	private String password; // 数据库登录密码
-
-	private String sqlTemplate; // SQL脚本
-	private int batchSize = 20; // 批量存储数量
-	private long cycle; // 存储周期
-
-	private DBSaver dbSaver = null; // 数据库存储线程
+	
+	// JDBC驱动
+	private String driver; 
+	// 数据库连接地址
+	private String url;
+	// 数据库登录用户名
+	private String username;
+	// 数据库登录密码
+	private String password;
+	
+	// SQL脚本
+	private String sqlTemplate; 
+	// 批量存储数量
+	private int batchSize = 100; 
+	// 存储周期
+	private long cycle; 
+	
+	// 数据库存储线程
+	private DBLogSaver dbLogSaver = null; 
 
 	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
+	
+	private String defaultSql = "insert into event(time, ip, owner, message) values ('${time}', '${ip}', '${owner}', '${message}')";
 
 	public DBStorer(Map<String, Object> config) {
 		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "DB_STORE_QUEUE"));
@@ -52,7 +65,7 @@ public class DBStorer implements Storer {
 	}
 
 	public void connect() throws StorerException {
-		connect("DBSaver");
+		connect("DBStorer");
 	}
 
 	public void connect(String name) throws StorerException {
@@ -60,16 +73,17 @@ public class DBStorer implements Storer {
 		this.url = this.config.getString("url", "cjdbc:mysql://localhost:3306/log");
 		this.username = this.config.getString("username", "log");
 		this.password = this.config.getString("password", "log");
-		this.sqlTemplate = this.config.getString("sql", "insert into EVENT(time, ip, message) values (':time', ':ip', ':message')");
+
+		this.sqlTemplate = this.config.getString("sql", defaultSql);
 
 		this.cycle = this.config.getLong("cycle", 5000);
 		this.batchSize = this.config.getInt("batchSize", 100);
 
 		if (messageQueue != null) {
-			this.dbSaver = new DBSaver();
-			this.dbSaver.start(name);
+			this.dbLogSaver = new DBLogSaver();
+			this.dbLogSaver.start(name);
 		} else {
-			logger.error("DBStore's MessageQueue is NULL");
+			logger.error("DBStorer's MessageQueue is null");
 		}
 	}
 
@@ -78,7 +92,7 @@ public class DBStorer implements Storer {
 	}
 
 	public void close() throws StorerException {
-		this.dbSaver.stop();
+		this.dbLogSaver.stop();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,16 +103,17 @@ public class DBStorer implements Storer {
 				if (msgContent instanceof String) {
 					return (String) msgContent;
 				} else if (msgContent instanceof Map) {
-					Map<Object, Object> paramMap = (Map<Object, Object>) msgContent;
-					Set<Entry<Object, Object>> entrySet = paramMap.entrySet();
-
-					String sql = new String(sqlTemplate);
-					for (Entry<Object, Object> entry : entrySet) {
-						String key = ":" + entry.getKey().toString();
-						String value = entry.getValue().toString();
-						sql = sql.replaceAll(key, value);
+					Context context  = new VelocityContext();
+					StringWriter sw = new StringWriter();
+					
+					Map<Object, Object> msgMap = (Map<Object, Object>) msgContent;
+					Set<Object> msgKeySet = msgMap.keySet();
+					for (Object msgKey : msgKeySet) {
+						Object msgValue = msgMap.get(msgKey);
+						context.put(msgKey.toString(), msgValue.toString());
 					}
-					return sql;
+					Velocity.evaluate(context, sw, "log", sqlTemplate);
+					return sw.toString();
 				} else {
 					return null;
 				}
@@ -110,20 +125,20 @@ public class DBStorer implements Storer {
 		}
 	}
 
-	private class DBSaver implements Processor {
+	private class DBLogSaver implements Processor {
 
 		private boolean isStop = false; // 处理线程是否停止
 
 		private Connection conn;
 		private Statement stm;
 
-		public DBSaver() {
+		public DBLogSaver() {
 			try {
 				Class.forName(driver);
 				conn = DriverManager.getConnection(url, username, password);
 				stm = conn.createStatement();
 			} catch (Exception e) {
-				logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("DBStorer Exception: exception=%s", e.getMessage()));
 			}
 		}
 
@@ -133,9 +148,7 @@ public class DBStorer implements Storer {
 					if (!messageQueue.isEmpty()) {
 						try {
 							while (!messageQueue.isEmpty()) {
-
 								int count = 0;
-
 								if (count < batchSize) {
 									Message message = messageQueue.poll();
 									stm.addBatch(handleMessage(message));
@@ -145,9 +158,7 @@ public class DBStorer implements Storer {
 									count = 0;
 								}
 							}
-
 							stm.executeBatch();
-
 						} catch (Exception e) {
 							logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 						}
@@ -155,7 +166,7 @@ public class DBStorer implements Storer {
 
 					Thread.sleep(cycle);
 				} catch (InterruptedException e) {
-					logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+					logger.error(String.format("DBStorer Exception: exception=%s", e.getMessage()));
 				}
 			}
 
@@ -167,14 +178,13 @@ public class DBStorer implements Storer {
 					conn.close();
 				}
 			} catch (SQLException e) {
-				logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
+				logger.error(String.format("DBStorer Exception: exception=%s", e.getMessage()));
 			}
 		}
 
 		public void stop() {
 			this.isStop = true; // 设置线程停止标志
-
-			logger.info("DB Store STOP");
+			logger.info("DBStore STOP");
 		}
 
 		public void start(String name) {

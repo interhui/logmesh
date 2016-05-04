@@ -3,8 +3,8 @@ package org.pinae.logmesh.receiver.tcp;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.pinae.logmesh.receiver.Receiver;
-import org.pinae.logmesh.receiver.TCPReceiver;
+import org.pinae.logmesh.receiver.AbstractReceiver;
+import org.pinae.logmesh.receiver.event.TCPReceiver;
 
 /**
  * TCP消息接收器测试类
@@ -19,7 +19,7 @@ public class TCPRecevierTest {
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("por", "514");
 
-		Receiver receiver = new TCPReceiver();
+		AbstractReceiver receiver = new TCPReceiver();
 		receiver.init(parameters);
 		receiver.start("TCPReceiver");
 	}
