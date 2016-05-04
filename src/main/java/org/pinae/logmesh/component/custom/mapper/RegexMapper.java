@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
 import org.pinae.nala.xb.exception.UnmarshalException;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 对文本消息进行正则表达式映射
@@ -26,8 +26,6 @@ import org.pinae.ndb.Statement;
  */
 public class RegexMapper {
 	private static Logger logger = Logger.getLogger(RegexMapper.class);
-
-	private Statement statement = new Statement();
 
 	private Map<String, Pattern> patternMap = new HashMap<String, Pattern>(); // 正则匹配
 	private Map<String, Map<String, String[]>> itemMap = new HashMap<String, Map<String, String[]>>(); // 正则值映射
@@ -61,7 +59,7 @@ public class RegexMapper {
 		}
 
 		if (mapperConfig != null && mapperConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(mapperConfig, "select:import->file");
+			List<String> importList = (List<String>) Ndb.execute(mapperConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -71,8 +69,7 @@ public class RegexMapper {
 
 		if (mapperConfig != null && mapperConfig.containsKey("map")) {
 
-			List<Map<String, Object>> mapList = (List<Map<String, Object>>) statement
-					.execute(mapperConfig, "select:map");
+			List<Map<String, Object>> mapList = (List<Map<String, Object>>) Ndb.execute(mapperConfig, "select:map");
 			for (Map<String, Object> map : mapList) {
 
 				String name = (String) map.get("name");
@@ -107,7 +104,7 @@ public class RegexMapper {
 	private Map<String, String[]> buildItemMap(Map<String, Object> regexMap) {
 		Map<String, String[]> itemRefMap = null;
 
-		List<Map<String, Object>> itemList = (List<Map<String, Object>>) statement.execute(regexMap,
+		List<Map<String, Object>> itemList = (List<Map<String, Object>>) Ndb.execute(regexMap,
 				"select:items->item");
 		if (itemList != null && itemList.size() > 0) {
 			itemRefMap = new TreeMap<String, String[]>();

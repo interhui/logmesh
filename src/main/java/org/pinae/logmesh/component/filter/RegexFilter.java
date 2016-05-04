@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 正则表达式过滤器
@@ -24,8 +24,6 @@ import org.pinae.ndb.Statement;
  */
 public class RegexFilter extends AbstractFilter {
 	private static Logger logger = Logger.getLogger(RegexFilter.class);
-	
-	private Statement statement = new Statement();
 
 	/* 正则表达式列表 */
 	private List<Pattern> patternList = new ArrayList<Pattern>();
@@ -86,7 +84,7 @@ public class RegexFilter extends AbstractFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importFilenameList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			List<String> importFilenameList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
 			for (String importFilename : importFilenameList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
@@ -101,7 +99,7 @@ public class RegexFilter extends AbstractFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			List<String> patterns = (List<String>) statement.execute(filterConfig, "select:filter->pattern");
+			List<String> patterns = (List<String>) Ndb.execute(filterConfig, "select:filter->pattern");
 			for (String pattern : patterns) {
 				this.patternList.add(Pattern.compile(pattern));
 			}

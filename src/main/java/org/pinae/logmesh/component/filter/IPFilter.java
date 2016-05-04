@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * IP地址过滤器
@@ -22,8 +22,6 @@ import org.pinae.ndb.Statement;
  */
 public class IPFilter extends BasicFilter {
 	private static Logger logger = Logger.getLogger(IPFilter.class);
-	
-	private Statement statement = new Statement();
 	
 	/* IP地址列表 */
 	private List<String> ipList = new ArrayList<String>(); 
@@ -72,7 +70,7 @@ public class IPFilter extends BasicFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			List<String> importList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
 			for (String importFilename : importList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
@@ -87,7 +85,7 @@ public class IPFilter extends BasicFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			this.ipList = (List<String>) statement.execute(filterConfig, "select:filter->ip");
+			this.ipList = (List<String>) Ndb.execute(filterConfig, "select:filter->ip");
 		}
 	}
 

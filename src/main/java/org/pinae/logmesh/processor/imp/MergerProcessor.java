@@ -73,13 +73,13 @@ public class MergerProcessor implements Processor {
 			
 			if (merger != null) {
 				synchronized (MessagePool.MERGER_QUEUE) {
-					// 从归并队列中获取日志, 并加入日志处理
+					// 从归并队列中获取消息, 并加入消息处理
 					while(! MessagePool.MERGER_QUEUE.isEmpty()) {
 						Message message = MessagePool.MERGER_QUEUE.poll();
 						merger.add(message);
 					}
 					
-					// 从归并输出池中输出归并后的日志
+					// 从归并输出池中输出归并后的消息
 					Collection<Message> messages = MessageMerger.MERGER_POOL.values();
 					for (Message message : messages) {
 						MessagePool.ROUTE_QUEUE.offer(message);
@@ -89,7 +89,7 @@ public class MergerProcessor implements Processor {
 						MessagePool.COUNTER_QUEUE.offer(message); 
 					}
 					
-					// 清理日志归并池
+					// 清理消息归并池
 					MessageMerger.MERGER_POOL.clear();
 				}
 			}

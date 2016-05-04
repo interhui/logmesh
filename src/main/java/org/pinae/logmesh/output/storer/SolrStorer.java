@@ -115,7 +115,7 @@ public class SolrStorer implements Storer {
 						try {
 							solr = new HttpSolrClient(solrURL);
 							solr.add(docList);
-							UpdateResponse response = solr.commit();// 将日志发送到Solr
+							UpdateResponse response = solr.commit();// 将消息发送到Solr
 							if (response.getStatus() == 0) {
 								logger.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));

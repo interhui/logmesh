@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 消息队列池
@@ -49,9 +49,7 @@ public class MessagePool {
 		CUSTOM_MESSAGE_QUEUE.put("COUNTER_QUEUE", COUNTER_QUEUE);
 
 		// 初始化自定义消息队列
-		Statement statement = new Statement();
-
-		List<?> queueConfigList = (List<?>) statement.execute(config, "select:queue");
+		List<?> queueConfigList = (List<?>) Ndb.execute(config, "select:queue");
 
 		for (Object queueConfigObject : queueConfigList) {
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <server>
 
-	<!--日志所有者-->
+	<!--消息所有者-->
 	<owner>Pinae</owner>
 	
 	<!-- 引入其他Server配置文件 -->
 	<import file="root.xml"/>
 
-	<!--日志归并配置-->
+	<!--消息归并配置-->
 	<merger>
 		<!--是否启动归并:true/false-->
 		<enable>false</enable>
@@ -29,7 +29,7 @@
 		<enable>false</enable>
 		<!--是否记录原始数据-->
 		<original>true</original>
-		<!--日志编码, 当使用TextDecodeFilter时, 需要将codec制空-->
+		<!--消息编码, 当使用TextDecodeFilter时, 需要将codec制空-->
 		<codec>gb2312</codec>
 		<!--TCP/UDP采集器配置参数-->
 		<parameters>
@@ -111,7 +111,7 @@
 		<parameters>
 			<!--是否激活消息计数器:true/false-->
 			<parameter key="enable" value="true"/> 
-			<!--消息计数器技术类型：时间计数(time)/所有者计数(owner)/IP(ip)/日志类型计数(type)，多个计数采用|分割-->
+			<!--消息计数器技术类型：时间计数(time)/所有者计数(owner)/IP(ip)/消息类型计数(type)，多个计数采用|分割-->
 			<parameter key="counter" value="time|owner|ip|type"/> 
 			 <!--计数周期 (s) -->
 			<parameter key="cycle" value="60"/>
@@ -121,7 +121,7 @@
 	<!--原始消息记录器配置-->
 	<original>
 		<parameters>
-			<!--消息输出格式：时间(time)/所有者(owner)/IP(ip)/日志类型(type)/message(消息内容)-->
+			<!--消息输出格式：时间(time)/所有者(owner)/IP(ip)/消息类型(type)/message(消息内容)-->
 			<parameter key="msgFormat" value="$time : $ip : $message"/> 
 			<!--消息存储路径-->
 			<parameter key="path" value="d:\TestData\original"/>

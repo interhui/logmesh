@@ -8,7 +8,7 @@ import org.pinae.logmesh.output.MessageOutputor;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.processor.ProcessorPool;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -43,12 +43,10 @@ public class OutputorProcessor implements Processor {
 	 * @return 消息输出器列表
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<MessageOutputor> load(Map<String, Object> config) {
-		Statement statement = new Statement();
-		
+	public static List<MessageOutputor> create(Map<String, Object> config) {
 		List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
 
-		List<Map<String, Object>> outputConfigList = (List<Map<String, Object>>) statement.execute(config,
+		List<Map<String, Object>> outputConfigList = (List<Map<String, Object>>) Ndb.execute(config,
 				"select:output->enable:true");
 
 		for (Map<String, Object> outputConfig : outputConfigList) {
@@ -68,7 +66,7 @@ public class OutputorProcessor implements Processor {
 
 	public void start(String name) {
 
-		this.outputorList = load(this.config);
+		this.outputorList = create(this.config);
 
 		for (MessageOutputor outputor : this.outputorList) {
 			ProcessorPool.OUTPUTOR_LIST.add(outputor);

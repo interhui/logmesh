@@ -16,11 +16,11 @@ import org.pinae.logmesh.util.ConfigMap;
  */
 public abstract class AbstractReceiver implements Receiver {
 
-	/* 是否记录原始日志 */
+	/* 是否记录原始消息 */
 	private boolean isRecordOriginal = false; 
 	/* 接收器是否停止 */
 	protected boolean isStop = false; 
-	/* 日志所有者 */
+	/* 消息所有者 */
 	private String owner; 
 
 	/* 采集器配置信息 */
@@ -31,9 +31,9 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 	/**
-	 * 设置日志所有者
+	 * 设置消息所有者
 	 * 
-	 * @param owner 日志所有者
+	 * @param owner 消息所有者
 	 */
 	public void setOwner(String owner) {
 		if (StringUtils.isEmpty(owner)) {
@@ -64,7 +64,7 @@ public abstract class AbstractReceiver implements Receiver {
 		if (message != null) {
 			message.setOwner(owner);
 			if (isRecordOriginal) {
-				MessagePool.ORIGINAL_QUEUE.offer(message); // 加入原始日志处理队列
+				MessagePool.ORIGINAL_QUEUE.offer(message); // 加入原始消息处理队列
 			}
 			MessagePool.FILTER_QUEUE.offer(message); // 加入过滤处理队列
 		}

@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 public class ProcessorFactory {
 
@@ -55,10 +55,7 @@ public class ProcessorFactory {
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
 
 		if (parameter instanceof Map) {
-			Statement statement = new Statement();
-
-			List<?> paramItems = (List<?>) statement.execute((Map<String, Object>) parameter, "select:parameters->parameter");
-
+			List<?> paramItems = (List<?>) Ndb.execute((Map<String, Object>) parameter, "select:parameters->parameter");
 			for (Object paramItem : paramItems) {
 				if (paramItem instanceof Map) {
 					Map<String, String> paramMap = (Map<String, String>) paramItem;

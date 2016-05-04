@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 关键字过滤器
@@ -23,8 +23,6 @@ import org.pinae.ndb.Statement;
  */
 public class KeywordFilter extends AbstractFilter {
 	private static Logger logger = Logger.getLogger(KeywordFilter.class);
-	
-	private Statement statement = new Statement();
 
 	private List<String> keywordList = new ArrayList<String>(); // 关键字列表
 
@@ -71,7 +69,7 @@ public class KeywordFilter extends AbstractFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importFilenameList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			List<String> importFilenameList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
 			for (String importFilename : importFilenameList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
@@ -86,7 +84,7 @@ public class KeywordFilter extends AbstractFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			this.keywordList = (List<String>) statement.execute(filterConfig, "select:filter->keyword");
+			this.keywordList = (List<String>) Ndb.execute(filterConfig, "select:filter->keyword");
 		}
 	}
 

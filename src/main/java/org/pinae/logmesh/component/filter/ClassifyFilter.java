@@ -16,10 +16,10 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.logmesh.util.MatchUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
- * 日志分类过滤器
+ * 消息分类过滤器
  * 
  * @author Huiyugeng
  * 
@@ -27,8 +27,6 @@ import org.pinae.ndb.Statement;
  */
 public class ClassifyFilter extends AbstractFilter {
 	private static Logger logger = Logger.getLogger(ClassifyFilter.class);
-
-	private Statement statement = new Statement();
 
 	private String classifyTypes[] = { "ip", "time", "owner", "content" };
 	private Map<String, Map<String, String>> classifyMap = new HashMap<String, Map<String, String>>(); // 分类信息列表
@@ -67,7 +65,7 @@ public class ClassifyFilter extends AbstractFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importFilenameList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			List<String> importFilenameList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
 			for (String importFilename : importFilenameList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
@@ -82,12 +80,12 @@ public class ClassifyFilter extends AbstractFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			List<Object> classifyFilterList = (List<Object>) statement.execute(filterConfig, "select:filter");
+			List<Object> classifyFilterList = (List<Object>) Ndb.execute(filterConfig, "select:filter");
 			for (Object classifyFilter : classifyFilterList) {
-				String label = (String) statement.execute(classifyFilter, "one:label");
+				String label = (String) Ndb.execute(classifyFilter, "one:label");
 
-				String type = (String) statement.execute(classifyFilter, "one:type");
-				List<String> valueList = (List<String>) statement.execute(classifyFilter, "select:value");
+				String type = (String) Ndb.execute(classifyFilter, "one:type");
+				List<String> valueList = (List<String>) Ndb.execute(classifyFilter, "select:value");
 
 				if (label != null) {
 					label = label.toLowerCase();

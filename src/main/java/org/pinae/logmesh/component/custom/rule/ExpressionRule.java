@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.mvel2.MVEL;
 import org.pinae.logmesh.util.MatchUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -16,8 +16,6 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class ExpressionRule extends Rule {
-
-	private Statement statement = new Statement();
 
 	public ExpressionRule(String filename) {
 		super.load("", filename);
@@ -71,7 +69,7 @@ public class ExpressionRule extends Rule {
 		if (rule.containsKey("expression") && rule.containsKey("item")) {
 			String expression = (String) rule.get("expression");
 
-			List<Map<String, Object>> itemList = (List<Map<String, Object>>) statement.execute(rule, "select:item");
+			List<Map<String, Object>> itemList = (List<Map<String, Object>>) Ndb.execute(rule, "select:item");
 
 			Map<String, Boolean> matchedMap = new HashMap<String, Boolean>();
 			for (Map<String, Object> item : itemList) {

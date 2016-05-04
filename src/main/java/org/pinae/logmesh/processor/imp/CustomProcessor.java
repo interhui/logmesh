@@ -15,7 +15,7 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -46,13 +46,11 @@ public class CustomProcessor implements Processor {
 	 * @return 消息处理器列表
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<MessageProcessor> load(Map<String, Object> config) {
-		Statement statement = new Statement();
-		
+	public static List<MessageProcessor> create(Map<String, Object> config) {
 		List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
 
 		// 选取需要启动的处理器
-		List<Map<String, Object>> processorConfigList = (List<Map<String, Object>>) statement.execute(config,
+		List<Map<String, Object>> processorConfigList = (List<Map<String, Object>>) Ndb.execute(config,
 				"select:processor->enable:true");
 
 		SortedMap<Integer, MessageProcessor> processorsWithStartup = new TreeMap<Integer, MessageProcessor>(); // 顺序处理器列表
@@ -93,11 +91,11 @@ public class CustomProcessor implements Processor {
 
 	public void start(String name) {
 
-		this.processorList = load(this.config);
+		this.processorList = create(this.config);
 
 		// 将过滤器在组件池中进行注册
 		for (MessageProcessor processor : this.processorList) {
-			ComponentPool.registeComponent(processor);
+			ComponentPool.registe(processor);
 		}
 
 		this.isStop = false; // 设置线程启动标记

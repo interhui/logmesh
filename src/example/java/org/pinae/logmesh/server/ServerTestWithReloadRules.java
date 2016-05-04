@@ -28,23 +28,23 @@ public class ServerTestWithReloadRules {
 		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 
 		MessageServer server = new MessageServer(builder.build());
-		// 启动日志采集
+		// 启动消息采集
 		server.start();
 		
-		// 5秒后启动日志发送
+		// 5秒后启动消息发送
 		TimeUnit.SECONDS.sleep(5);
 		new Thread(new MessageSenderExample(1, true), "MessageSender").start();
 		
 		// 20秒后重新载入IPFilter规则
 		TimeUnit.SECONDS.sleep(20);
-		List<MessageComponent> filters = ComponentPool.getComponent(IPFilter.class);
+		List<MessageComponent> filters = ComponentPool.get(IPFilter.class);
 		ipFilterParameters.put("filter", "192.168.0.14|192.168.0.15|127.0.0.1");
 		for (Object filter : filters) {
 			if (filter instanceof IPFilter) {
 				((IPFilter)filter).setParameters(ipFilterParameters);
 			}
 		}
-		ComponentPool.reloadComponent(IPFilter.class);
+		ComponentPool.reload(IPFilter.class);
 		
 		// 30秒后停止采集器运行
 		TimeUnit.SECONDS.sleep(30);

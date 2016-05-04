@@ -15,7 +15,7 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -33,7 +33,7 @@ public class FilterProcessor implements Processor {
 	/* 消息过滤组件列表 */
 	private List<MessageFilter> filterList = new ArrayList<MessageFilter>();
 
-	/* 是否启用归并日志 */
+	/* 是否启用归并消息 */
 	private boolean merger = false;
 	/* 消息过滤线程是否停止 */
 	private boolean isStop = false;
@@ -48,17 +48,17 @@ public class FilterProcessor implements Processor {
 	 * @return 消息过滤器列表
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<MessageFilter> load(Map<String, Object> config) {
-		Statement statement = new Statement();
-		
+	public static List<MessageFilter> create(Map<String, Object> config) {
 		List<MessageFilter> filterList = new ArrayList<MessageFilter>();
 
 		// 选取需要启动的过滤器
-		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>) statement.execute(config,
+		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>)Ndb.execute(config,
 				"select:filter->enable:true");
-
-		SortedMap<Integer, MessageFilter> filtersWithStartup = new TreeMap<Integer, MessageFilter>(); // 顺序过滤器列表
-		List<MessageFilter> filtersWithoutStartup = new ArrayList<MessageFilter>(); // 无序过滤器列表
+		
+		// 顺序过滤器列表
+		SortedMap<Integer, MessageFilter> filtersWithStartup = new TreeMap<Integer, MessageFilter>(); 
+		// 无序过滤器列表
+		List<MessageFilter> filtersWithoutStartup = new ArrayList<MessageFilter>(); 
 
 		for (Map<String, Object> filterConfig : filterConfigList) {
 
@@ -95,17 +95,14 @@ public class FilterProcessor implements Processor {
 	}
 
 	public void start(String name) {
-		Statement statement = new Statement();
-		
-		this.filterList = load(this.config);
-
+		this.filterList = create(this.config);
 		// 将过滤器在组件池中进行注册
 		for (MessageFilter filter : this.filterList) {
-			ComponentPool.registeComponent(filter);
+			ComponentPool.registe(filter);
 		}
 
 		// 是否启动消息归并
-		if (((List<?>) statement.execute(config, "select:thread->merger->enable:true")).size() > 0) {
+		if (((List<?>) Ndb.execute(config, "select:thread->merger->enable:true")).size() > 0) {
 			merger = true;
 		}
 

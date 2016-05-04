@@ -26,11 +26,11 @@ import org.pinae.logmesh.server.helper.OriginalMessageStorer;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 import org.pinae.ndb.common.MapHelper;
 
 /**
- * 日志采集服务器
+ * 消息采集服务器
  * 
  * @author Huiyugeng
  * 
@@ -38,14 +38,14 @@ import org.pinae.ndb.common.MapHelper;
 public class MessageServer {
 
 	private static Logger logger = Logger.getLogger(MessageServer.class);
-
-	private String path; //配置文件路径
-	private String filename; // 配置文件名
-	private Map<String, Object> config; // 配置信息
-	
-	private boolean startup = false; // 是否启动完成
-
-	private Statement statement = new Statement();
+	/* 配置文件路径 */
+	private String path;
+	/* 配置文件名 */
+	private String filename;
+	/* 配置信息 */
+	private Map<String, Object> config;
+	/* 是否启动完成 */
+	private boolean startup = false;
 	
 	private MessageCounter messageCounter = null; 
 
@@ -149,7 +149,7 @@ public class MessageServer {
 		long startupTime = System.currentTimeMillis() - startTime;
 		logger.info(String.format("Load Server Config Finished in %d ms", startupTime));
 
-		List<String> importFilenameList = (List<String>)statement.execute(serverConfig, "select:import->file");
+		List<String> importFilenameList = (List<String>)Ndb.execute(serverConfig, "select:import->file");
 		for (String importFilename : importFilenameList) {
 			File importFile = FileUtils.getFile(this.path, importFilename);
 			if (importFile != null) {
@@ -170,7 +170,7 @@ public class MessageServer {
 	@SuppressWarnings("unchecked")
 	public void startReceiver(Map<String, Object> config) {
 
-		List<Map<String, Object>> receiverConfigList = (List<Map<String, Object>>) statement.execute(config, "select:receiver->enable:true");
+		List<Map<String, Object>> receiverConfigList = (List<Map<String, Object>>) Ndb.execute(config, "select:receiver->enable:true");
 
 		for (Map<String, Object> receiverConfig : receiverConfigList) {
 			AbstractReceiver receiver = null;
@@ -241,7 +241,7 @@ public class MessageServer {
 	public void startOriginaMessageStorer(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> originalConfig = (Map<String, Object>) statement.execute(config, "one:original");
+		Map<String, Object> originalConfig = (Map<String, Object>) Ndb.execute(config, "one:original");
 		
 		OriginalMessageStorer messageStorer = new OriginalMessageStorer(ProcessorFactory.createParameter(originalConfig));
 		messageStorer.start();
@@ -260,7 +260,7 @@ public class MessageServer {
 	public void startMessageCounter(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> counterConfig = (Map<String, Object>) statement.execute(config, "one:counter");
+		Map<String, Object> counterConfig = (Map<String, Object>) Ndb.execute(config, "one:counter");
 		this.messageCounter = new MessageCounter(ProcessorFactory.createParameter(counterConfig));
 
 		messageCounter.start("MessageCounter");
@@ -287,7 +287,7 @@ public class MessageServer {
 	public void startFilter(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> filterConfig = (Map<String, Object>) statement.execute(config, "one:thread->filter");
+		Map<String, Object> filterConfig = (Map<String, Object>) Ndb.execute(config, "one:thread->filter");
 		
 		int filterCounter = 1;
 		if (filterConfig != null && filterConfig.containsKey("count")) {
@@ -321,7 +321,7 @@ public class MessageServer {
 	public void startRouter(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> routerConfig = (Map<String, Object>) statement.execute(config, "one:thread->router");
+		Map<String, Object> routerConfig = (Map<String, Object>) Ndb.execute(config, "one:thread->router");
 		
 		int routerCounter = 1;
 		if (routerConfig != null && routerConfig.containsKey("count")) {
@@ -356,7 +356,7 @@ public class MessageServer {
 	public void startMerger(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> mergerConfig = (Map<String, Object>) statement.execute(config, "one:merger");
+		Map<String, Object> mergerConfig = (Map<String, Object>) Ndb.execute(config, "one:merger");
 		
 		boolean enable = false;
 		
@@ -387,7 +387,7 @@ public class MessageServer {
 	public void startCustomProcessor(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
 
-		Map<String, Object> processorConfig = (Map<String, Object>) statement.execute(config, "one:thread->processor");
+		Map<String, Object> processorConfig = (Map<String, Object>) Ndb.execute(config, "one:thread->processor");
 		
 		int processorCounter = 1;
 		if (processorConfig != null && processorConfig.containsKey("count")) {

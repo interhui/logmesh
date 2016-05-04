@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 消息解码过滤器
@@ -23,8 +23,6 @@ import org.pinae.ndb.Statement;
  */
 public class TextDecodeFilter extends AbstractFilter {
 	private static Logger logger = Logger.getLogger(TextDecodeFilter.class);
-	
-	private Statement statement = new Statement();
 
 	/* IP地址-解码对应 */
 	private Map<String, String> decodeMap = new HashMap<String, String>();
@@ -73,7 +71,7 @@ public class TextDecodeFilter extends AbstractFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importFilenameList = (List<String>) statement.execute(filterConfig, "select:import->file");
+			List<String> importFilenameList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
 			for (String importFilename : importFilenameList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
@@ -88,10 +86,10 @@ public class TextDecodeFilter extends AbstractFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			List<Map<String, Object>> filterList = (List<Map<String, Object>>) statement.execute(filterConfig, "select:filter");
+			List<Map<String, Object>> filterList = (List<Map<String, Object>>) Ndb.execute(filterConfig, "select:filter");
 			for (Map<String, Object> filter : filterList) {
 				String code = filter.containsKey("code") ? (String) filter.get("code") : "utf8";
-				List<String> ipList = (List<String>) statement.execute(filter, "select:ip");
+				List<String> ipList = (List<String>) Ndb.execute(filter, "select:ip");
 				for (String ip : ipList) {
 					this.decodeMap.put(ip, code);
 				}

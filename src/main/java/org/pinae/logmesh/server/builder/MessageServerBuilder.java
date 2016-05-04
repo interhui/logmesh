@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
- * 日志服务配置信息构建器
+ * 消息服务配置信息构建器
  * 
  * @author Huiyugeng
  * 
  */
 public class MessageServerBuilder {
-
-	private Statement statement = new Statement();
 
 	private Map<String, Object> serverConfig = new HashMap<String, Object>();
 	
@@ -25,9 +23,9 @@ public class MessageServerBuilder {
 	public static final String RECEIVER_JMS = "jms";
 
 	/**
-	 * 获得日志服务配置信息
+	 * 获得消息服务配置信息
 	 * 
-	 * @return 日志服务配置信息
+	 * @return 消息服务配置信息
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> build() {
@@ -38,16 +36,16 @@ public class MessageServerBuilder {
 	}
 
 	/**
-	 * 设置日志服务所有者
+	 * 设置消息服务所有者
 	 * 
 	 * @param owner 服务所有者
 	 */
 	public void setOwner(String owner) {
-		Object result = statement.execute(serverConfig, "select:server->owner");
+		Object result = Ndb.execute(serverConfig, "select:server->owner");
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig, String.format("update:server->owner:%s !! owner=%s", owner, owner));
+			Ndb.execute(serverConfig, String.format("update:server->owner:%s !! owner=%s", owner, owner));
 		} else {
-			statement.execute(serverConfig, String.format("insert:server !! owner=%s", owner));
+			Ndb.execute(serverConfig, String.format("insert:server !! owner=%s", owner));
 		}
 	}
 
@@ -58,11 +56,11 @@ public class MessageServerBuilder {
 	 * @param size 消息队列长度
 	 */
 	public void addQueue(String name, long size) {
-		Object result = statement.execute(serverConfig, String.format("select:server->queue->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->queue->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig, String.format("update:server->queue->name:%s !! size=%s", name, Long.toString(size)));
+			Ndb.execute(serverConfig, String.format("update:server->queue->name:%s !! size=%s", name, Long.toString(size)));
 		} else {
-			statement.execute(serverConfig, String.format("insert:server->queue !! name=%s, size=%s", name, Long.toString(size)));
+			Ndb.execute(serverConfig, String.format("insert:server->queue !! name=%s, size=%s", name, Long.toString(size)));
 		}
 	}
 
@@ -74,12 +72,12 @@ public class MessageServerBuilder {
 	 * @param delay 线程延迟时间(ms)，通常为100
 	 */
 	public void setThread(String type, int count, long delay) {
-		Object result = statement.execute(serverConfig, String.format("select:server->thread->%s", type));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->thread->%s", type));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("update:server->thread->%s !! count=%s, delay=%s", type, Integer.toString(count), Long.toString(delay)));
 		} else {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("insert:server->thread->%s !! count=%s, delay=%s", type, Integer.toString(count), Long.toString(delay)));
 		}
 	}
@@ -91,12 +89,12 @@ public class MessageServerBuilder {
 	 * @param cycle 消息归并周期(ms)
 	 */
 	public void activeMerger(boolean active, long cycle) {
-		Object result = statement.execute(serverConfig, "select:server->merger");
+		Object result = Ndb.execute(serverConfig, "select:server->merger");
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("update:server->merger !! enable=%s, cycle=%s", Boolean.toString(active), Long.toString(cycle)));
 		} else {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("insert:server->merger !! enable=%s, cycle=%s", Boolean.toString(active), Long.toString(cycle)));
 		}
 	}
@@ -106,20 +104,20 @@ public class MessageServerBuilder {
 	 * 
 	 * @param type 接收器类型
 	 * @param active 是否激活接收器
-	 * @param original 是否采集原始日志
+	 * @param original 是否采集原始消息
 	 * @param parameters 接收器参数
 	 */
 	public void addReceiver(String type, boolean active, boolean original, String codec, Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, String.format("select:server->receiver->type:%s", type));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->receiver->type:%s", type));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig, String.format("update:server->receiver->type:%s !! enable=%s, original=%s, codec=%s", type,
+			Ndb.execute(serverConfig, String.format("update:server->receiver->type:%s !! enable=%s, original=%s, codec=%s", type,
 					Boolean.toString(active), Boolean.toString(original), codec));
 		} else {
-			statement.execute(serverConfig, String.format("insert:server->receiver !! type=%s, enable=%s, original=%s, codec=%s", type,
+			Ndb.execute(serverConfig, String.format("insert:server->receiver !! type=%s, enable=%s, original=%s, codec=%s", type,
 					Boolean.toString(active), Boolean.toString(original), codec));
 		}
 
-		Object receiver = statement.execute(serverConfig, String.format("one:server->receiver->type:%s", type));
+		Object receiver = Ndb.execute(serverConfig, String.format("one:server->receiver->type:%s", type));
 		if (receiver instanceof Map) {
 			Map<?, ?> receiverMap = (Map<?, ?>) receiver;
 			setParameter(receiverMap, parameters);
@@ -127,16 +125,16 @@ public class MessageServerBuilder {
 	}
 
 	/**
-	 * 设置日志计数器
+	 * 设置消息计数器
 	 * 
-	 * @param parameters 日志计数器参数
+	 * @param parameters 消息计数器参数
 	 */
 	public void setCounter(Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, "select:server->counter");
+		Object result = Ndb.execute(serverConfig, "select:server->counter");
 		if (result instanceof List && ((List<?>) result).size() == 0) {
-			statement.execute(serverConfig, String.format("insert:server->counter"));
+			Ndb.execute(serverConfig, String.format("insert:server->counter"));
 		}
-		Object counter = statement.execute(serverConfig, "one:server->counter");
+		Object counter = Ndb.execute(serverConfig, "one:server->counter");
 		if (counter instanceof Map) {
 			Map<?, ?> counterMap = (Map<?, ?>) counter;
 			setParameter(counterMap, parameters);
@@ -144,16 +142,16 @@ public class MessageServerBuilder {
 	}
 
 	/**
-	 * 设置原始日志参数
+	 * 设置原始消息参数
 	 * 
-	 * @param parameters 原始日志参数
+	 * @param parameters 原始消息参数
 	 */
 	public void setOriginal(Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, "select:server->original");
+		Object result = Ndb.execute(serverConfig, "select:server->original");
 		if (result instanceof List && ((List<?>) result).size() == 0) {
-			statement.execute(serverConfig, String.format("insert:server->original"));
+			Ndb.execute(serverConfig, String.format("insert:server->original"));
 		}
-		Object original = statement.execute(serverConfig, "one:server->original");
+		Object original = Ndb.execute(serverConfig, "one:server->original");
 		if (original instanceof Map) {
 			Map<?, ?> originalMap = (Map<?, ?>) original;
 			setParameter(originalMap, parameters);
@@ -171,16 +169,16 @@ public class MessageServerBuilder {
 	 * @param parameters 过滤器参数
 	 */
 	public void addFilter(int startup, String name, boolean active, String filterClass, Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, String.format("select:server->filter->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->filter->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig, String.format("update:server->filter->name:%s !! startup=%s, enable=%s, kwClass=%s", name,
+			Ndb.execute(serverConfig, String.format("update:server->filter->name:%s !! startup=%s, enable=%s, kwClass=%s", name,
 					Integer.toString(startup), Boolean.toString(active), filterClass));
 		} else {
-			statement.execute(serverConfig, String.format("insert:server->filter !! name=%s, startup=%s, enable=%s, kwClass=%s", name,
+			Ndb.execute(serverConfig, String.format("insert:server->filter !! name=%s, startup=%s, enable=%s, kwClass=%s", name,
 					Integer.toString(startup), Boolean.toString(active), filterClass));
 		}
 
-		Object filter = statement.execute(serverConfig, String.format("one:server->filter->name:%s", name));
+		Object filter = Ndb.execute(serverConfig, String.format("one:server->filter->name:%s", name));
 		if (filter instanceof Map) {
 			setParameter((Map<?, ?>) filter, parameters);
 		}
@@ -199,16 +197,16 @@ public class MessageServerBuilder {
 	 * @param parameters 处理器参数
 	 */
 	public void addProcessor(String name, boolean active, String processorClass, Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, String.format("select:server->processor->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->processor->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("update:server->processor->name:%s !! enable=%s, kwClass=%s", name, Boolean.toString(active), processorClass));
 		} else {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("insert:server->processor !! name=%s, enable=%s, kwClass=%s", name, Boolean.toString(active), processorClass));
 		}
 
-		Object processor = statement.execute(serverConfig, String.format("one:server->processor->name:%s", name));
+		Object processor = Ndb.execute(serverConfig, String.format("one:server->processor->name:%s", name));
 		if (processor instanceof Map) {
 			setParameter((Map<?, ?>) processor, parameters);
 		}
@@ -227,16 +225,16 @@ public class MessageServerBuilder {
 	 * @param parameters 路由器参数
 	 */
 	public void addRouter(String name, boolean active, String routerClass, Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, String.format("select:server->router->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->router->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("update:server->router->name:%s !! enable=%s, kwClass=%s", name, Boolean.toString(active), routerClass));
 		} else {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("insert:server->router !! name=%s, enable=%s, kwClass=%s", name, Boolean.toString(active), routerClass));
 		}
 
-		Object router = statement.execute(serverConfig, String.format("one:server->router->name:%s", name));
+		Object router = Ndb.execute(serverConfig, String.format("one:server->router->name:%s", name));
 		if (router instanceof Map) {
 			setParameter((Map<?, ?>) router, parameters);
 		}
@@ -255,16 +253,16 @@ public class MessageServerBuilder {
 	 * @param parameters 消息输出器参数
 	 */
 	public void addOutputor(String name, boolean active, String outputClass, Map<String, Object> parameters) {
-		Object result = statement.execute(serverConfig, String.format("select:server->output->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->output->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("update:server->output->name:%s !! enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
 		} else {
-			statement.execute(serverConfig,
+			Ndb.execute(serverConfig,
 					String.format("insert:server->output !! name=%s, enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
 		}
 
-		Object output = statement.execute(serverConfig, String.format("one:server->output->name:%s", name));
+		Object output = Ndb.execute(serverConfig, String.format("one:server->output->name:%s", name));
 		if (output instanceof Map) {
 			setParameter((Map<?, ?>) output, parameters);
 		}

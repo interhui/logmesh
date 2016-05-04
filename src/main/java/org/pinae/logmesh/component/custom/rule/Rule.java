@@ -11,7 +11,7 @@ import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
 import org.pinae.nala.xb.exception.UnmarshalException;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 告警规则匹配
@@ -22,8 +22,6 @@ import org.pinae.ndb.Statement;
  */
 public abstract class Rule {
 	private static Logger logger = Logger.getLogger(Rule.class);
-	
-	private Statement statement = new Statement();
 
 	protected List<Map<String, Object>> ruleList = new ArrayList<Map<String, Object>>(); // 告警规则列表
 	
@@ -42,7 +40,7 @@ public abstract class Rule {
 		}
 
 		if (ruleConfig != null && ruleConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statement.execute(ruleConfig, "select:import->file");
+			List<String> importList = (List<String>) Ndb.execute(ruleConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -51,7 +49,7 @@ public abstract class Rule {
 		}
 
 		if (ruleConfig != null && ruleConfig.containsKey("rule")) {
-			this.ruleList = (List<Map<String, Object>>) statement.execute(ruleConfig, "select:rule");
+			this.ruleList = (List<Map<String, Object>>) Ndb.execute(ruleConfig, "select:rule");
 		}
 	}
 
@@ -73,11 +71,11 @@ public abstract class Rule {
 
 				String name = (String) rule.get("name");
 				
-				//时间/日志类型/IP地址匹配
+				//时间/消息类型/IP地址匹配
 				if (MatchUtils.matchString((String) rule.get("type"), type) && MatchUtils.matchString((String) rule.get("ip"), ip)
 						&& MatchUtils.matchTime((String) rule.get("time"), time)) {
 					
-					//日志内容匹配
+					//消息内容匹配
 					if (match(rule, message)) {
 
 						int level = 1;

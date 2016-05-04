@@ -14,10 +14,7 @@ import org.pinae.logmesh.component.router.MessageRouter;
 /**
  * 实例化组件池
  * 
- * 包括：消息过滤器，消息归并器，消息处理器
- * 
  * @author Huiyugeng
- * 
  * 
  */
 public class ComponentPool {
@@ -25,25 +22,17 @@ public class ComponentPool {
 
 	private static Map<String, MessageComponent> COMPONENT_POOL = new ConcurrentHashMap<String, MessageComponent>();
 	private static AtomicInteger COMPONENT_COUNT = new AtomicInteger();
-
+	
 	/**
 	 * 注册组件
-	 * 一种类型的组件仅能注册一次
 	 * 
 	 * @param component 组件信息
 	 */
-	public static void registeComponent(MessageComponent component) {
+	public static void registe(MessageComponent component) {
+		String name = component.getClass().getSimpleName();
+		String count = Integer.toString(COMPONENT_COUNT.incrementAndGet());
 
-		if (component instanceof MessageFilter || component instanceof MessageProcessor
-				|| component instanceof MessageRouter) {
-
-			String name = component.getClass().getSimpleName();
-			String count = Integer.toString(COMPONENT_COUNT.incrementAndGet());
-
-			synchronized (COMPONENT_POOL) {
-				COMPONENT_POOL.put(name + "-" + count, component);
-			}
-		}
+		COMPONENT_POOL.put(name + "-" + count, component);
 	}
 
 	/**
@@ -53,7 +42,7 @@ public class ComponentPool {
 	 * 
 	 * @return 组件类列表
 	 */
-	public static List<MessageComponent> getComponent(Class<?> clazz) {
+	public static List<MessageComponent> get(Class<?> clazz) {
 		List<MessageComponent> componentList = new ArrayList<MessageComponent>();
 		String name = clazz.getSimpleName();
 
@@ -75,10 +64,10 @@ public class ComponentPool {
 	 * 
 	 * @param clazz 重新加载的组件类
 	 */
-	public synchronized static void reloadComponent(Class<?> clazz) {
+	public synchronized static void reload(Class<?> clazz) {
 		logger.info(String.format("Reload %s Component", clazz.getSimpleName()));
 
-		List<MessageComponent> componentList = getComponent(clazz);
+		List<MessageComponent> componentList = get(clazz);
 		for (MessageComponent component : componentList) {
 			if (component instanceof MessageFilter) {
 				((MessageFilter) component).initialize();

@@ -19,7 +19,7 @@ import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 抽象消息路由器
@@ -29,8 +29,6 @@ import org.pinae.ndb.Statement;
  */
 public abstract class AbstractRouter extends ProcessorInfo implements MessageRouter {
 	private static Logger logger = Logger.getLogger(AbstractRouter.class);
-
-	protected Statement statement = new Statement();
 
 	/* 消息过滤器列表, (路由器名称, 消息过滤器) */
 	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>(); 
@@ -48,25 +46,25 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 
 		File routerFile = FileUtils.getFile(path, routerFilename);
 		if (routerFile != null) {
-			loadConfig(routerFile);
+			create(routerFile);
 		} else {
 			logger.error(String.format("Router Load Exception: exception=File doesn't extis, file=%s/%s", path, routerFilename));
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadConfig(File routerFile) {
+	private void create(File routerFile) {
 		Map<String, Object> routerConfig = null;
 		try {
 			if (routerFile != null) {
 				routerConfig = (Map<String, Object>) Xml.toMap(routerFile, "UTF8");
 				if (routerConfig != null && routerConfig.containsKey("import")) {
-					List<String> importFilenameList = (List<String>) statement.execute(routerConfig, "select:import->file");
+					List<String> importFilenameList = (List<String>)Ndb.execute(routerConfig, "select:import->file");
 					for (String importFilename : importFilenameList) {
 						if (StringUtils.isNotEmpty(importFilename)) {
 							File importFile = FileUtils.getFile(routerFile.getParent(), importFilename);
 							if (importFile != null) {
-								loadConfig(importFile);
+								create(importFile);
 							} else {
 								logger.error(String.format("Router Load Exception: exception=File doesn't extis, source=%s, import=%s/%s", 
 										routerFile.getPath(), routerFile.getAbsolutePath(), importFilename));
@@ -77,14 +75,14 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 				}
 
 				if (routerConfig != null && routerConfig.containsKey("rule")) {
-					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) statement.execute(routerConfig,
+					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) Ndb.execute(routerConfig,
 							"select:rule");
 					for (Map<String, Object> ruleConfig : ruleConfigList) {
 
 						String name = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig
 								.toString();
 						
-						this.routerRuleMap.put(name, (Map<String, Object>) statement.execute(ruleConfig, "one:condition"));
+						this.routerRuleMap.put(name, (Map<String, Object>) Ndb.execute(ruleConfig, "one:condition"));
 
 						List<MessageFilter> filterList = new ArrayList<MessageFilter>();
 						List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
@@ -98,9 +96,9 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 							outputorList.addAll(this.outputorMap.get(extend));
 						}
 
-						filterList.addAll(FilterProcessor.load(ruleConfig));
-						processorList.addAll(CustomProcessor.load(ruleConfig));
-						outputorList.addAll(OutputorProcessor.load(ruleConfig));
+						filterList.addAll(FilterProcessor.create(ruleConfig));
+						processorList.addAll(CustomProcessor.create(ruleConfig));
+						outputorList.addAll(OutputorProcessor.create(ruleConfig));
 
 						this.filterMap.put(name, filterList);
 						this.processorMap.put(name, processorList);
@@ -116,23 +114,18 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 	}
 
 	public void porcess(Message message) {
-
 		String rule = match(message);
-
 		if (rule != null) {
-
 			// 执行消息过滤器
 			List<MessageFilter> filters = this.filterMap.get(rule);
 			if (filters != null) {
 				for (MessageFilter filter : filters) {
 					message = filter.filter(message);
-	
 					if (message == null) {
 						break;
 					}
 				}
 			}
-
 			if (message != null) {
 				// 执行自定义处理器
 				List<MessageProcessor> processors = this.processorMap.get(rule);
@@ -142,7 +135,6 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 					}
 				}
 			}
-			
 			if (message != null) {
 				// 执行消息转发器
 				List<MessageOutputor> outputors = this.outputorMap.get(rule);

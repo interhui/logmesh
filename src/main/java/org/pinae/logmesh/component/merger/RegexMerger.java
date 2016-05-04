@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.MessageDigestUtils;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 根据正则表达式标示的关键字进行合并
@@ -19,8 +19,6 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class RegexMerger extends AbstractMerger {
-
-	private Statement statment = new Statement();
 
 	private List<Pattern> patternList = new ArrayList<Pattern>(); // 正则匹配
 	
@@ -50,7 +48,7 @@ public class RegexMerger extends AbstractMerger {
 
 		// 设置引入外部文件
 		if (regexConfig != null && regexConfig.containsKey("import")) {
-			List<String> importList = (List<String>) statment.execute(regexConfig, "select:import->file");
+			List<String> importList = (List<String>) Ndb.execute(regexConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
 					load(path, file);
@@ -60,7 +58,7 @@ public class RegexMerger extends AbstractMerger {
 
 		if (regexConfig != null && regexConfig.containsKey("merger")) {
 
-			List<Map<String, Object>> mergerRuleList = (List<Map<String, Object>>) statment.execute(regexConfig,
+			List<Map<String, Object>> mergerRuleList = (List<Map<String, Object>>) Ndb.execute(regexConfig,
 					"select:merger");
 			for (Map<String, Object> mergerRule : mergerRuleList) {
 

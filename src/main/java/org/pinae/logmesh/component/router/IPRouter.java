@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pinae.logmesh.message.Message;
+import org.pinae.ndb.Ndb;
 
 /**
  * 根据源IP路由处理
@@ -33,7 +34,7 @@ public class IPRouter extends AbstractRouter {
 			if (rule != null) {
 				String type = rule.containsKey("type") ? rule.get("type").toString() : null;
 				if (type != null && type.equalsIgnoreCase("ip")) {
-					List<String> ipList = (List<String>) statement.execute(rule, "select:value");
+					List<String> ipList = (List<String>) Ndb.execute(rule, "select:value");
 	
 					if (ipList != null && ipList.size() > 0) {
 						this.ipMap.put(ruleName, ipList);

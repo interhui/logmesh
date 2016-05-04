@@ -23,14 +23,14 @@ public class TextDecodeFilterTest {
 		Message message = null;
 
 		message = new Message("192.168.0.107", "Hui", 
-				"防火墙日志: 192.168.78.32 数据流入".getBytes("GBK"));
+				"防火墙消息: 192.168.78.32 数据流入".getBytes("GBK"));
 		message = filter.filter(message);
-		assertEquals(message.getMessage().toString(), "防火墙日志: 192.168.78.32 数据流入");
+		assertEquals(message.getMessage().toString(), "防火墙消息: 192.168.78.32 数据流入");
 		
 		message = new Message("192.168.0.104", "Hui", 
-				new String("ASA日志: 心跳检查100ms".getBytes("GBK"), "GB2312").getBytes("GB2312"));
+				new String("ASA消息: 心跳检查100ms".getBytes("GBK"), "GB2312").getBytes("GB2312"));
 		message = filter.filter(message);
-		assertEquals(message.getMessage().toString(), "ASA日志: 心跳检查100ms");
+		assertEquals(message.getMessage().toString(), "ASA消息: 心跳检查100ms");
 		
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.pinae.logmesh.message.Message;
+import org.pinae.ndb.Ndb;
 
 /**
  * 根据消息内容的正则匹配进行路由处理
@@ -36,7 +37,7 @@ public class RegexRouter extends AbstractRouter {
 			if (rule != null) {
 				String type = rule.containsKey("type") ? rule.get("type").toString() : null;
 				if (type != null && type.equalsIgnoreCase("regex")) {
-					List<String> ipList = (List<String>) statement.execute(rule, "select:value");
+					List<String> ipList = (List<String>) Ndb.execute(rule, "select:value");
 					if (ipList != null && ipList.size() > 0) {
 						this.regexMap.put(ruleName, ipList);
 					}

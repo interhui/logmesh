@@ -10,10 +10,10 @@ public class ServerTest {
 
 		String path = ClassLoaderUtils.getResourcePath("");
 		MessageServer server = new MessageServer(path, "server.xml");
-		// 启动日志采集
+		// 启动消息采集
 		server.start();
 
-		// 5秒后启动日志发送(UDP方式)
+		// 5秒后启动消息发送(UDP方式)
 		// TimeUnit.SECONDS.sleep(5);
 		// new Thread(new MessageSenderExample(3, true), "MessageSender").start();
 	}

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * 根据RFC3164对Syslog日志进行映射
+ * 根据RFC3164对Syslog消息进行映射
  * 
  * @author Huiyugeng
  * 

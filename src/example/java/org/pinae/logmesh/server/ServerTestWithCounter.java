@@ -32,14 +32,14 @@ public class ServerTestWithCounter {
 		
 		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 		
-		// 启动日志采集
+		// 启动消息采集
 		MessageServer server = new MessageServer(builder.build());
 		server.start();
 
 		Thread display = new Thread(new CounterDisplay(server));
 		display.start();
 		
-		// 5秒后启动日志发送
+		// 5秒后启动消息发送
 		TimeUnit.SECONDS.sleep(5);
 		new Thread(new MessageSenderExample(1, false), "MessageSender").start();
 	}

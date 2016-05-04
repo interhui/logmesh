@@ -12,7 +12,7 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Statement;
+import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -31,8 +31,6 @@ public class RouterProcessor implements Processor {
 	/* 消息路由处理组件列表  */
 	private List<MessageRouter> routerList = new ArrayList<MessageRouter>();
 
-	private Statement statement = new Statement();
-
 	/* 消息路由线程是否停止 */
 	private boolean isStop = false; // 
 
@@ -46,11 +44,11 @@ public class RouterProcessor implements Processor {
 	 * @return 消息路由列表
 	 */
 	@SuppressWarnings("unchecked")
-	public List<MessageRouter> load() {
+	public List<MessageRouter> create() {
 		List<MessageRouter> routerList = new ArrayList<MessageRouter>();
 
 		// 选取需要启动的路由器
-		List<Map<String, Object>> routerConfigList = (List<Map<String, Object>>) statement.execute(config,
+		List<Map<String, Object>> routerConfigList = (List<Map<String, Object>>) Ndb.execute(config,
 				"select:router->enable:true");
 
 		for (Map<String, Object> routerConfig : routerConfigList) {
@@ -76,11 +74,11 @@ public class RouterProcessor implements Processor {
 
 	public void start(String name) {
 
-		this.routerList = load();
+		this.routerList = create();
 
 		// 将路由在组件池中进行注册
 		for (MessageRouter router : this.routerList) {
-			ComponentPool.registeComponent(router);
+			ComponentPool.registe(router);
 		}
 
 		this.isStop = false; // 设置线程启动标记
