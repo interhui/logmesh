@@ -37,7 +37,6 @@ public class RegexRouter extends AbstractRouter {
 				String type = rule.containsKey("type") ? rule.get("type").toString() : null;
 				if (type != null && type.equalsIgnoreCase("regex")) {
 					List<String> ipList = (List<String>) statement.execute(rule, "select:value");
-	
 					if (ipList != null && ipList.size() > 0) {
 						this.regexMap.put(ruleName, ipList);
 					}
@@ -48,11 +47,8 @@ public class RegexRouter extends AbstractRouter {
 
 	@Override
 	public String match(Message message) {
-
 		for (String ruleName : this.ruleNameSet) {
-
 			List<String> regexList = this.regexMap.get(ruleName);
-
 			if (regexList == null) {
 				continue;
 			}
@@ -65,7 +61,6 @@ public class RegexRouter extends AbstractRouter {
 
 					}
 				}
-
 				if (msg != null) {
 					regex = regex.trim();
 					if (msg.toString().matches(regex)) {

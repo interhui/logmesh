@@ -10,9 +10,9 @@ import org.pinae.logmesh.output.storer.StorerException;
 import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
- * 日志存储输出
+ * 消息存储输出
  * 
- * @author huiyugeng
+ * @author Huiyugeng
  * 
  */
 public class StorerOutputor extends ProcessorInfo implements MessageOutputor {

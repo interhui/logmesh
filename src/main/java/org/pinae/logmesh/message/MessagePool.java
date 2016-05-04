@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.pinae.ndb.Statement;
 
 /**
@@ -14,28 +15,30 @@ import org.pinae.ndb.Statement;
  * 
  */
 public class MessagePool {
+	private static Logger logger = Logger.getLogger(MessagePool.class);
 
-	// 原始消息处理队列
+	/* 原始消息处理队列 */
 	public static final MessageQueue ORIGINAL_QUEUE = new MessageQueue("ORIGINAL_QUEUE");
 
-	// 消息过滤队列
+	/* 消息过滤队列 */
 	public static final MessageQueue FILTER_QUEUE = new MessageQueue("FILTER_QUEUE");
 
-	// 消息处理队列
+	/* 消息处理队列 */
 	public static final MessageQueue PROCESSOR_QUEUE = new MessageQueue("PROCESSOR_QUEUE");
 
-	// 消息归并队列
+	/* 消息归并队列 */
 	public static final MessageQueue MERGER_QUEUE = new MessageQueue("MERGER_QUEUE");
 
-	// 消息路由队列
+	/* 消息路由队列 */
 	public static final MessageQueue ROUTE_QUEUE = new MessageQueue("ROUTE_QUEUE");
 
-	// 计数器队列
+	/* 计数器队列 */
 	public static final MessageQueue COUNTER_QUEUE = new MessageQueue("COUNTER_QUEUE");
 
-	// 自定义消息队列 <消息队列名称, 消息队列>
+	/* 自定义消息队列 <消息队列名称, 消息队列> */
 	public static Map<String, MessageQueue> CUSTOM_MESSAGE_QUEUE = new ConcurrentHashMap<String, MessageQueue>();
 
+	@SuppressWarnings("unchecked")
 	public static void initialize(Map<String, Object> config) {
 
 		// 初始化固定消息队列
@@ -53,15 +56,15 @@ public class MessagePool {
 		for (Object queueConfigObject : queueConfigList) {
 
 			if (queueConfigObject instanceof Map) {
-				@SuppressWarnings("unchecked")
+				
 				Map<String, Object> queueConfigMap = (Map<String, Object>) queueConfigObject;
 
 				if (queueConfigMap.containsKey("name")) {
 					String name = (String) queueConfigMap.get("name");
-
+					int size = Integer.MAX_VALUE;
+					
 					MessageQueue messageQueue = null;
 					if (queueConfigMap.containsKey("size")) {
-						int size = Integer.MAX_VALUE;
 						try {
 							size = Integer.parseInt((String) queueConfigMap.get("size"));
 						} catch (NumberFormatException e) {
@@ -73,13 +76,42 @@ public class MessagePool {
 					}
 
 					if (StringUtils.isNotEmpty(name) && messageQueue != null) {
+						logger.info(String.format("Add message queue: %s, size: %d", name, size));
 						CUSTOM_MESSAGE_QUEUE.put(name, messageQueue);
 					}
 				}
 			}
 		}
 	}
-
+	
+	/**
+	 * 新增消息队列
+	 * 
+	 * @param name 消息队列名称
+	 * @param size 消息队列长度
+	 */
+	public static void addQueue(String name, int size) {
+		logger.info(String.format("Add message queue: %s, size: %d", name, size));
+		MessageQueue messageQueue = new MessageQueue(name, size);
+		CUSTOM_MESSAGE_QUEUE.put(name, messageQueue);
+	}
+	
+	/**
+	 * 删除消息队列
+	 * 
+	 * @param name 消息队列名称
+	 */
+	public static void removeQueue(String name) {
+		logger.info(String.format("Remove message queue: %s", name));
+		MessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
+		if (messageQueue != null) {
+			synchronized (messageQueue) {
+				messageQueue.clear();
+				CUSTOM_MESSAGE_QUEUE.remove(name);
+			}
+		}
+	}
+	
 	/**
 	 * 根据名称获取自定义消息队列
 	 * 
@@ -87,7 +119,7 @@ public class MessagePool {
 	 * 
 	 * @return 自定义消息队列
 	 */
-	public static MessageQueue getMessageQueue(String name) {
+	public static MessageQueue getQueue(String name) {
 		MessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
 		return messageQueue;
 	}
@@ -99,7 +131,7 @@ public class MessagePool {
 	 * 
 	 * @return 是否存在消息队列
 	 */
-	public static boolean hasMessageQueue(String name) {
+	public static boolean hasQueue(String name) {
 		return CUSTOM_MESSAGE_QUEUE.containsKey(name);
 	}
 

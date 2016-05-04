@@ -14,7 +14,6 @@ import org.pinae.logmesh.util.ObjectUtils;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class UDPSender implements Sender {
 	/* 发送目标地址 */

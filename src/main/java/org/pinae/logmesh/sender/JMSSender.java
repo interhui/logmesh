@@ -18,11 +18,11 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class JMSSender implements Sender {
-
+	/* MQ连接工厂 */
 	private ConnectionFactory connectionFactory;
+	/* MQ连接 */
 	private Connection connection;
 	/* 发送或接收消息的线程 */
 	private Session session;// 

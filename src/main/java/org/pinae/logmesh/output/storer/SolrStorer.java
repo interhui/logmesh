@@ -36,7 +36,7 @@ public class SolrStorer implements Storer {
 	private MessageQueue messageQueue;
 
 	public SolrStorer(Map<String, Object> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "SOLR_STORE_QUEUE"));
+		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "SOLR_STORE_QUEUE"));
 	}
 
 	public SolrStorer(Map<String, Object> config, MessageQueue messageQueue) {

@@ -13,7 +13,6 @@ import org.pinae.logmesh.message.Message;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class IPRouter extends AbstractRouter {
 
@@ -27,12 +26,10 @@ public class IPRouter extends AbstractRouter {
 	@SuppressWarnings("unchecked")
 	public void initialize() {
 		super.initialize();
-
+		
 		this.ruleNameSet = routerRuleMap.keySet();
 		for (String ruleName : this.ruleNameSet) {
-
 			Map<String, Object> rule = routerRuleMap.get(ruleName);
-			
 			if (rule != null) {
 				String type = rule.containsKey("type") ? rule.get("type").toString() : null;
 				if (type != null && type.equalsIgnoreCase("ip")) {
@@ -49,11 +46,8 @@ public class IPRouter extends AbstractRouter {
 
 	@Override
 	public String match(Message message) {
-
 		for (String ruleName : this.ruleNameSet) {
-
 			List<String> ipList = this.ipMap.get(ruleName);
-
 			if (ipList == null) {
 				continue;
 			}

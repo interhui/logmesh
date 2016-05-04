@@ -42,7 +42,7 @@ public class FileStorer implements Storer {
 	private MessageQueue messageQueue;
 
 	public FileStorer(Map<String, Object> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "FILE_STORE_QUEUE"));
+		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "FILE_STORE_QUEUE"));
 	}
 
 	public FileStorer(Map<String, Object> config, MessageQueue messageQueue) {

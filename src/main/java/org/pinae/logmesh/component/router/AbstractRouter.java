@@ -26,21 +26,20 @@ import org.pinae.ndb.Statement;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public abstract class AbstractRouter extends ProcessorInfo implements MessageRouter {
 	private static Logger logger = Logger.getLogger(AbstractRouter.class);
 
 	protected Statement statement = new Statement();
 
-	// 消息过滤器列表, (路由器名称, 消息过滤器)
+	/* 消息过滤器列表, (路由器名称, 消息过滤器) */
 	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>(); 
-	// 消息处理器列表, (路由器名称, 消息处理器)
+	/* 消息处理器列表, (路由器名称, 消息处理器) */
 	private Map<String, List<MessageProcessor>> processorMap = new HashMap<String, List<MessageProcessor>>(); 
-	 // 消息转发器列表, (路由器名称, 消息转发器)
+	/* 消息转发器列表, (路由器名称, 消息转发器) */
 	private Map<String, List<MessageOutputor>> outputorMap = new HashMap<String, List<MessageOutputor>>();
 
-	// 消息路由条件
+	/* 消息路由条件 */
 	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); 
 
 	public void initialize() {
@@ -61,7 +60,6 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 		try {
 			if (routerFile != null) {
 				routerConfig = (Map<String, Object>) Xml.toMap(routerFile, "UTF8");
-				
 				if (routerConfig != null && routerConfig.containsKey("import")) {
 					List<String> importFilenameList = (List<String>) statement.execute(routerConfig, "select:import->file");
 					for (String importFilename : importFilenameList) {

@@ -18,7 +18,7 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
- * 窗口输出模式
+ * 消息窗口输出模式
  * 
  * @author Huiyugeng
  * 

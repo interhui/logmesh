@@ -10,9 +10,9 @@ import org.pinae.logmesh.sender.TCPSender;
 import org.pinae.logmesh.sender.UDPSender;
 
 /**
- * 日志转发输出
+ * 消息转发输出
  * 
- * @author huiyugeng
+ * @author Huiyugeng
  * 
  */
 public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
@@ -42,6 +42,8 @@ public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 				if (dst != null && dst.length == 5) {
 					sender = new JMSSender(dst[0], dst[1], dst[2], dst[3], dst[4]);
 				}
+			} else if (protocol.equalsIgnoreCase("kafka")) {
+				// TODO send to kafka
 			}
 
 			if (sender != null) {

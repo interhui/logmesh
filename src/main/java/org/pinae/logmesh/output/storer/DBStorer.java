@@ -54,7 +54,7 @@ public class DBStorer implements Storer {
 	private String defaultSql = "insert into event(time, ip, owner, message) values ('${time}', '${ip}', '${owner}', '${message}')";
 
 	public DBStorer(Map<String, Object> config) {
-		this(config, MessagePool.getMessageQueue(config.containsKey("queue") ? (String)config.get("queue") : "DB_STORE_QUEUE"));
+		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "DB_STORE_QUEUE"));
 	}
 
 	public DBStorer(Map<String, Object> config, MessageQueue messageQueue) {

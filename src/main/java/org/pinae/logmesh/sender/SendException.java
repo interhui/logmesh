@@ -5,7 +5,6 @@ package org.pinae.logmesh.sender;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class SendException extends Exception {
 
