@@ -25,7 +25,7 @@ public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
 
 	}
 
-	public void init() {
+	public void initialize() {
 
 		String protocol = getStringValue("protocol", "udp");
 		String destination = getStringValue("destination", "127.0.0.1");

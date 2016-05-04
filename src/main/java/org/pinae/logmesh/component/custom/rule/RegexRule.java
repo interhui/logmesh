@@ -10,7 +10,6 @@ import org.pinae.logmesh.util.MatchUtils;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class RegexRule extends Rule {
 	

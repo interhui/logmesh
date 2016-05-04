@@ -59,9 +59,10 @@ public class RouterProcessor implements Processor {
 
 			if (routerObject != null && routerObject instanceof MessageRouter) {
 				MessageRouter router = (MessageRouter) routerObject;
-				router.init(); // 调用路由器初始化
-
-				routerList.add(router); // 加入路由队列
+				// 调用路由器初始化
+				router.initialize(); 
+				// 加入路由队列
+				routerList.add(router); 
 			}
 		}
 

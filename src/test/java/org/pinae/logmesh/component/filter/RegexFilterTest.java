@@ -18,7 +18,7 @@ public class RegexFilterTest {
 		
 		RegexFilter filter = new RegexFilter();
 		filter.setParameters(parameters);
-		filter.init();
+		filter.initialize();
 		
 		Message message = null;
 		

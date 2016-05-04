@@ -10,7 +10,8 @@ import org.pinae.logmesh.message.Message;
  * 
  */
 public class BasicCustomProcessor implements MessageProcessor {
-	public void init() {
+	
+	public void initialize() {
 
 	}
 

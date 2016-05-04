@@ -20,8 +20,8 @@ public class TextMessageLoader extends AbstractReceiver {
 
 	private boolean isStop;
 
-	public void init(Map<String, Object> config) {
-		super.init(config);
+	public void initialize(Map<String, Object> config) {
+		super.initialize(config);
 
 		this.path = super.config.getString("path", "");
 		this.cycle = super.config.getLong("cycle", 30 * 1000);

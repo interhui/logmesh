@@ -19,7 +19,7 @@ public class IPFilterTest {
 		
 		IPFilter filter = new IPFilter();
 		filter.setParameters(parameters);
-		filter.init();
+		filter.initialize();
 		
 		Message message = null;
 		

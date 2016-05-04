@@ -19,7 +19,7 @@ public class JMSReceiverTest {
 		parameters.put("type", "queue");
 		parameters.put("target", "test");
 
-		receiver.init(parameters);
+		receiver.initialize(parameters);
 		receiver.start("Test");
 
 	}

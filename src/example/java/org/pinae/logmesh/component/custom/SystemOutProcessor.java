@@ -21,7 +21,7 @@ public class SystemOutProcessor extends ProcessorInfo implements MessageProcesso
 	
 	private boolean displayMessage = true;
 
-	public void init() {
+	public void initialize() {
 		System.setOut(new OutStreamAppender(System.out));
 		this.displayMessage = getBooleanValue("display", true);
 	}

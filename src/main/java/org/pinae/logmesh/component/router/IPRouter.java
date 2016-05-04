@@ -25,8 +25,8 @@ public class IPRouter extends AbstractRouter {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void init() {
-		super.init();
+	public void initialize() {
+		super.initialize();
 
 		this.ruleNameSet = routerRuleMap.keySet();
 		for (String ruleName : this.ruleNameSet) {

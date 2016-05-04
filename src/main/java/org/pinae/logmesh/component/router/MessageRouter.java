@@ -10,12 +10,6 @@ import org.pinae.logmesh.message.Message;
  *
  */
 public interface MessageRouter extends MessageComponent {
-
-	/**
-	 * 初始化路由器
-	 */
-	public void init();
-
 	/**
 	 * 路由消息处理
 	 * 

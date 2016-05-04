@@ -17,7 +17,7 @@ public class BasicFilter extends AbstractFilter {
 	}
 
 	@Override
-	public void init() {
+	public void initialize() {
 		
 	}
 	

@@ -13,10 +13,13 @@ import org.pinae.logmesh.message.Message;
  *
  */
 public interface MessageMerger extends MessageComponent {
+	/* 日志归并池 */
+	public static Map<String, Message> MERGER_POOL = new ConcurrentHashMap<String, Message>();
 	
-	public static Map<String, Message> MERGER_POOL = new ConcurrentHashMap<String, Message>(); // 日志归并池
-	
-	public void init();
-	
+	/**
+	 * 消息归并
+	 * 
+	 * @param message 消息内容
+	 */
 	public void add(Message message);
 }

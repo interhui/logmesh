@@ -43,7 +43,7 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 	// 消息路由条件
 	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); 
 
-	public void init() {
+	public void initialize() {
 		String path = ClassLoaderUtils.getResourcePath("");
 		String routerFilename = getStringValue("file", "router.xml");
 

@@ -66,15 +66,18 @@ public class FilterProcessor implements Processor {
 
 			if (filterObject != null && filterObject instanceof MessageFilter) {
 				MessageFilter filter = (MessageFilter) filterObject;
-				filter.init(); // 调用过滤器初始化
+				 // 调用过滤器初始化
+				filter.initialize();
 
 				if (filterConfig.containsKey("startup")) {
 					String startup = (String) filterConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						filtersWithStartup.put(Integer.parseInt(startup), filter); // 加入顺序过滤器队列
+						 // 加入顺序过滤器队列
+						filtersWithStartup.put(Integer.parseInt(startup), filter);
 					}
 				} else {
-					filtersWithoutStartup.add(filter); // 加入无序过滤器队列
+					 // 加入无序过滤器队列
+					filtersWithoutStartup.add(filter);
 				}
 			}
 		}

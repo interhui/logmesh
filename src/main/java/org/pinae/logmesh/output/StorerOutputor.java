@@ -21,7 +21,7 @@ public class StorerOutputor extends ProcessorInfo implements MessageOutputor {
 
 	private Storer store;
 
-	public void init() {
+	public void initialize() {
 
 		String type = getStringValue("type", "file");
 
@@ -35,7 +35,8 @@ public class StorerOutputor extends ProcessorInfo implements MessageOutputor {
 			}
 
 			if (store != null) {
-				store.connect(); // 存储器连接
+				// 存储器连接
+				store.connect(); 
 			}
 		} catch (StorerException e) {
 			logger.error(String.format("StoreOutputor Exception: exception=%s", e.getMessage()));

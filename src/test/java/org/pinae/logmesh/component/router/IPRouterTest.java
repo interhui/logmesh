@@ -17,7 +17,7 @@ public class IPRouterTest {
 		
 		IPRouter router = new IPRouter();
 		router.setParameters(parameters);
-		router.init();
+		router.initialize();
 		
 		Message message = null;
 		

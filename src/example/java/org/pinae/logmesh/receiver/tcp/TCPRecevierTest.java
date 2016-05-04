@@ -20,7 +20,7 @@ public class TCPRecevierTest {
 		parameters.put("por", "514");
 
 		AbstractReceiver receiver = new TCPReceiver();
-		receiver.init(parameters);
+		receiver.initialize(parameters);
 		receiver.start("TCPReceiver");
 	}
 	

@@ -12,7 +12,7 @@ public interface MessageOutputor {
 	/**
 	 * 初始化消息输出器
 	 */
-	public void init();
+	public void initialize();
 
 	/**
 	 * 显示消息（回调函数）

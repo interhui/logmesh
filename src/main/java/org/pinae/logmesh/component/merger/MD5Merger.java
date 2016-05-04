@@ -5,7 +5,7 @@ import org.pinae.logmesh.util.MessageDigestUtils;
 
 public class MD5Merger extends AbstractMerger {
 
-	public void init() {
+	public void initialize() {
 		
 	}
 

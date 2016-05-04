@@ -17,7 +17,7 @@ public class RegexRouterTest {
 		
 		RegexRouter router = new RegexRouter();
 		router.setParameters(parameters);
-		router.init();
+		router.initialize();
 		
 		Message message = null;
 		

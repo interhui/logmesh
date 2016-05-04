@@ -36,7 +36,7 @@ public class MessagePool {
 	// 自定义消息队列 <消息队列名称, 消息队列>
 	public static Map<String, MessageQueue> CUSTOM_MESSAGE_QUEUE = new ConcurrentHashMap<String, MessageQueue>();
 
-	public static void init(Map<String, Object> config) {
+	public static void initialize(Map<String, Object> config) {
 
 		// 初始化固定消息队列
 		CUSTOM_MESSAGE_QUEUE.put("FILTER_QUEUE", FILTER_QUEUE);

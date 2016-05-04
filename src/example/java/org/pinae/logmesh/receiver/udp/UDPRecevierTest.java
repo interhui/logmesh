@@ -19,7 +19,7 @@ public class UDPRecevierTest {
 		parameters.put("por", "514");
 
 		AbstractReceiver receiver = new UDPReceiver();
-		receiver.init(parameters);
+		receiver.initialize(parameters);
 		receiver.start("UDPReceiver");
 	}
 }

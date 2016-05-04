@@ -27,8 +27,8 @@ public abstract class NettyReceiver extends AbstractReceiver implements EventDri
 	/* 消息内容编码 */
 	private String codec;
 
-	public void init(Map<String, Object> config) {
-		super.init(config);
+	public void initialize(Map<String, Object> config) {
+		super.initialize(config);
 		
 		this.port = super.config.getInt("port", 514);
 		this.msgType = super.config.getString("message", "String");

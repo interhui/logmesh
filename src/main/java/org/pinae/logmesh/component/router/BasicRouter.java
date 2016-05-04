@@ -11,7 +11,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  */
 public class BasicRouter extends ProcessorInfo implements MessageRouter {
 
-	public void init() {
+	public void initialize() {
 
 	}
 

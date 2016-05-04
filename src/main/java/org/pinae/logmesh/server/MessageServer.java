@@ -92,7 +92,7 @@ public class MessageServer {
 		
 		if (this.config != null) {
 			// 载入消息队列
-			MessagePool.init(config);
+			MessagePool.initialize(config);
 	
 			// 启动消息展示器
 			startOutputor(config);
@@ -225,7 +225,7 @@ public class MessageServer {
 					receiver.setOwner((String) config.get("owner"));
 				}
 
-				receiver.init(startupConfig);
+				receiver.initialize(startupConfig);
 				receiver.start(name);
 			}
 		}

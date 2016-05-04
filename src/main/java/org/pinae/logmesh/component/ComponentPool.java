@@ -81,11 +81,11 @@ public class ComponentPool {
 		List<MessageComponent> componentList = getComponent(clazz);
 		for (MessageComponent component : componentList) {
 			if (component instanceof MessageFilter) {
-				((MessageFilter) component).init();
+				((MessageFilter) component).initialize();
 			} else if (component instanceof MessageProcessor) {
-				((MessageProcessor) component).init();
+				((MessageProcessor) component).initialize();
 			} else if (component instanceof MessageRouter) {
-				((MessageRouter) component).init();
+				((MessageRouter) component).initialize();
 			}
 		}
 	}

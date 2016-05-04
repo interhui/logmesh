@@ -11,7 +11,7 @@ public class FileStorerProcessorTest extends ProcessorInfo implements MessagePro
 
 	private static Storer fileStore;
 
-	public void init() {
+	public void initialize() {
 		if (fileStore == null) {
 			fileStore = new FileStorer(super.getParameters());
 			try {

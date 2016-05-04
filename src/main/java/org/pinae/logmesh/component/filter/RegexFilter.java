@@ -38,7 +38,7 @@ public class RegexFilter extends AbstractFilter {
 	}
 
 	@Override
-	public void init() {
+	public void initialize() {
 
 		this.pass = getBooleanValue("pass", true);
 

@@ -18,7 +18,7 @@ public abstract class AbstractFilter extends ProcessorInfo implements MessageFil
 	
 	private static Logger logger = Logger.getLogger(MessageFilter.class);
 
-	public abstract void init();
+	public abstract void initialize();
 
 	public abstract Message filter(Message message);
 	

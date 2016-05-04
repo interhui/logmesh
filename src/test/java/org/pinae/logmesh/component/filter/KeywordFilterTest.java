@@ -19,7 +19,7 @@ public class KeywordFilterTest {
 		
 		KeywordFilter filter = new KeywordFilter();
 		filter.setParameters(parameters);
-		filter.init();
+		filter.initialize();
 		
 		Message message = null;
 		

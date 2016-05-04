@@ -64,15 +64,18 @@ public class CustomProcessor implements Processor {
 
 			if (processorObject != null && processorObject instanceof MessageProcessor) {
 				MessageProcessor processor = (MessageProcessor) processorObject;
-				processor.init(); // 处理器初始化
+				// 处理器初始化
+				processor.initialize(); 
 
 				if (processorConfig.containsKey("startup")) {
 					String startup = (String) processorConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						processorsWithStartup.put(Integer.parseInt(startup), processor); // 加入顺序过滤器队列
+						// 加入顺序过滤器队列
+						processorsWithStartup.put(Integer.parseInt(startup), processor); 
 					}
 				} else {
-					processorWithoutStartup.add(processor); // 加入无序处理器队列
+					 // 加入无序处理器队列
+					processorWithoutStartup.add(processor);
 				}
 			}
 		}

@@ -36,7 +36,7 @@ public class KeywordFilter extends AbstractFilter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
+	public void initialize() {
 		
 		this.pass = getBooleanValue("pass", true);
 		

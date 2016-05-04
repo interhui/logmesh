@@ -40,8 +40,8 @@ public class JMSReceiver extends AbstractReceiver implements EventDrivenReceiver
 	/* 消息目标 */
 	private String target;
 
-	public void init(Map<String, Object> config) {
-		super.init(config);
+	public void initialize(Map<String, Object> config) {
+		super.initialize(config);
 
 		String username = super.config.getString("username", ActiveMQConnection.DEFAULT_USER);
 		String password = super.config.getString("password", ActiveMQConnection.DEFAULT_PASSWORD);

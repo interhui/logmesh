@@ -8,7 +8,7 @@ public class TestOutputor implements MessageOutputor {
 
 	private static Logger logger = Logger.getLogger(TestOutputor.class);
 
-	public void init() {
+	public void initialize() {
 
 	}
 

@@ -26,8 +26,8 @@ public class TCPReceiver extends NettyReceiver {
 
 	private ServerBootstrap bootstrap = null;
 
-	public void init(Map<String, Object> config) {
-		super.init(config);
+	public void initialize(Map<String, Object> config) {
+		super.initialize(config);
 
 		logger.info(String.format("Start TCP Receiver AT %d", port));
 	}

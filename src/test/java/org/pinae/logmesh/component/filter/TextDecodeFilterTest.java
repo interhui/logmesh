@@ -18,7 +18,7 @@ public class TextDecodeFilterTest {
 		
 		TextDecodeFilter filter = new TextDecodeFilter();
 		filter.setParameters(parameters);
-		filter.init();
+		filter.initialize();
 		
 		Message message = null;
 

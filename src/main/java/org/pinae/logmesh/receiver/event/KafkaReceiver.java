@@ -26,8 +26,8 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 	/* 消息提交周期 */
 	private long fetchCycle = 1000;
 	
-	public void init(Map<String, Object> config) {
-		super.init(config);
+	public void initialize(Map<String, Object> config) {
+		super.initialize(config);
 		
 		Set<String> keySet = super.config.keySet();
 		for (String key : keySet) {

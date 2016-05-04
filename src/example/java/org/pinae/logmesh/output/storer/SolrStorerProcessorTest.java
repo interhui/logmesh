@@ -11,7 +11,7 @@ public class SolrStorerProcessorTest extends ProcessorInfo implements MessagePro
 
 	private Storer solrStore;
 
-	public void init() {
+	public void initialize() {
 		solrStore = new SolrStorer(super.getParameters());
 		try {
 			solrStore.connect();

@@ -39,7 +39,7 @@ public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 
 	}
 
-	public void init() {
+	public void initialize() {
 		initGUI(); // 初始化GUI元素
 
 		initEvent(); // 初始化GUI事件

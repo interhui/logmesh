@@ -57,7 +57,7 @@ public class OutputorProcessor implements Processor {
 
 			if (outputorObject != null && outputorObject instanceof MessageOutputor) {
 				MessageOutputor outputor = (MessageOutputor) outputorObject;
-				outputor.init();
+				outputor.initialize();
 
 				outputorList.add(outputor);
 			}

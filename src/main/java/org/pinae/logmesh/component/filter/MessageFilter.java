@@ -13,11 +13,6 @@ import org.pinae.logmesh.message.Message;
 public interface MessageFilter extends MessageComponent {
 
 	/**
-	 * 初始化过滤器
-	 */
-	public void init();
-
-	/**
 	 * 过滤消息
 	 * 
 	 * @param message 消息内容

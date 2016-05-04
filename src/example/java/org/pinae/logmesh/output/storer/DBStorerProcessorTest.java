@@ -18,7 +18,7 @@ public class DBStorerProcessorTest extends ProcessorInfo implements MessageProce
 	private static SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static SimpleDateFormat date = new SimpleDateFormat("yyyyMM");
 
-	public void init() {
+	public void initialize() {
 		dbStore = new DBStorer(super.getParameters());
 		try {
 			dbStore.connect();

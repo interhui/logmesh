@@ -47,7 +47,7 @@ public abstract class AbstractReceiver implements Receiver {
 	 * 
 	 * @param config 采集器配置信息
 	 */
-	public void init(Map<String, Object> config) {
+	public void initialize(Map<String, Object> config) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}

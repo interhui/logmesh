@@ -10,11 +10,6 @@ import org.pinae.logmesh.message.Message;
  */
 public interface MessageProcessor extends MessageComponent {
 	/**
-	 * 初始化消息处理器
-	 */
-	public void init();
-
-	/**
 	 * 消息处理方法
 	 * 
 	 * @param message 需要处理的消息

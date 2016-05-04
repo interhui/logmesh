@@ -24,7 +24,7 @@ public class RegexMerger extends AbstractMerger {
 
 	private List<Pattern> patternList = new ArrayList<Pattern>(); // 正则匹配
 	
-	public void init() {
+	public void initialize() {
 		
 	}
 

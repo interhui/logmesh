@@ -42,7 +42,7 @@ public class ClassifyFilter extends AbstractFilter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void init() {
+	public void initialize() {
 		if (hasParameter("file")) {
 			String path = ClassLoaderUtils.getResourcePath("");
 			String filterFilename = getStringValue("file", "filter/classify_filter.xml");

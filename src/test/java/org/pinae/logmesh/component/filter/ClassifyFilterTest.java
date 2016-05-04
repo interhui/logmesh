@@ -19,7 +19,7 @@ public class ClassifyFilterTest {
 		
 		ClassifyFilter filter = new ClassifyFilter();
 		filter.setParameters(parameters);
-		filter.init();
+		filter.initialize();
 		
 		Message message = null;
 		
