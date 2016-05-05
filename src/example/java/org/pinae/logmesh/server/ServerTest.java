@@ -14,8 +14,8 @@ public class ServerTest {
 		server.start();
 
 		// 5秒后启动消息发送(UDP方式)
-		// TimeUnit.SECONDS.sleep(5);
-		// new Thread(new MessageSenderExample(3, true), "MessageSender").start();
+		TimeUnit.SECONDS.sleep(5);
+		new Thread(new MessageSenderExample(3, true), "MessageSender").start();
 	}
 
 }

@@ -3,9 +3,9 @@ package org.pinae.logmesh.receiver.tcp;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.pinae.logmesh.sender.SendException;
-import org.pinae.logmesh.sender.Sender;
-import org.pinae.logmesh.sender.TCPSender;
+import org.pinae.logmesh.output.forward.SendException;
+import org.pinae.logmesh.output.forward.Sender;
+import org.pinae.logmesh.output.forward.TCPSender;
 
 /**
  * TCP消息发送器测试类

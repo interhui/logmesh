@@ -9,9 +9,9 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelHandler;
 import org.junit.Test;
-import org.pinae.logmesh.sender.SendException;
-import org.pinae.logmesh.sender.Sender;
-import org.pinae.logmesh.sender.TCPNIOSender;
+import org.pinae.logmesh.output.forward.SendException;
+import org.pinae.logmesh.output.forward.Sender;
+import org.pinae.logmesh.output.forward.TCPNIOSender;
 
 public class TCPNIOSenderTest {
 	

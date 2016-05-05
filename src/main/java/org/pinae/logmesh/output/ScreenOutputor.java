@@ -116,7 +116,7 @@ public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 		});
 	}
 
-	public void showMessage(Message message) {
+	public void output(Message message) {
 
 		String msg = null;
 
@@ -149,5 +149,12 @@ public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 			}
 		}
 
+	}
+
+	public void close() {
+		if (frame != null) {
+			frame.dispose();
+		}
+		
 	}
 }

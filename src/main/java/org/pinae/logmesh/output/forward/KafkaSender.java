@@ -1,4 +1,4 @@
-package org.pinae.logmesh.sender;
+package org.pinae.logmesh.output.forward;
 
 import java.util.Properties;
 
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -16,6 +17,8 @@ import org.pinae.logmesh.message.Message;
  */
 public class KafkaSender implements Sender {
 	
+	private static Logger logger = Logger.getLogger(KafkaSender.class);
+	
 	/* 消息主题 */
 	private String topic = "default";;
 	/* 是否异步模式 */
@@ -25,6 +28,10 @@ public class KafkaSender implements Sender {
 	
 	private Properties props = new Properties();
 	private KafkaProducer<String, String> producer;
+	
+	public KafkaSender(String url, String topic) {
+		this(url, topic, null, false, null);
+	}
 	
 	public KafkaSender(String url, String topic, String clientId, boolean isAsync, Class<?> callbackClass) {
 		this.topic = topic;
@@ -53,26 +60,30 @@ public class KafkaSender implements Sender {
 				msgContent = message.toString();
 			} else if (message instanceof Message) {
 				Message msg = (Message)message;
-				msgKey = StringUtils.join(new String[]{Long.toString(msg.getTimestamp()), msg.getIP(), msg.getOwner()}, "-");
+				msgKey = StringUtils.join(new String[]{Long.toString(msg.getTimestamp()), msg.getIP(), msg.getOwner()}, "$");
 				msgContent = msg.getMessage().toString();
 			}
 			
 			if (msgKey != null && msgContent != null) {
-				if (this.isAsync && this.callbackClass != null) {
-					try {
-						Object callbackObj = this.callbackClass.newInstance();
-						if (callbackObj != null && callbackObj instanceof KafkaSenderCallback) {
-							KafkaSenderCallback senderCallback = (KafkaSenderCallback)callbackObj;
-							senderCallback.setMessage(message);
-							this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent), senderCallback);
+				try {
+					if (this.isAsync && this.callbackClass != null) {
+						try {
+							Object callbackObj = this.callbackClass.newInstance();
+							if (callbackObj != null && callbackObj instanceof KafkaSenderCallback) {
+								KafkaSenderCallback senderCallback = (KafkaSenderCallback)callbackObj;
+								senderCallback.setMessage(message);
+								this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent), senderCallback);
+							}
+						} catch (InstantiationException e) {
+							throw new SendException(e);
+						} catch (IllegalAccessException e) {
+							throw new SendException(e);
 						}
-					} catch (InstantiationException e) {
-						throw new SendException(e);
-					} catch (IllegalAccessException e) {
-						throw new SendException(e);
+					} else {
+						this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent));
 					}
-				} else {
-					this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent));
+				}catch (Exception e) {
+					throw new SendException(e);
 				}
 			}
 		}

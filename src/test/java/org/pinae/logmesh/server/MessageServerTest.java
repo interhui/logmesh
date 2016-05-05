@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
+import org.pinae.ndb.Ndb;
 
 public class MessageServerTest {
 	
@@ -24,20 +25,20 @@ public class MessageServerTest {
 			
 			assertEquals(config.get("owner"), "Pinae");
 			
-			List<Map<String, Object>> processorList = (List<Map<String, Object>>)config.get("processor");
-			assertEquals(processorList.size(), 3);
+			List<Map<String, Object>> processorList = (List<Map<String, Object>>)Ndb.execute(config, "select:processor");
+			assertEquals(processorList.size(), 1);
 			
-			List<Map<String, Object>> queueList = (List<Map<String, Object>>)config.get("queue");
+			List<Map<String, Object>> queueList = (List<Map<String, Object>>)Ndb.execute(config, "select:queue");
 			assertEquals(queueList.size(), 3);
 			
-			List<Map<String, Object>> filterList = (List<Map<String, Object>>)config.get("filter");
+			List<Map<String, Object>> filterList = (List<Map<String, Object>>)Ndb.execute(config, "select:filter");
 			assertEquals(filterList.size(), 5);
 			
-			List<Map<String, Object>> receiverList = (List<Map<String, Object>>)config.get("receiver");
-			assertEquals(receiverList.size(), 5);
+			List<Map<String, Object>> receiverList = (List<Map<String, Object>>)Ndb.execute(config, "select:receiver");
+			assertEquals(receiverList.size(), 4);
 			
-			List<Map<String, Object>> outputorList = (List<Map<String, Object>>)config.get("output");
-			assertEquals(outputorList.size(), 2);
+			List<Map<String, Object>> outputorList = (List<Map<String, Object>>)Ndb.execute(config, "select:outputor");
+			assertEquals(outputorList.size(), 3);
 		}
 	}
 }

@@ -86,7 +86,7 @@ public class ServerBuilderTest {
 	}
 
 	public void addProcessor() {
-		builder.addProcessor("SystemOutProcessor", true, org.pinae.logmesh.component.custom.SystemOutProcessor.class, null);
+		builder.addProcessor("SystemOutProcessor", true, org.pinae.logmesh.component.custom.DemoCustomProcessor.class, null);
 	}
 
 	public void addOutput() {

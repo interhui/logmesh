@@ -19,30 +19,28 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	private long count = 0;
 
 	/* 消息队列最大容量 */
-	private int size = 0;
+	private int maxSize = 0;
 
 	public MessageQueue(String name) {
 		this(name, Integer.MAX_VALUE);
 	}
 
-	public MessageQueue(String name, int size) {
+	public MessageQueue(String name, int maxSize) {
 		this.name = name;
-		this.size = size;
+		this.maxSize = maxSize;
 	}
 
 	@Override
 	public boolean offer(Message message) {
 		// 如果超出预定容量则根据FIFO原则进行弹出
 		synchronized (this) {
-			if (super.size() >= this.size) {
+			if (super.size() >= this.maxSize) {
 				super.poll();
 			}
-
 			boolean result = super.offer(message);
 			if (result) {
 				count++;
 			}
-
 			return result;
 		}
 	}
@@ -66,8 +64,8 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	 * 
 	 * @param size 消息队列长度
 	 */
-	public void setSize(int size) {
-		this.size = size;
+	public void setMaxSize(int size) {
+		this.maxSize = size;
 	}
 	
 	/**
@@ -75,8 +73,8 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	 * 
 	 * @return 消息对了长度
 	 */
-	public int getSize() {
-		return this.size;
+	public int getMaxSize() {
+		return this.maxSize;
 	}
 
 	/**
@@ -100,6 +98,6 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	}
 
 	public String toString() {
-		return String.format("Queue:%s, Size:%d", name, size);
+		return String.format("Message queue:%s, size:%d", name, maxSize);
 	}
 }

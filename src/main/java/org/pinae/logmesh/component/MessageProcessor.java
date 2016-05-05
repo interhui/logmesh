@@ -14,5 +14,5 @@ public interface MessageProcessor extends MessageComponent {
 	 * 
 	 * @param message 需要处理的消息
 	 */
-	public void porcess(Message message);
+	public Message porcess(Message message);
 }

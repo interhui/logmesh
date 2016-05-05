@@ -1,4 +1,4 @@
-package org.pinae.logmesh.sender;
+package org.pinae.logmesh.output.forward;
 
 import java.io.Serializable;
 
@@ -11,6 +11,7 @@ import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
@@ -42,6 +43,21 @@ public class JMSSender implements Sender {
 	/* MQ目标 */
 	private String target;
 
+	/**
+	 * 构造函数
+	 * 
+	 * @param url MQ服务URL地址
+	 * @param type MQ类型: queue 队列, topic 主题
+	 * @param target MQ目标
+	 */
+	public JMSSender(String url, String type, String target) {
+		this.url = url;
+		this.user = ActiveMQConnection.DEFAULT_USER;
+		this.password = ActiveMQConnection.DEFAULT_PASSWORD;
+		this.type = type;
+		this.target = target;
+	}
+	
 	/**
 	 * 构造函数
 	 * 

@@ -140,7 +140,7 @@ public abstract class AbstractRouter extends ProcessorInfo implements MessageRou
 				List<MessageOutputor> outputors = this.outputorMap.get(rule);
 				if (outputors != null) {
 					for (MessageOutputor outputor : outputors) {
-						outputor.showMessage(message);
+						outputor.output(message);
 					}
 				}
 			}

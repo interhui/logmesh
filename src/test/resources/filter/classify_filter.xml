@@ -12,6 +12,11 @@
 		<label>IP</label>
 		<value>127.0.0.1</value>
 	</filter>
+	<filter>
+		<type>Unknown</type>
+		<label>IP</label>
+		<value>0.0.0.0</value>
+	</filter>
 	<!-- 根据消息Owner生成标签 -->
 	<filter>
 		<type>Huiyugeng</type>

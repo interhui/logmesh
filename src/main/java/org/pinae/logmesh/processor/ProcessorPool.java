@@ -2,14 +2,12 @@ package org.pinae.logmesh.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pinae.logmesh.output.MessageOutputor;
 
 /**
  * 处理器线程池
@@ -18,11 +16,6 @@ import org.pinae.logmesh.output.MessageOutputor;
  * 
  */
 public class ProcessorPool {
-	
-	/**
-	 * 消息展示器列表
-	 */
-	public static List<MessageOutputor> OUTPUTOR_LIST = Collections.synchronizedList(new ArrayList<MessageOutputor>());
 
 	/**
 	 * 处理器: 过滤器/合并器/消息路由/自定义处理器

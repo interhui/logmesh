@@ -97,14 +97,15 @@ public class CustomProcessor implements Processor {
 		for (MessageProcessor processor : this.processorList) {
 			ComponentPool.registe(processor);
 		}
-
-		this.isStop = false; // 设置线程启动标记
-		ProcessorFactory.getThread(name, this).start(); // 启动自定义处理器线程
+		// 设置线程启动标记
+		this.isStop = false;
+		// 启动自定义处理器线程
+		ProcessorFactory.getThread(name, this).start(); 
 	}
 
 	public void stop() {
-		this.isStop = true; // 设置线程停止标记
-
+		// 设置线程停止标记
+		this.isStop = true;
 		logger.info("Custom Processor STOP");
 	}
 
@@ -116,7 +117,10 @@ public class CustomProcessor implements Processor {
 				if (message != null) {
 					for (MessageProcessor processor : processorList) {
 						if (processor != null) {
-							processor.porcess(message);
+							message = processor.porcess(message);
+							if (message != null) {
+								MessagePool.ROUTE_QUEUE.offer(message);
+							}
 						}
 					}
 				}

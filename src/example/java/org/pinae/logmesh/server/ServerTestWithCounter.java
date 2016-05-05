@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.component.custom.SystemOutProcessor;
+import org.pinae.logmesh.component.custom.DemoCustomProcessor;
 import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 import org.pinae.logmesh.server.helper.MessageCounter;
@@ -23,7 +23,7 @@ public class ServerTestWithCounter {
 		
 		Map<String, Object> processorParameters = new HashMap<String, Object>();
 		processorParameters.put("display", "false");
-		builder.addProcessor("PrintProcessor", true, SystemOutProcessor.class, processorParameters);
+		builder.addProcessor("PrintProcessor", true, DemoCustomProcessor.class, processorParameters);
 		
 		Map<String, Object> counterParameters = new HashMap<String, Object>();
 		counterParameters.put("enable", "true");

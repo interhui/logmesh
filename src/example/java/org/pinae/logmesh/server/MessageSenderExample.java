@@ -4,9 +4,9 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.sender.SendException;
-import org.pinae.logmesh.sender.Sender;
-import org.pinae.logmesh.sender.UDPSender;
+import org.pinae.logmesh.output.forward.SendException;
+import org.pinae.logmesh.output.forward.Sender;
+import org.pinae.logmesh.output.forward.UDPSender;
 
 public class MessageSenderExample implements Runnable {
 	

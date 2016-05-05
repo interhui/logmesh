@@ -1,5 +1,6 @@
 package org.pinae.logmesh.output;
 
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -8,16 +9,21 @@ import org.pinae.logmesh.message.Message;
  * @author Huiyugeng
  * 
  */
-public interface MessageOutputor {
+public interface MessageOutputor extends MessageComponent {
 	/**
 	 * 初始化消息输出器
 	 */
 	public void initialize();
 
 	/**
-	 * 显示消息（回调函数）
+	 * 输出消息(回调函数)
 	 * 
 	 * @param message 消息体
 	 */
-	public void showMessage(Message message);
+	public void output(Message message);
+	
+	/**
+	 * 关闭输出器
+	 */
+	public void close();
 }

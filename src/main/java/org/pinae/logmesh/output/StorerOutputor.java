@@ -43,11 +43,19 @@ public class StorerOutputor extends ProcessorInfo implements MessageOutputor {
 		}
 	}
 
-	public void showMessage(Message message) {
+	public void output(Message message) {
 		if (store != null && message != null) {
 			store.save(message);
 		}
-
 	}
 
+	public void close() {
+		if (store != null) {
+			try {
+				store.close();
+			} catch (StorerException e) {
+				logger.error(String.format("StoreOutputor Exception: exception=%s", e.getMessage()));
+			}
+		}
+	}
 }

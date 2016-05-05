@@ -17,20 +17,23 @@ import org.pinae.ndb.Ndb;
 public class MessagePool {
 	private static Logger logger = Logger.getLogger(MessagePool.class);
 
-	/* 原始消息处理队列 */
-	public static final MessageQueue ORIGINAL_QUEUE = new MessageQueue("ORIGINAL_QUEUE");
-
 	/* 消息过滤队列 */
 	public static final MessageQueue FILTER_QUEUE = new MessageQueue("FILTER_QUEUE");
-
-	/* 消息处理队列 */
-	public static final MessageQueue PROCESSOR_QUEUE = new MessageQueue("PROCESSOR_QUEUE");
 
 	/* 消息归并队列 */
 	public static final MessageQueue MERGER_QUEUE = new MessageQueue("MERGER_QUEUE");
 
 	/* 消息路由队列 */
 	public static final MessageQueue ROUTE_QUEUE = new MessageQueue("ROUTE_QUEUE");
+	
+	/* 自定义消息处理队列 */
+	public static final MessageQueue PROCESSOR_QUEUE = new MessageQueue("PROCESSOR_QUEUE");
+	
+	/* 消息输出队列 */
+	public static final MessageQueue OUTPUT_QUEUE = new MessageQueue("OUTPUT_QUEUE");
+	
+	/* 原始消息处理队列 */
+	public static final MessageQueue ORIGINAL_QUEUE = new MessageQueue("ORIGINAL_QUEUE");
 
 	/* 计数器队列 */
 	public static final MessageQueue COUNTER_QUEUE = new MessageQueue("COUNTER_QUEUE");
@@ -43,8 +46,9 @@ public class MessagePool {
 
 		// 初始化固定消息队列
 		CUSTOM_MESSAGE_QUEUE.put("FILTER_QUEUE", FILTER_QUEUE);
-		CUSTOM_MESSAGE_QUEUE.put("PROCESSOR_QUEUE", PROCESSOR_QUEUE);
 		CUSTOM_MESSAGE_QUEUE.put("ROUTE_QUEUE", ROUTE_QUEUE);
+		CUSTOM_MESSAGE_QUEUE.put("PROCESSOR_QUEUE", PROCESSOR_QUEUE);
+		CUSTOM_MESSAGE_QUEUE.put("OUTPUT_QUEUE", OUTPUT_QUEUE);
 		CUSTOM_MESSAGE_QUEUE.put("ORIGINAL_QUEUE", ORIGINAL_QUEUE);
 		CUSTOM_MESSAGE_QUEUE.put("COUNTER_QUEUE", COUNTER_QUEUE);
 

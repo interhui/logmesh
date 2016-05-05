@@ -4,9 +4,9 @@ import static org.junit.Assert.fail;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.junit.Test;
-import org.pinae.logmesh.sender.JMSSender;
-import org.pinae.logmesh.sender.SendException;
-import org.pinae.logmesh.sender.Sender;
+import org.pinae.logmesh.output.forward.JMSSender;
+import org.pinae.logmesh.output.forward.SendException;
+import org.pinae.logmesh.output.forward.Sender;
 
 public class JMSSenderTest {
 	

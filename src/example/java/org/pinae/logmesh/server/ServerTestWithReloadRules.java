@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.pinae.logmesh.component.ComponentPool;
 import org.pinae.logmesh.component.MessageComponent;
-import org.pinae.logmesh.component.custom.SystemOutProcessor;
+import org.pinae.logmesh.component.custom.DemoCustomProcessor;
 import org.pinae.logmesh.component.filter.IPFilter;
 import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
@@ -23,7 +23,7 @@ public class ServerTestWithReloadRules {
 		MessageServerBuilder builder = new MessageServerBuilder();
 		builder.addFilter(1, "IPFilter", true, IPFilter.class, ipFilterParameters);
 		builder.addReceiver(MessageServerBuilder.RECEIVER_UDP, true, false, "utf-8", null);
-		builder.addProcessor("PrintProcessor", true, SystemOutProcessor.class, null);
+		builder.addProcessor("PrintProcessor", true, DemoCustomProcessor.class, null);
 		
 		builder.addOutputor("Windows", true, ScreenOutputor.class, null);
 

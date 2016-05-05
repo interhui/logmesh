@@ -12,7 +12,7 @@ public class TestProcessor extends ProcessorInfo implements MessageProcessor {
 		this.routerType = getStringValue("type", "");
 	}
 
-	public void porcess(Message message) {
+	public Message porcess(Message message) {
 		String ip = message.getIP();
 		String owner = message.getOwner();
 		Object msgContent = message.getMessage();
@@ -21,6 +21,7 @@ public class TestProcessor extends ProcessorInfo implements MessageProcessor {
 			msgContent = this.routerType + ":" + ip + " " + owner + " " + msgContent.toString();
 			message.setMessage(msgContent);
 		}
+		return message;
 	}
 
 }

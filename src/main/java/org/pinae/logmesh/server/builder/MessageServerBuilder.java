@@ -21,7 +21,8 @@ public class MessageServerBuilder {
 	public static final String RECEIVER_UDP = "udp";
 	public static final String RECEIVER_TCP = "tcp";
 	public static final String RECEIVER_JMS = "jms";
-
+	public static final String RECEIVER_KAFKA = "kafka";
+	
 	/**
 	 * 获得消息服务配置信息
 	 * 
@@ -253,16 +254,16 @@ public class MessageServerBuilder {
 	 * @param parameters 消息输出器参数
 	 */
 	public void addOutputor(String name, boolean active, String outputClass, Map<String, Object> parameters) {
-		Object result = Ndb.execute(serverConfig, String.format("select:server->output->name:%s", name));
+		Object result = Ndb.execute(serverConfig, String.format("select:server->outputor->name:%s", name));
 		if (result instanceof List && ((List<?>) result).size() > 0) {
 			Ndb.execute(serverConfig,
-					String.format("update:server->output->name:%s !! enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
+					String.format("update:server->outputor->name:%s !! enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
 		} else {
 			Ndb.execute(serverConfig,
-					String.format("insert:server->output !! name=%s, enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
+					String.format("insert:server->outputor !! name=%s, enable=%s, kwClass=%s", name, Boolean.toString(active), outputClass));
 		}
 
-		Object output = Ndb.execute(serverConfig, String.format("one:server->output->name:%s", name));
+		Object output = Ndb.execute(serverConfig, String.format("one:server->outputor->name:%s", name));
 		if (output instanceof Map) {
 			setParameter((Map<?, ?>) output, parameters);
 		}
@@ -289,13 +290,11 @@ public class MessageServerBuilder {
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("key", key);
 				param.put("value", value);
-
 				paramList.add(param);
 			}
 
 			Map params = new HashMap();
 			params.put("parameter", paramList);
-
 			target.put("parameters", params);
 		}
 		return target;

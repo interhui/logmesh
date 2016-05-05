@@ -1,4 +1,4 @@
-package org.pinae.logmesh.sender;
+package org.pinae.logmesh.output.forward;
 
 /**
  * 

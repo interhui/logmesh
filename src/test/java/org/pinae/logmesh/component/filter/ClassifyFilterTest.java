@@ -71,6 +71,6 @@ public class ClassifyFilterTest {
 	private boolean isWorkTime() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String time = dateFormat.format(System.currentTimeMillis());
-		return MatchUtils.matchTime("10:00 - 23:00", time);
+		return MatchUtils.matchTime("10:00:00 - 23:00:00", time);
 	}
 }

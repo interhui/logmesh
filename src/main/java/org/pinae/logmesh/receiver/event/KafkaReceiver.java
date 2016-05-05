@@ -37,7 +37,9 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 			}
 		}
 		this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, super.config.getString("url", "127.0.0.1:9092"));
-		this.props.put(ConsumerConfig.CLIENT_ID_CONFIG, super.config.getString("clientId", null));
+		if (super.config.containsKey("clientId")) {
+			this.props.put(ConsumerConfig.CLIENT_ID_CONFIG, super.config.getString("clientId", null));
+		}
 		this.props.put(ConsumerConfig.GROUP_ID_CONFIG, super.config.getString("groupId", "default-group"));
 		this.props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, super.config.getString("autoCommit", "true"));
 		this.props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, super.config.getString("autoCommitInterval", "1000"));
@@ -80,26 +82,23 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 
 	private class MessageConsumer extends ShutdownableThread {
 		
-		private KafkaConsumer<Long, String> consumer;
+		private KafkaConsumer<String, String> consumer;
 		
 		public MessageConsumer(Properties props) {
 			super("Kafaka-Receiver", false);
-			this.consumer = new KafkaConsumer<Long, String>(props);
+			this.consumer = new KafkaConsumer<String, String>(props);
 		}
 
 		@Override
 		public void doWork() {
 			this.consumer.subscribe(Collections.singletonList(topic));
-			ConsumerRecords<Long, String> records = consumer.poll(fetchCycle);
-			for (ConsumerRecord<Long, String> record : records) {
+			ConsumerRecords<String, String> records = consumer.poll(fetchCycle);
+			for (ConsumerRecord<String, String> record : records) {
+				String key = record.key();
 				String message = record.value();
-				if (message!= null && message.matches("\\d+.\\d+.\\d+.\\d+:.*")) {
-
-					int split = message.indexOf(":");
-					String ip = message.substring(0, split - 1);
-					String text = message.substring(split + 1);
-
-					addMessage(new Message(ip, text));
+				String keys[] = key.split("$");
+				if (message != null && keys != null && keys.length == 3) {
+					addMessage(new Message(keys[1], keys[2], message));
 				} else {
 					addMessage(new Message(message));
 				}

@@ -12,10 +12,14 @@ public class TestOutputor implements MessageOutputor {
 
 	}
 
-	public void showMessage(Message message) {
+	public void output(Message message) {
 		if (message != null && message.getMessage() != null) {
 			logger.info(message.getMessage().toString());
 		}
+	}
+
+	public void close() {
+		
 	}
 
 }

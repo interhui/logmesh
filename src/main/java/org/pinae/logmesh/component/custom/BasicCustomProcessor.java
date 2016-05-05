@@ -15,7 +15,7 @@ public class BasicCustomProcessor implements MessageProcessor {
 
 	}
 
-	public void porcess(Message message) {
-
+	public Message porcess(Message message) {
+		return message;
 	}
 }

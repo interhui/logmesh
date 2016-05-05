@@ -130,11 +130,6 @@
 			<artifactId>kafka_2.10</artifactId>
 			<version>0.9.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.hbase</groupId>
-			<artifactId>hbase-client</artifactId>
-			<version>1.2.1</version>
-		</dependency>
 	</dependencies>
 
 	<organization>
