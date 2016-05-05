@@ -50,11 +50,10 @@
 			<parameter key="password" value="jms"/>
 		</parameters>
 	</receiver>
-	<!-- Kafka采集器配置 -->
-	<!-- 消息格式为 <Long, String> -->
+	<!-- Kafka采集器配置, 消息格式为 <String, String> -->
 	<receiver>
 		<type>kafka</type>
-		<enable>true</enable>
+		<enable>false</enable>
 		<original>true</original>
 		<codec>utf8</codec>
 		<!--Kafka采集器配置参数
