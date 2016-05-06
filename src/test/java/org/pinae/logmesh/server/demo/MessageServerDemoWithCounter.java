@@ -1,4 +1,4 @@
-package org.pinae.logmesh.server;
+package org.pinae.logmesh.server.demo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,12 +9,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.custom.DemoCustomProcessor;
 import org.pinae.logmesh.output.ScreenOutputor;
+import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 import org.pinae.logmesh.server.helper.MessageCounter;
 
-public class ServerTestWithCounter {
-	
-	private static Logger logger = Logger.getLogger(ServerTestWithCounter.class);
+public class MessageServerDemoWithCounter {
 
 	public static void main(String[] args) throws InterruptedException {
 

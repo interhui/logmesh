@@ -1,4 +1,4 @@
-package org.pinae.logmesh.server;
+package org.pinae.logmesh.server.demo;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;

@@ -43,14 +43,25 @@ public class ComponentPool {
 	 * @return 组件类列表
 	 */
 	public static List<MessageComponent> get(Class<?> clazz) {
+		String className = clazz.getSimpleName();
+		return get(className);
+	}
+	
+	/**
+	 * 根据类信息获取组件列表
+	 * 
+	 * @param className 需要获取的组件类的名称
+	 * 
+	 * @return 组件类列表
+	 */
+	public static List<MessageComponent> get(String className) {
 		List<MessageComponent> componentList = new ArrayList<MessageComponent>();
-		String name = clazz.getSimpleName();
 
 		synchronized (COMPONENT_POOL) {
 			Set<String> componentNameSet = COMPONENT_POOL.keySet();
 
 			for (String componentName : componentNameSet) {
-				if (componentName.startsWith(name)) {
+				if (componentName.startsWith(className)) {
 					MessageComponent component = COMPONENT_POOL.get(componentName);
 					componentList.add(component);
 				}

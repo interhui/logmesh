@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.message.MessagePool;
-import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.processor.ProcessorPool;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
@@ -177,7 +177,7 @@ public class MessageServer {
 
 			String name = "";
 
-			Map<String, Object> startupConfig = ProcessorFactory.createParameter(receiverConfig);
+			Map<String, Object> startupConfig = ComponentFactory.createParameter(receiverConfig);
 			// 进行参数格式转换
 			for (Entry<String, Object> entry : receiverConfig.entrySet()) {
 				startupConfig.put(entry.getKey(), entry.getValue().toString());
@@ -243,7 +243,7 @@ public class MessageServer {
 
 		Map<String, Object> originalConfig = (Map<String, Object>) Ndb.execute(config, "one:original");
 		
-		OriginalMessageStorer messageStorer = new OriginalMessageStorer(ProcessorFactory.createParameter(originalConfig));
+		OriginalMessageStorer messageStorer = new OriginalMessageStorer(ComponentFactory.createParameter(originalConfig));
 		messageStorer.start();
 
 		long startupTime = System.currentTimeMillis() - startTime;
@@ -261,7 +261,7 @@ public class MessageServer {
 		long startTime = System.currentTimeMillis();
 
 		Map<String, Object> counterConfig = (Map<String, Object>) Ndb.execute(config, "one:counter");
-		this.messageCounter = new MessageCounter(ProcessorFactory.createParameter(counterConfig));
+		this.messageCounter = new MessageCounter(ComponentFactory.createParameter(counterConfig));
 
 		messageCounter.start("MessageCounter");
 

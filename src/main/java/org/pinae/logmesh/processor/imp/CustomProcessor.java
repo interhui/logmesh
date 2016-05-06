@@ -8,7 +8,9 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.component.custom.BasicCustomProcessor;
 import org.pinae.logmesh.message.Message;
@@ -58,10 +60,10 @@ public class CustomProcessor implements Processor {
 
 		for (Map<String, Object> processorConfig : processorConfigList) {
 
-			Object processorObject = ProcessorFactory.create((Map<String, Object>) processorConfig);
+			MessageComponent processorComponent = ComponentFactory.create((Map<String, Object>) processorConfig);
 
-			if (processorObject != null && processorObject instanceof MessageProcessor) {
-				MessageProcessor processor = (MessageProcessor) processorObject;
+			if (processorComponent != null && processorComponent instanceof MessageProcessor) {
+				MessageProcessor processor = (MessageProcessor) processorComponent;
 				// 处理器初始化
 				processor.initialize(); 
 

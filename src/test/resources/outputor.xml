@@ -5,13 +5,15 @@
 	<outputor>
 		<!--输出器名称-->
 		<name>jframe-screen</name>
+		<!-- 是否单例模式 -->
+		<singleton>true</singleton>
 		<!--是否启动输出器:true/false-->
 		<enable>true</enable>
 		<!--输出器类:窗口输出器-->
 		<class>org.pinae.logmesh.output.ScreenOutputor</class>
 		<parameters>
 			<!--窗口标题-->
-			<parameter key="title" value="logmesh --- Free Log Collector"/>
+			<parameter key="title" value="logmesh --- Message Collector"/>
 			<!--窗口初始宽度-->
 			<parameter key="width" value="900"/>
 			<!--窗口初始高度-->
@@ -57,7 +59,7 @@
 			<!--输出方式：file/db/solr-->
 			<parameter key="type" value="file"/>
 			
-			<parameter key="path" value="d:\TestData\log"/>
+			<parameter key="path" value="d:\TestData\message"/>
 			<parameter key="title" value="message"/>
 			<parameter key="ext" value="log"/>
 		</parameters>

@@ -36,7 +36,7 @@ public class SolrStorer implements Storer {
 	private MessageQueue messageQueue;
 
 	public SolrStorer(Map<String, Object> config) {
-		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "SOLR_STORE_QUEUE"));
+		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "SOLR_STORE_QUEUE"));
 	}
 
 	public SolrStorer(Map<String, Object> config, MessageQueue messageQueue) {
@@ -132,7 +132,7 @@ public class SolrStorer implements Storer {
 								try {
 									solr.close();
 								} catch (IOException e) {
-									
+
 								}
 							}
 						}
@@ -146,13 +146,16 @@ public class SolrStorer implements Storer {
 		}
 
 		public void stop() {
-			this.isStop = true; // 设置线程停止标志
+			// 设置线程停止标志
+			this.isStop = true;
 			logger.info("Solr Store STOP");
 		}
 
 		public void start(String name) {
-			this.isStop = false; // 设置线程启动标志
-			ProcessorFactory.getThread(name, this).start(); // Solr存储线程启动
+			// 设置线程启动标志
+			this.isStop = false;
+			// Solr存储线程启动
+			ProcessorFactory.getThread(name, this).start();
 		}
 
 	}

@@ -1,4 +1,4 @@
-package org.pinae.logmesh.server;
+package org.pinae.logmesh.server.demo;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.ndb.Ndb;

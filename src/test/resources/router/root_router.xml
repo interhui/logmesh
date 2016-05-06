@@ -8,8 +8,8 @@
 			<enable>false</enable>
 			<class>org.pinae.logmesh.component.filter.IPFilter</class>
 			<parameters>
-				<parameter key="file" value="filter/ip_filter.xml"/>
-				<parameter key="pass" value="true"/>
+				<parameter key="file" value="filter/ip_filter.xml" />
+				<parameter key="pass" value="true" />
 			</parameters>
 		</filter>
 		<filter>
@@ -18,8 +18,8 @@
 			<enable>true</enable>
 			<class>org.pinae.logmesh.component.filter.KeywordFilter</class>
 			<parameters>
-				<parameter key="file" value="filter/keyword_filter.xml"/>
-				<parameter key="pass" value="true"/>
+				<parameter key="file" value="filter/keyword_filter.xml" />
+				<parameter key="pass" value="true" />
 			</parameters>
 		</filter>
 	</rule>

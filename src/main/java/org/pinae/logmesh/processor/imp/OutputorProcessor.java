@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.output.MessageOutputor;
@@ -80,10 +82,10 @@ public class OutputorProcessor implements Processor {
 
 		for (Map<String, Object> outputConfig : outputConfigList) {
 
-			Object outputorObject = ProcessorFactory.create(outputConfig);
+			MessageComponent outputorComponent = ComponentFactory.create(outputConfig);
 
-			if (outputorObject != null && outputorObject instanceof MessageOutputor) {
-				MessageOutputor outputor = (MessageOutputor) outputorObject;
+			if (outputorComponent != null && outputorComponent instanceof MessageOutputor) {
+				MessageOutputor outputor = (MessageOutputor) outputorComponent;
 				outputor.initialize();
 				outputorList.add(outputor);
 			}

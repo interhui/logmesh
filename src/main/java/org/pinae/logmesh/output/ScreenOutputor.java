@@ -31,24 +31,34 @@ public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 
 	private List<Integer> messageLengthList = new ArrayList<Integer>();
 
-	private int maxRows = 100; // 最大行数
-	private int bufferRows = maxRows / 10; // 缓冲行数
-	private int bufferRowsCount = 0; // 缓冲行数计数器
+	/* 最大行数 */
+	private int maxRows = 100;
+	/* 缓冲行数 */
+	private int bufferRows = maxRows / 10;
+	/* 缓冲行数计数器 */
+	private int bufferRowsCount = 0;
+	
+	private static boolean INIT_FLAG;
 
 	public ScreenOutputor() {
 
 	}
 
 	public void initialize() {
-		initGUI(); // 初始化GUI元素
-
-		initEvent(); // 初始化GUI事件
-
-		this.maxRows = getIntegerValue("rows", 100);
-		bufferRows = maxRows / 10;
+		if (INIT_FLAG == false) {
+			// 初始化GUI元素
+			initGUI(); 
+			// 初始化GUI事件
+			initEvent();
+	
+			this.maxRows = getIntegerValue("rows", 100);
+			bufferRows = maxRows / 10;
+			
+			INIT_FLAG = true;
+		}
 	}
 
-	public void initGUI() {
+	private  void initGUI() {
 		frame = new JFrame();
 
 		frame.setTitle("LogMesh");

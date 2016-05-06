@@ -6,7 +6,7 @@
 		<!-- 采集器类型 udp/tcp/jms/kafka -->
 		<type>udp</type>
 		<!--是否启动采集器:true/false-->
-		<enable>false</enable>
+		<enable>true</enable>
 		<!--是否记录原始数据-->
 		<original>true</original>
 		<!--消息编码, 当使用TextDecodeFilter时, 需要将codec制空-->
@@ -22,7 +22,7 @@
 	<!--TCP采集器配置-->
 	<receiver>
 		<type>tcp</type>
-		<enable>false</enable>
+		<enable>true</enable>
 		<original>true</original>
 		<codec>utf8</codec>
 		<parameters>

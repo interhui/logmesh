@@ -8,7 +8,9 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.filter.BasicFilter;
 import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.message.Message;
@@ -62,10 +64,10 @@ public class FilterProcessor implements Processor {
 
 		for (Map<String, Object> filterConfig : filterConfigList) {
 
-			Object filterObject = ProcessorFactory.create(filterConfig);
+			MessageComponent filterComponent = ComponentFactory.create(filterConfig);
 
-			if (filterObject != null && filterObject instanceof MessageFilter) {
-				MessageFilter filter = (MessageFilter) filterObject;
+			if (filterComponent != null && filterComponent instanceof MessageFilter) {
+				MessageFilter filter = (MessageFilter) filterComponent;
 				 // 调用过滤器初始化
 				filter.initialize();
 

@@ -1,4 +1,4 @@
-package org.pinae.logmesh.server;
+package org.pinae.logmesh.server.demo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +10,10 @@ import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.custom.DemoCustomProcessor;
 import org.pinae.logmesh.component.filter.IPFilter;
 import org.pinae.logmesh.output.ScreenOutputor;
+import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 
-public class ServerTestWithReloadRules {
+public class MessageServerDemoWithReloadRules {
 
 	public static void main(String[] args) throws InterruptedException {
 		

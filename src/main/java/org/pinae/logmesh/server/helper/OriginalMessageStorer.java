@@ -195,14 +195,14 @@ public class OriginalMessageStorer {
 
 		public void stop() {
 			this.isStop = true;
-
 			logger.info("Original Message Store STOP");
 		}
 
 		public void start(String name) {
-			this.isStop = false; // 设置线程启动标志
-
-			ProcessorFactory.getThread(name, this).start(); // 启动原始消息压缩线程
+			// 设置线程启动标志
+			this.isStop = false; 
+			// 启动原始消息压缩线程
+			ProcessorFactory.getThread(name, this).start(); 
 		}
 
 	}

@@ -146,14 +146,16 @@ public class FileStorer implements Storer {
 		}
 
 		public void stop() {
-			this.isStop = true; // 设置线程停止标志
-
+			// 设置线程停止标志
+			this.isStop = true; 
 			logger.info("FileStorer STOP");
 		}
 
 		public void start(String name) {
-			this.isStop = false; // 设置线程启动标志
-			ProcessorFactory.getThread(name, this).start(); // 文件存储线程启动
+			// 设置线程启动标志
+			this.isStop = false; 
+			// 文件存储线程启动
+			ProcessorFactory.getThread(name, this).start(); 
 		}
 	}
 }

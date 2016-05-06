@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.router.BasicRouter;
 import org.pinae.logmesh.component.router.MessageRouter;
 import org.pinae.logmesh.message.Message;
@@ -53,10 +55,10 @@ public class RouterProcessor implements Processor {
 
 		for (Map<String, Object> routerConfig : routerConfigList) {
 
-			Object routerObject = ProcessorFactory.create(routerConfig);
+			MessageComponent routerComponent = ComponentFactory.create(routerConfig);
 
-			if (routerObject != null && routerObject instanceof MessageRouter) {
-				MessageRouter router = (MessageRouter) routerObject;
+			if (routerComponent != null && routerComponent instanceof MessageRouter) {
+				MessageRouter router = (MessageRouter) routerComponent;
 				// 调用路由器初始化
 				router.initialize(); 
 				// 加入路由队列

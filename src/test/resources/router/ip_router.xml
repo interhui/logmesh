@@ -1,72 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <route>
 	<import file="root_router.xml"/>
+	
 	<rule>
-		<name>RULE1</name>
+		<name>IP_ROOT_RULE</name>
 		<extend>RULE_ROOT</extend>
+		
+		<processor>
+			<!--处理器名称 -->
+			<name>RouterCustomProcessor</name>
+			<!--是否启动处理器:true/false -->
+			<enable>true</enable>
+			<!--处理器类 -->
+			<class>org.pinae.logmesh.component.router.custom.RouterCutsomProcessor</class>
+			<parameters>
+				<parameter key="type" value="IP_ROUTER"/>
+			</parameters>
+		</processor>
+	</rule>
+	
+	<rule>
+		<name>IP_RULE1</name>
+		<extend>IP_ROOT_RULE</extend>
 		<condition>
 			<type>ip</type>
 			<value>192.168.0.104</value>
 		</condition>
-
-		<processor>
-			<name>Processor</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestProcessor</class>
-			<parameters>
-				<parameter key="type" value="IP_ROUTER"/>
-			</parameters>
-		</processor>
-		<output>
-			<name>Output</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestOutputor</class>
-		</output>
 	</rule>
 	
 	<rule>
-		<name>RULE2</name>
-		<extend>RULE_ROOT</extend>
+		<name>IP_RULE2</name>
+		<extend>IP_ROOT_RULE</extend>
 		<condition>
 			<type>ip</type>
 			<value>192.168.0.105</value>
 		</condition>
-
-		<processor>
-			<name>Processor</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestProcessor</class>
-			<parameters>
-				<parameter key="type" value="IP_ROUTER"/>
-			</parameters>
-		</processor>
-		<output>
-			<name>Output</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestOutputor</class>
-		</output>
 	</rule>
 	
 	<rule>
-		<name>RULE3</name>
-		<extend>RULE_ROOT</extend>
+		<name>IP_RULE3</name>
+		<extend>IP_ROOT_RULE</extend>
 		<condition>
 			<type>ip</type>
 			<value>127.0.0.1</value>
 		</condition>
-
-		<processor>
-			<name>Processor</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestProcessor</class>
-			<parameters>
-				<parameter key="type" value="IP_ROUTER"/>
-			</parameters>
-		</processor>
-		<output>
-			<name>Output</name>
-			<enable>true</enable>
-			<class>org.pinae.logmesh.component.router.processor.TestOutputor</class>
-		</output>
 	</rule>
 </route>
