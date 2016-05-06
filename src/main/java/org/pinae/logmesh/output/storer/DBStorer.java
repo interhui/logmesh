@@ -28,33 +28,33 @@ import org.pinae.logmesh.util.ConfigMap;
  */
 public class DBStorer implements Storer {
 	private static Logger logger = Logger.getLogger(FileStorer.class);
-	
+
 	// JDBC驱动
-	private String driver; 
+	private String driver;
 	// 数据库连接地址
 	private String url;
 	// 数据库登录用户名
 	private String username;
 	// 数据库登录密码
 	private String password;
-	
+
 	// SQL脚本
-	private String sqlTemplate; 
+	private String sqlTemplate;
 	// 批量存储数量
-	private int batchSize = 100; 
+	private int batchSize = 100;
 	// 存储周期
-	private long cycle; 
-	
+	private long cycle;
+
 	// 数据库存储线程
-	private DBLogSaver dbLogSaver = null; 
+	private DBLogSaver dbLogSaver = null;
 
 	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
-	
+
 	private String defaultSql = "insert into event(time, ip, owner, message) values ('${time}', '${ip}', '${owner}', '${message}')";
 
 	public DBStorer(Map<String, Object> config) {
-		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "DB_STORE_QUEUE"));
+		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "DB_STORE_QUEUE"));
 	}
 
 	public DBStorer(Map<String, Object> config, MessageQueue messageQueue) {
@@ -103,9 +103,9 @@ public class DBStorer implements Storer {
 				if (msgContent instanceof String) {
 					return (String) msgContent;
 				} else if (msgContent instanceof Map) {
-					Context context  = new VelocityContext();
+					Context context = new VelocityContext();
 					StringWriter sw = new StringWriter();
-					
+
 					Map<Object, Object> msgMap = (Map<Object, Object>) msgContent;
 					Set<Object> msgKeySet = msgMap.keySet();
 					for (Object msgKey : msgKeySet) {
@@ -126,24 +126,25 @@ public class DBStorer implements Storer {
 	}
 
 	private class DBLogSaver implements Processor {
-
-		private boolean isStop = false; // 处理线程是否停止
+		// 处理线程是否停止
+		private boolean isStop = false;
 
 		private Connection conn;
 		private Statement stm;
 
-		public DBLogSaver() {
+		public DBLogSaver() throws StorerException {
 			try {
 				Class.forName(driver);
-				conn = DriverManager.getConnection(url, username, password);
-				stm = conn.createStatement();
+				this.conn = DriverManager.getConnection(url, username, password);
+				this.stm = conn.createStatement();
 			} catch (Exception e) {
 				logger.error(String.format("DBStorer Exception: exception=%s", e.getMessage()));
+				throw new StorerException(e);
 			}
 		}
 
 		public void run() {
-			while (!isStop) {
+			while (!this.isStop) {
 				try {
 					if (!messageQueue.isEmpty()) {
 						try {
@@ -151,14 +152,14 @@ public class DBStorer implements Storer {
 								int count = 0;
 								if (count < batchSize) {
 									Message message = messageQueue.poll();
-									stm.addBatch(handleMessage(message));
+									this.stm.addBatch(handleMessage(message));
 									count++;
 								} else {
-									stm.executeBatch();
+									this.stm.executeBatch();
 									count = 0;
 								}
 							}
-							stm.executeBatch();
+							this.stm.executeBatch();
 						} catch (Exception e) {
 							logger.error(String.format("DBSaver Exception: exception=%s", e.getMessage()));
 						}
@@ -171,11 +172,11 @@ public class DBStorer implements Storer {
 			}
 
 			try {
-				if (stm != null) {
-					stm.close();
+				if (this.stm != null) {
+					this.stm.close();
 				}
-				if (conn != null) {
-					conn.close();
+				if (this.conn != null) {
+					this.conn.close();
 				}
 			} catch (SQLException e) {
 				logger.error(String.format("DBStorer Exception: exception=%s", e.getMessage()));
@@ -184,15 +185,15 @@ public class DBStorer implements Storer {
 
 		public void stop() {
 			// 设置线程停止标志
-			this.isStop = true; 
+			this.isStop = true;
 			logger.info("DBStore STOP");
 		}
 
 		public void start(String name) {
-			 // 设置线程启动标志
+			// 设置线程启动标志
 			this.isStop = false;
 			// 数据库存储线程启动
-			ProcessorFactory.getThread(name, this).start(); 
+			ProcessorFactory.getThread(name, this).start();
 		}
 
 	}

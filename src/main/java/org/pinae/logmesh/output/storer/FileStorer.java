@@ -36,7 +36,7 @@ public class FileStorer implements Storer {
 	private SimpleDateFormat dirPattern; // 通过日期构建的目录格式
 	private SimpleDateFormat filePattern; // 通过日期构建的文件格式
 
-	private FileCreator fileCreator = new FileCreator(); // 文件存储线程
+	private FileCreator fileCreator; // 文件存储线程
 
 	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
@@ -68,9 +68,8 @@ public class FileStorer implements Storer {
 		this.cycle = this.config.getLong("cycle", 5000);
 
 		if (messageQueue != null) {
-			synchronized (messageQueue) {
-				this.fileCreator.start(name);
-			}
+			this.fileCreator = new FileCreator();
+			this.fileCreator.start(name);
 		} else {
 			logger.error("FileStorer's MessageQueue is null");
 		}
@@ -104,6 +103,16 @@ public class FileStorer implements Storer {
 	private class FileCreator implements Processor {
 
 		private boolean isStop = false; // 处理线程是否停止
+		
+		public FileCreator() throws StorerException {
+			if (dirPattern != null) {
+				File dir = new File(path);
+				if (! dir.canWrite()) {
+					throw new StorerException(String.format("Couldn't write directory %s", path));
+				}
+			}
+			
+		}
 
 		public void run() {
 			while (!isStop) {

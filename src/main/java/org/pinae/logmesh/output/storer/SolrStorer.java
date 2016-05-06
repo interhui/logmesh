@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.pinae.logmesh.message.Message;
@@ -27,10 +27,13 @@ import org.pinae.logmesh.util.ConfigMap;
 public class SolrStorer implements Storer {
 	private static Logger logger = Logger.getLogger(SolrStorer.class);
 
-	private String solrURL = "http://127.0.0.1:8983/solr/logmesh"; // Solr地址
-	private long cycle; // 存储周期
-
-	private SolrPoster solrPoster = new SolrPoster(); // Solr存储线程
+	/* Solr地址 */
+	private String solrURL = "http://127.0.0.1:8983/solr/logmesh";
+	/* Solr存储周期 */
+	private long cycle;
+	
+	/* Solr存储线程 */
+	private SolrPoster solrPoster;
 
 	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
@@ -54,9 +57,8 @@ public class SolrStorer implements Storer {
 		this.solrURL = this.config.getString("url", "http://127.0.0.1:8983/solr");
 
 		if (messageQueue != null) {
-			synchronized (messageQueue) {
-				solrPoster.start(name);
-			}
+			this.solrPoster = new SolrPoster();
+			this.solrPoster.start(name);
 		} else {
 			logger.error("SolrStore's MessageQueue is NULL");
 		}
@@ -69,7 +71,7 @@ public class SolrStorer implements Storer {
 	}
 
 	public void close() throws StorerException {
-		solrPoster.stop();
+		this.solrPoster.stop();
 	}
 
 	public SolrInputDocument handleMessage(Message message) {
@@ -92,17 +94,33 @@ public class SolrStorer implements Storer {
 	}
 
 	private class SolrPoster implements Processor {
-
-		private boolean isStop = false; // 处理线程是否停止
+		
+		private HttpSolrClient solrClient;
+		
+		public SolrPoster() throws StorerException {
+			try {
+				this.solrClient = new HttpSolrClient(solrURL);
+				SolrPingResponse ping = this.solrClient.ping();
+				if (ping == null || 0 != ping.getStatus()) {
+					throw new StorerException(String.format("Couldn't connect solr server %d", solrURL));
+				}
+			} catch (SolrServerException e) {
+				logger.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
+				throw new StorerException(e);
+			} catch (IOException e) {
+				logger.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
+				throw new StorerException(e);
+			}
+		}
+		
+		/* 处理线程是否停止 */
+		private boolean isStop = false;
 
 		public void run() {
 			while (!isStop) {
 				try {
-
 					if (!messageQueue.isEmpty()) {
-
 						List<SolrInputDocument> docList = new ArrayList<SolrInputDocument>();
-
 						while (!messageQueue.isEmpty()) {
 							Message message = messageQueue.poll();
 							SolrInputDocument doc = handleMessage(message);
@@ -110,12 +128,10 @@ public class SolrStorer implements Storer {
 								docList.add(doc);
 							}
 						}
-
-						SolrClient solr = null;
 						try {
-							solr = new HttpSolrClient(solrURL);
-							solr.add(docList);
-							UpdateResponse response = solr.commit();// 将消息发送到Solr
+							solrClient.add(docList);
+							// 将消息提交到Solr
+							UpdateResponse response = solrClient.commit();
 							if (response.getStatus() == 0) {
 								logger.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));
@@ -127,14 +143,6 @@ public class SolrStorer implements Storer {
 							logger.error(String.format("post Exception: exception=%s", e.getMessage()));
 						} catch (IOException e) {
 							logger.error(String.format("post Exception: exception=%s", e.getMessage()));
-						} finally {
-							if (solr != null) {
-								try {
-									solr.close();
-								} catch (IOException e) {
-
-								}
-							}
 						}
 					}
 
@@ -146,6 +154,13 @@ public class SolrStorer implements Storer {
 		}
 
 		public void stop() {
+			if (this.solrClient != null) {
+				try {
+					this.solrClient.close();
+				} catch (IOException e) {
+					logger.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
+				}
+			}
 			// 设置线程停止标志
 			this.isStop = true;
 			logger.info("Solr Store STOP");

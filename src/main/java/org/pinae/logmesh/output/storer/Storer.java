@@ -7,7 +7,6 @@ import org.pinae.logmesh.message.Message;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public interface Storer {
 

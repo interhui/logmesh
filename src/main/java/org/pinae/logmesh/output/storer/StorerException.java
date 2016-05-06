@@ -5,7 +5,6 @@ package org.pinae.logmesh.output.storer;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public class StorerException extends Exception {
 
