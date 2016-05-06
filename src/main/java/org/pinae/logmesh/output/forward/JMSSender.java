@@ -105,10 +105,12 @@ public class JMSSender implements Sender {
 		try {
 			Message msg = null;
 			if (message != null) {
-				if (message instanceof String) {
-					msg = this.session.createTextMessage((String) message);
+				if (message instanceof String || message instanceof Message) {
+					msg = this.session.createTextMessage(message.toString());
 				} else if (message instanceof Serializable) {
 					msg = this.session.createObjectMessage((Serializable) message);
+				} else {
+					throw new SendException("Message is not Serializable");
 				}
 			}
 

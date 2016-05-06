@@ -1,13 +1,13 @@
 package org.pinae.logmesh.output;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.storer.DBStorer;
 import org.pinae.logmesh.output.storer.FileStorer;
 import org.pinae.logmesh.output.storer.SolrStorer;
 import org.pinae.logmesh.output.storer.Storer;
 import org.pinae.logmesh.output.storer.StorerException;
-import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
  * 消息存储输出
@@ -15,7 +15,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  * @author Huiyugeng
  * 
  */
-public class StorerOutputor extends ProcessorInfo implements MessageOutputor {
+public class StorerOutputor extends ComponentInfo implements MessageOutputor {
 
 	private static Logger logger = Logger.getLogger(ForwardOutputor.class);
 

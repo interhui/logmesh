@@ -12,7 +12,7 @@ import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.component.router.MessageRouter;
 
 /**
- * 实例化组件池
+ * 组件池
  * 
  * @author Huiyugeng
  * 
@@ -29,7 +29,7 @@ public class ComponentPool {
 	 * @param component 组件信息
 	 */
 	public static void registe(MessageComponent component) {
-		String name = component.getClass().getSimpleName();
+		String name = component.getClass().getName();
 		String count = Integer.toString(COMPONENT_COUNT.incrementAndGet());
 
 		COMPONENT_POOL.put(name + "-" + count, component);
@@ -43,7 +43,7 @@ public class ComponentPool {
 	 * @return 组件类列表
 	 */
 	public static List<MessageComponent> get(Class<?> clazz) {
-		String className = clazz.getSimpleName();
+		String className = clazz.getName();
 		return get(className);
 	}
 	

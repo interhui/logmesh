@@ -1,12 +1,11 @@
 package org.pinae.logmesh.output.forward;
 
+import java.io.Serializable;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -16,8 +15,6 @@ import org.pinae.logmesh.message.Message;
  * 
  */
 public class KafkaSender implements Sender {
-	
-	private static Logger logger = Logger.getLogger(KafkaSender.class);
 	
 	/* 消息主题 */
 	private String topic = "default";;
@@ -53,15 +50,14 @@ public class KafkaSender implements Sender {
 
 	public void send(Object message) throws SendException {
 		if (message != null) {
-			String msgKey = null;
+			String msgKey = Long.toString(System.currentTimeMillis());
 			String msgContent = null;
-			if (message instanceof String) {
-				msgKey = Long.toString(System.currentTimeMillis());
+			if (message instanceof String || message instanceof Message) {
 				msgContent = message.toString();
-			} else if (message instanceof Message) {
-				Message msg = (Message)message;
-				msgKey = StringUtils.join(new String[]{Long.toString(msg.getTimestamp()), msg.getIP(), msg.getOwner()}, "$");
-				msgContent = msg.getMessage().toString();
+			} else if (message instanceof Serializable) {
+				msgContent = message.toString();
+			} else {
+				throw new SendException("Message is not Serializable");
 			}
 			
 			if (msgKey != null && msgContent != null) {

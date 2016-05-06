@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ObjectUtils;
 
 /**
@@ -56,14 +57,14 @@ public class UDPSender implements Sender {
 		try {
 			byte[] data = null;
 			if (message != null) {
-				if (message instanceof String) {
+				if (message instanceof String || message instanceof Message) {
 					data = message.toString().getBytes();
 				} else {
 					data = ObjectUtils.getBytes(message);
-				}
+				} 
 			}
 			if (this.socket == null) {
-				throw new SendException("Socket is NULL, No connect to any server");
+				throw new SendException("Socket is null, No connect to any server");
 			}
 			if (data != null) {
 				DatagramPacket packet = new DatagramPacket(data, data.length, address, port);

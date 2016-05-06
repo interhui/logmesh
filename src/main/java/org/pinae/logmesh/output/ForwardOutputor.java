@@ -1,6 +1,7 @@
 package org.pinae.logmesh.output;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.forward.JMSSender;
 import org.pinae.logmesh.output.forward.KafkaSender;
@@ -8,7 +9,6 @@ import org.pinae.logmesh.output.forward.SendException;
 import org.pinae.logmesh.output.forward.Sender;
 import org.pinae.logmesh.output.forward.TCPSender;
 import org.pinae.logmesh.output.forward.UDPSender;
-import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
  * 消息转发输出
@@ -16,7 +16,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  * @author Huiyugeng
  * 
  */
-public class ForwardOutputor extends ProcessorInfo implements MessageOutputor {
+public class ForwardOutputor extends ComponentInfo implements MessageOutputor {
 
 	private static Logger logger = Logger.getLogger(ForwardOutputor.class);
 

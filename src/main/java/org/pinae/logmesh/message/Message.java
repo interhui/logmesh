@@ -1,5 +1,6 @@
 package org.pinae.logmesh.message;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -9,7 +10,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Huiyugeng
  * 
  */
-public class Message implements Cloneable {
+public class Message implements Cloneable, Serializable{
+
+	private static final long serialVersionUID = 827069274403052860L;
+	
 	/* 消息所属者 */
 	private String owner = "system";
 	/* 消息类型 */

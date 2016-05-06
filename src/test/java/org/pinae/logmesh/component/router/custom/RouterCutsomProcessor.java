@@ -1,10 +1,10 @@
 package org.pinae.logmesh.component.router.custom;
 
 import org.pinae.logmesh.component.MessageProcessor;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.processor.ProcessorInfo;
 
-public class RouterCutsomProcessor extends ProcessorInfo implements MessageProcessor {
+public class RouterCutsomProcessor extends ComponentInfo implements MessageProcessor {
 
 	private String routerType = null;
 	

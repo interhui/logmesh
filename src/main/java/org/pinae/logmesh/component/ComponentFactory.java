@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.processor.ProcessorInfo;
 import org.pinae.logmesh.util.ConfigMap;
 import org.pinae.ndb.Ndb;
 
@@ -34,7 +33,7 @@ public class ComponentFactory {
 		String name = configMap.getString("name", null);
 		String className = configMap.getString("kwClass", null);
 		
-		if (name == null || className == null) {
+		if (StringUtils.isEmpty(name) || StringUtils.isEmpty(className)) {
 			return null;
 		}
 		
@@ -54,8 +53,8 @@ public class ComponentFactory {
 		try {
 			Class<?> clazz = Class.forName(className);
 			component = clazz.newInstance();
-			if (component instanceof ProcessorInfo) {
-				ProcessorInfo info = (ProcessorInfo) component;
+			if (component instanceof ComponentInfo) {
+				ComponentInfo info = (ComponentInfo) component;
 				if (StringUtils.isBlank(name)) {
 					name = component.toString();
 				}

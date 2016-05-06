@@ -14,8 +14,8 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.BadLocationException;
 
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
  * 消息窗口输出模式
@@ -23,7 +23,7 @@ import org.pinae.logmesh.processor.ProcessorInfo;
  * @author Huiyugeng
  * 
  */
-public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
+public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 
 	private JFrame frame;
 	private JTextArea txtConsole;
@@ -134,8 +134,7 @@ public class ScreenOutputor extends ProcessorInfo implements MessageOutputor {
 			msg = message.toString();
 
 			if (msg != null) {
-
-				txtConsole.append(msg);
+				txtConsole.append(msg + "\n");
 				messageLengthList.add(msg.length());
 
 				if (messageLengthList.size() > maxRows) {

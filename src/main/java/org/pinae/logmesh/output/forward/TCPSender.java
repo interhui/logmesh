@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.ObjectUtils;
 
 /**
@@ -20,7 +21,7 @@ public class TCPSender implements Sender {
 	private int port = 514;
 
 	private Socket socket = null;
-	private DataOutputStream output = null;
+	private DataOutputStream stream = null;
 
 	/**
 	 * 构造函数
@@ -36,7 +37,7 @@ public class TCPSender implements Sender {
 	public void connect() throws SendException {
 		try {
 			this.socket = new Socket(ip, port);// 根据服务器名和端口号建立Socket
-			this.output = new DataOutputStream(socket.getOutputStream());// 获得Socket的输出流
+			this.stream = new DataOutputStream(socket.getOutputStream());// 获得Socket的输出流
 		} catch (UnknownHostException e) {
 			throw new SendException(e);
 		} catch (IOException e) {
@@ -48,18 +49,21 @@ public class TCPSender implements Sender {
 		try {
 			byte[] data = null;
 			if (message != null) {
-				if (message instanceof String) {
+				if (message instanceof String || message instanceof Message) {
 					data = message.toString().getBytes();
 				} else {
 					data = ObjectUtils.getBytes(message);
 				}
 			}
-			if (this.output == null) {
+			if (this.socket == null) {
+				throw new SendException("Socket is null, No connect to any server");
+			}
+			if (this.stream == null) {
 				throw new SendException("No connect server");
 			}
 			if (data != null) {
-				this.output.write(data);
-				this.output.flush();
+				this.stream.write(data);
+				this.stream.flush();
 			}
 		} catch (IOException e) {
 			throw new SendException(e);
@@ -68,7 +72,7 @@ public class TCPSender implements Sender {
 
 	public void close() throws SendException {
 		try {
-			this.output.close();
+			this.stream.close();
 			this.socket.close();
 		} catch (IOException e) {
 			throw new SendException(e);

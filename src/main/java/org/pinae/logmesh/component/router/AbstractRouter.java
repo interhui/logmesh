@@ -9,10 +9,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.MessageProcessor;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.MessageOutputor;
-import org.pinae.logmesh.processor.ProcessorInfo;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
@@ -27,7 +27,7 @@ import org.pinae.ndb.Ndb;
  * @author Huiyugeng
  * 
  */
-public abstract class AbstractRouter extends ProcessorInfo implements MessageRouter {
+public abstract class AbstractRouter extends ComponentInfo implements MessageRouter {
 	private static Logger logger = Logger.getLogger(AbstractRouter.class);
 
 	/* 消息过滤器列表, (路由器名称, 消息过滤器) */

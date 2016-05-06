@@ -22,5 +22,13 @@
 				<parameter key="pass" value="true" />
 			</parameters>
 		</filter>
+
+		<outputor>
+			<name>ScreenOutputor</name>
+			<singleton>true</singleton>
+			<enable>true</enable>
+			<class>org.pinae.logmesh.output.ScreenOutputor</class>
+		</outputor>
+		
 	</rule>
 </route>

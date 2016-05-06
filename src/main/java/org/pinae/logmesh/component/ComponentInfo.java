@@ -1,21 +1,20 @@
-package org.pinae.logmesh.processor;
+package org.pinae.logmesh.component;
 
 import java.util.Map;
 
 import org.pinae.logmesh.util.ConfigMap;
 
 /**
- * 处理器信息
+ * 组件信息
  * 
  * @author Huiyugeng
  * 
- * 
  */
-public abstract class ProcessorInfo {
-	/* 处理器名称 */
+public abstract class ComponentInfo {
+	
+	/* 组件名称 */
 	private String name;
-
-	/* 处理器参数 */
+	/* 组件参数 */
 	private ConfigMap<String, Object> parameters = new ConfigMap<String, Object>();
 
 	public String getName() {

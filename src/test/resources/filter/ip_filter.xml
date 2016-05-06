@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <filters>
 	<filter>
-		<name>FW</name>
 		<ip>192.168.0.107</ip>
 		<ip>192.168.0.105</ip>
 		<ip>192.168.0.104</ip>

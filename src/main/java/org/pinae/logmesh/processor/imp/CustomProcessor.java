@@ -121,7 +121,7 @@ public class CustomProcessor implements Processor {
 						if (processor != null) {
 							message = processor.porcess(message);
 							if (message != null) {
-								MessagePool.ROUTE_QUEUE.offer(message);
+								MessagePool.OUTPUT_QUEUE.offer(message);
 							}
 						}
 					}

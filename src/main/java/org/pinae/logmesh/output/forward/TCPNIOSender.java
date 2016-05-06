@@ -67,11 +67,11 @@ public class TCPNIOSender implements Sender {
 	public void send(Object message) throws SendException {
 		for (int i = 0; i < retryTime; i++) {
 			if (future != null && future.getChannel().isConnected()) {
-				future.getChannel().write(message);
+				future.getChannel().write(message.toString());
 				break;
 			} else {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					throw new SendException(e);
 				}

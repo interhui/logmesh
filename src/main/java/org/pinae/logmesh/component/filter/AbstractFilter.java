@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.processor.ProcessorInfo;
 import org.pinae.nala.xb.Xml;
 
 /**
@@ -14,7 +14,7 @@ import org.pinae.nala.xb.Xml;
  * @author Huiyugeng
  *
  */
-public abstract class AbstractFilter extends ProcessorInfo implements MessageFilter {
+public abstract class AbstractFilter extends ComponentInfo implements MessageFilter {
 	
 	private static Logger logger = Logger.getLogger(MessageFilter.class);
 

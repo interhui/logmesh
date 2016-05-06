@@ -2,18 +2,18 @@ package org.pinae.logmesh.component.custom;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.pinae.logmesh.component.MessageProcessor;
+import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.processor.ProcessorInfo;
 
 /**
  * 自定义测试处理器
  * 
  * @author Huiyugeng
  * 
- * 
  */
-public class DemoCustomProcessor extends ProcessorInfo implements MessageProcessor {
+public class DemoCustomProcessor extends ComponentInfo implements MessageProcessor {
 
 	public void initialize() {
 
@@ -33,8 +33,7 @@ public class DemoCustomProcessor extends ProcessorInfo implements MessageProcess
 		} else {
 			msg = msgContent.toString();
 		}
-		msg = message.getIP() + ":" + message.getType() + ":" + msg;
-		message.setMessage(msg);
+		message.setMessage(StringUtils.join(new String[]{"MAIN_SERVER", message.getIP(),  message.getType(), msg}, ":"));
 		return message;
 	}
 
