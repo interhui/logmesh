@@ -1,18 +1,20 @@
 package org.pinae.logmesh.output;
 
-import java.awt.Color;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.text.BadLocationException;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
@@ -26,18 +28,17 @@ import org.pinae.logmesh.message.Message;
 public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 
 	private JFrame frame;
-	private JTextArea txtConsole;
 	private JScrollPane scrollPane;
+	private JTable table;
 
-	private List<Integer> messageLengthList = new ArrayList<Integer>();
+	private DefaultTableModel tableModel;
 
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	/* 消息计数器 */
+	private int messageCounter = 0;
 	/* 最大行数 */
-	private int maxRows = 100;
-	/* 缓冲行数 */
-	private int bufferRows = maxRows / 10;
-	/* 缓冲行数计数器 */
-	private int bufferRowsCount = 0;
-	
+	private int maxRows = 50;
+
 	private static boolean INIT_FLAG;
 
 	public ScreenOutputor() {
@@ -47,58 +48,63 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 	public void initialize() {
 		if (INIT_FLAG == false) {
 			// 初始化GUI元素
-			initGUI(); 
+			initGUI();
 			// 初始化GUI事件
 			initEvent();
-	
-			this.maxRows = getIntegerValue("rows", 100);
-			bufferRows = maxRows / 10;
-			
+
+			// this.maxRows = getIntegerValue("rows", 5);
+
 			INIT_FLAG = true;
 		}
 	}
 
-	private  void initGUI() {
-		frame = new JFrame();
+	private void initGUI() {
+		int width = 900;
+		int height = 600;
 
-		frame.setTitle("LogMesh");
-		frame.setBounds(100, 100, 695, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		this.frame = new JFrame();
 
-		scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(0, 0, 485, 480);
+		this.frame.setTitle("logmesh");
+		this.frame.setBounds(100, 100, width, height);
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.getContentPane().setLayout(null);
 
-		txtConsole = new JTextArea();
-		txtConsole.setLineWrap(true);
-		txtConsole.setEditable(false);
-		txtConsole.setBackground(Color.BLACK);
-		txtConsole.setForeground(new Color(0, 255, 0));
-		txtConsole.setBounds(0, 0, 400, 480);
-		txtConsole.setColumns(20);
-		txtConsole.setRows(100);
+		this.scrollPane = new JScrollPane();
+		this.scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-		scrollPane.setViewportView(txtConsole);
+		this.tableModel = new DefaultTableModel();
+		this.table = new JTable(this.tableModel);
 
-		frame.getContentPane().add(scrollPane);
+		String[] columnNames = { "#", "Time", "IP", "Message" };
+		int[] columnWidths = { 5, 15, 10, 70 };
+		for (String columnName : columnNames) {
+			this.tableModel.addColumn(columnName);
+		}
+		TableColumnModel columnModel = this.table.getColumnModel();
+		int columnCount = columnModel.getColumnCount();
+		for (int i = 0; i < columnCount; i++) {
+			TableColumn column = columnModel.getColumn(i);
+			column.setPreferredWidth(columnWidths[i] * width);
+		}
 
-		frame.setVisible(true);
+		this.scrollPane.setViewportView(this.table);
+
+		this.frame.getContentPane().add(this.scrollPane);
+		this.frame.setVisible(true);
 
 	}
 
 	private void initEvent() {
-		frame.addComponentListener(new ComponentAdapter() {
+		this.frame.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent event) {
 				scrollPane.setBounds(0, 0, frame.getWidth() - 15, frame.getHeight() - 35);
-				txtConsole.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(),
-						scrollPane.getHeight());
+				table.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(), scrollPane.getHeight());
 			}
 		});
 
-		frame.addWindowListener(new WindowAdapter() {
+		this.frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent event) {
 				frame.setTitle(getStringValue("title", "Logmesh"));
@@ -106,17 +112,8 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 				int width = getIntegerValue("width", 900);
 				int height = getIntegerValue("height", 600);
 				frame.setBounds(frame.getX(), frame.getY(), width, height);
-				scrollPane.setBounds(0, 5, width - 15, height - 35);
-				txtConsole.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(),
-						scrollPane.getHeight());
-
-				int columns = getIntegerValue("columns", 80);
-
-				txtConsole.setColumns(columns);
-				txtConsole.setRows(maxRows);
-
-				txtConsole.setBackground(Color.decode(getStringValue("background", "#000000")));
-				txtConsole.setForeground(Color.decode(getStringValue("foreground", "#00ff00")));
+				scrollPane.setBounds(0, 0, width - 15, height - 35);
+				table.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(), scrollPane.getHeight());
 			}
 
 			@Override
@@ -124,46 +121,34 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 				System.exit(0);
 			}
 		});
+
+		this.table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+
+				}
+			}
+		});
 	}
 
 	public void output(Message message) {
-
-		String msg = null;
-
 		if (message != null) {
-			msg = message.toString();
+			try {
+				this.tableModel.addRow(new String[] { Integer.toString(++messageCounter), dateFormat.format(message.getTimestamp()), message.getIP(),
+						message.getMessage().toString() });
+			} catch (Exception e) {
 
-			if (msg != null) {
-				txtConsole.append(msg + "\n");
-				messageLengthList.add(msg.length());
-
-				if (messageLengthList.size() > maxRows) {
-					if (bufferRowsCount >= bufferRows) {
-						int messageLength = 0;
-						for (int i = 0; i < bufferRowsCount; i++) {
-							messageLength += messageLengthList.get(i);
-							messageLengthList.remove(i);
-						}
-						try {
-							txtConsole.getDocument().remove(0, messageLength);
-						} catch (BadLocationException e) {
-							txtConsole.setText("");
-							messageLengthList.clear();
-						}
-						bufferRowsCount = 0;
-					} else {
-						bufferRowsCount++;
-					}
-				}
+			}
+			int rowCount = this.table.getRowCount();
+			if (this.maxRows != 0 && rowCount > this.maxRows) {
+				this.tableModel.removeRow(0);
 			}
 		}
-
 	}
 
 	public void close() {
 		if (frame != null) {
 			frame.dispose();
 		}
-		
 	}
 }

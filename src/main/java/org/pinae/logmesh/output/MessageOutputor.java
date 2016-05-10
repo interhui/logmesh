@@ -10,6 +10,9 @@ import org.pinae.logmesh.message.Message;
  * 
  */
 public interface MessageOutputor extends MessageComponent {
+	/* 消息输出器状态 */
+	public int status = 0;
+	
 	/**
 	 * 初始化消息输出器
 	 */

@@ -8,7 +8,7 @@ package org.pinae.logmesh.component;
  * @author Huiyugeng
  *
  */
-public interface MessageComponent {
+public interface MessageComponent extends Cloneable {
 	/**
 	 * 初始化消息组件
 	 */
