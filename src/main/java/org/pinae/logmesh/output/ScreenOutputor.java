@@ -34,11 +34,12 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 	private DefaultTableModel tableModel;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	/* 消息计数器 */
-	private int messageCounter = 0;
+	private int rowsCounter = 0;
 	/* 最大行数 */
 	private int maxRows = 50;
-
+	/* 初始化标记 */
 	private static boolean INIT_FLAG;
 
 	public ScreenOutputor() {
@@ -52,7 +53,7 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 			// 初始化GUI事件
 			initEvent();
 
-			// this.maxRows = getIntegerValue("rows", 5);
+			this.maxRows = getIntegerValue("rows", 50);
 
 			INIT_FLAG = true;
 		}
@@ -63,8 +64,7 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 		int height = 600;
 
 		this.frame = new JFrame();
-
-		this.frame.setTitle("logmesh");
+		this.frame.setTitle("Logmesh");
 		this.frame.setBounds(100, 100, width, height);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.getContentPane().setLayout(null);
@@ -77,17 +77,10 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 		this.table = new JTable(this.tableModel);
 
 		String[] columnNames = { "#", "Time", "IP", "Message" };
-		int[] columnWidths = { 5, 15, 10, 70 };
 		for (String columnName : columnNames) {
 			this.tableModel.addColumn(columnName);
 		}
-		TableColumnModel columnModel = this.table.getColumnModel();
-		int columnCount = columnModel.getColumnCount();
-		for (int i = 0; i < columnCount; i++) {
-			TableColumn column = columnModel.getColumn(i);
-			column.setPreferredWidth(columnWidths[i] * width);
-		}
-
+		
 		this.scrollPane.setViewportView(this.table);
 
 		this.frame.getContentPane().add(this.scrollPane);
@@ -101,6 +94,15 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 			public void componentResized(ComponentEvent event) {
 				scrollPane.setBounds(0, 0, frame.getWidth() - 15, frame.getHeight() - 35);
 				table.setBounds(scrollPane.getX(), scrollPane.getY(), scrollPane.getWidth(), scrollPane.getHeight());
+				
+				TableColumnModel columnModel = table.getColumnModel();
+				double[] columnWidths = { 0.05, 0.15, 0.10, 0.70 };
+				int columnCount = columnModel.getColumnCount();
+				for (int i = 0; i < columnCount; i++) {
+					TableColumn column = columnModel.getColumn(i);
+					column.setPreferredWidth((int)(columnWidths[i] * frame.getWidth()));
+				}
+				
 			}
 		});
 
@@ -134,7 +136,7 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 	public void output(Message message) {
 		if (message != null) {
 			try {
-				this.tableModel.addRow(new String[] { Integer.toString(++messageCounter), dateFormat.format(message.getTimestamp()), message.getIP(),
+				this.tableModel.addRow(new String[] { Integer.toString(++rowsCounter), dateFormat.format(message.getTimestamp()), message.getIP(),
 						message.getMessage().toString() });
 			} catch (Exception e) {
 
@@ -147,8 +149,8 @@ public class ScreenOutputor extends ComponentInfo implements MessageOutputor {
 	}
 
 	public void close() {
-		if (frame != null) {
-			frame.dispose();
+		if (this.frame != null) {
+			this.frame.dispose();
 		}
 	}
 }
