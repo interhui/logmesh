@@ -56,11 +56,6 @@ public class FilterProcessor implements Processor {
 		// 选取需要启动的过滤器
 		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>)Ndb.execute(config,
 				"select:filter->enable:true");
-		
-		// 顺序过滤器列表
-		SortedMap<Integer, MessageFilter> filtersWithStartup = new TreeMap<Integer, MessageFilter>(); 
-		// 无序过滤器列表
-		List<MessageFilter> filtersWithoutStartup = new ArrayList<MessageFilter>(); 
 
 		for (Map<String, Object> filterConfig : filterConfigList) {
 
@@ -68,28 +63,23 @@ public class FilterProcessor implements Processor {
 
 			if (filterComponent != null && filterComponent instanceof MessageFilter) {
 				MessageFilter filter = (MessageFilter) filterComponent;
-				 // 调用过滤器初始化
+				// 调用过滤器初始化
 				filter.initialize();
 
+				// 判断是否包含过滤器顺序
 				if (filterConfig.containsKey("startup")) {
 					String startup = (String) filterConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						 // 加入顺序过滤器队列
-						filtersWithStartup.put(Integer.parseInt(startup), filter);
+						filterList.add(Integer.parseInt(startup), filter);
 					}
 				} else {
-					 // 加入无序过滤器队列
-					filtersWithoutStartup.add(filter);
+					filterList.add(filter);
 				}
 			}
 		}
 
-		// 将顺序过滤器和无序过滤器进行合并
-		filterList.addAll(filtersWithStartup.values());
-		filterList.addAll(filtersWithoutStartup);
-
 		// 如果处理器队列中不含任何过滤器则启动默认过滤器
-		if (filterList.size() == 0) {
+		if (filterList.isEmpty()) {
 			filterList.add(new BasicFilter());
 		}
 

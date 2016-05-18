@@ -3,8 +3,6 @@ package org.pinae.logmesh.processor.imp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -55,9 +53,6 @@ public class CustomProcessor implements Processor {
 		List<Map<String, Object>> processorConfigList = (List<Map<String, Object>>) Ndb.execute(config,
 				"select:processor->enable:true");
 
-		SortedMap<Integer, MessageProcessor> processorsWithStartup = new TreeMap<Integer, MessageProcessor>(); // 顺序处理器列表
-		List<MessageProcessor> processorWithoutStartup = new ArrayList<MessageProcessor>(); // 无序处理器列表
-
 		for (Map<String, Object> processorConfig : processorConfigList) {
 
 			MessageComponent processorComponent = ComponentFactory.create((Map<String, Object>) processorConfig);
@@ -67,24 +62,19 @@ public class CustomProcessor implements Processor {
 				// 处理器初始化
 				processor.initialize(); 
 
+				// 判断处理器是否包括启动顺序
 				if (processorConfig.containsKey("startup")) {
 					String startup = (String) processorConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						// 加入顺序过滤器队列
-						processorsWithStartup.put(Integer.parseInt(startup), processor); 
+						processorList.add(Integer.parseInt(startup), processor); 
 					}
 				} else {
-					 // 加入无序处理器队列
-					processorWithoutStartup.add(processor);
+					processorList.add(processor);
 				}
 			}
 		}
 
-		// 将顺序处理器和无序处理器进行合并
-		processorList.addAll(processorsWithStartup.values());
-		processorList.addAll(processorWithoutStartup);
-
-		if (processorList.size() == 0) {
+		if (processorList.isEmpty()) {
 			processorList.add(new BasicCustomProcessor());
 		}
 
