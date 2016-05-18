@@ -26,27 +26,27 @@ public abstract class ComponentInfo {
 	}
 
 	public boolean hasParameter(String key) {
-		return parameters.containsKey(key);
+		return this.parameters.containsKey(key);
 	}
 	
 	public Object getValue(String key) {
-		return parameters.get(key);
+		return this.parameters.get(key);
 	}
 
 	public String getStringValue(String key, String defaultValue) {
-		return parameters.getString(key, defaultValue);
+		return this.parameters.getString(key, defaultValue);
 	}
 	
 	public boolean getBooleanValue(String key, boolean defaultValue) {
-		return parameters.getBoolean(key, defaultValue);
+		return this.parameters.getBoolean(key, defaultValue);
 	}
 	
 	public int getIntegerValue(String key, int defaultValue) {
-		return parameters.getInt(key, defaultValue);
+		return this.parameters.getInt(key, defaultValue);
 	}
 	
 	public long getLongValue(String key, long defaultValue) {
-		return parameters.getLong(key, defaultValue);
+		return this.parameters.getLong(key, defaultValue);
 	}
 
 	public void setParameters(Map<String, Object> parameters) {
@@ -54,7 +54,7 @@ public abstract class ComponentInfo {
 	}
 
 	public Map<String, Object> getParameters() {
-		return parameters;
+		return this.parameters;
 	}
 
 }

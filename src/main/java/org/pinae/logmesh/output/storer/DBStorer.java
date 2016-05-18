@@ -46,7 +46,7 @@ public class DBStorer implements Storer {
 	private long cycle;
 
 	// 数据库存储线程
-	private DBLogSaver dbLogSaver = null;
+	private DBSaver dbLogSaver = null;
 
 	private ConfigMap<String, Object> config;
 	private MessageQueue messageQueue;
@@ -80,7 +80,7 @@ public class DBStorer implements Storer {
 		this.batchSize = this.config.getInt("batchSize", 100);
 
 		if (messageQueue != null) {
-			this.dbLogSaver = new DBLogSaver();
+			this.dbLogSaver = new DBSaver();
 			this.dbLogSaver.start(name);
 		} else {
 			logger.error("DBStorer's MessageQueue is null");
@@ -125,14 +125,14 @@ public class DBStorer implements Storer {
 		}
 	}
 
-	private class DBLogSaver implements Processor {
+	private class DBSaver implements Processor {
 		// 处理线程是否停止
 		private boolean isStop = false;
 
 		private Connection conn;
 		private Statement stm;
 
-		public DBLogSaver() throws StorerException {
+		public DBSaver() throws StorerException {
 			try {
 				Class.forName(driver);
 				this.conn = DriverManager.getConnection(url, username, password);
