@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.pinae.logmesh.message.queue.MemoryMessageQueue;
 
 public class MessageQueueTest {
 	private static Logger logger = Logger.getLogger(MessageQueueTest.class);
@@ -13,7 +14,7 @@ public class MessageQueueTest {
 		int testSize = 100000;
 		int maxSize = 5;
 		
-		MessageQueue queue = new MessageQueue("Test", maxSize);
+		MemoryMessageQueue queue = new MemoryMessageQueue("Test", maxSize);
 		long start = System.currentTimeMillis();
 		for (int i = 0 ; i < testSize ; i++) {
 			queue.offer(new Message(Integer.toString(i)));

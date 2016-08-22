@@ -77,7 +77,7 @@ public class FileStorer implements Storer {
 
 	public void save(Message message) {
 		if (this.messageQueue != null) {
-			this.messageQueue.add(message);
+			this.messageQueue.offer(message);
 		}
 	}
 

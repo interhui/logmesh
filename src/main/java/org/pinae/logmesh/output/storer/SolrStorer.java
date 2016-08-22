@@ -66,7 +66,7 @@ public class SolrStorer implements Storer {
 
 	public void save(Message message) {
 		if (messageQueue != null) {
-			messageQueue.add(message);
+			messageQueue.offer(message);
 		}
 	}
 

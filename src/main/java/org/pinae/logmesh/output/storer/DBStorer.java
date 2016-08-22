@@ -88,7 +88,7 @@ public class DBStorer implements Storer {
 	}
 
 	public void save(Message message) {
-		messageQueue.add(message);
+		messageQueue.offer(message);
 	}
 
 	public void close() throws StorerException {
