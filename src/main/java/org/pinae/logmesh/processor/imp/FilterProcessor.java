@@ -3,8 +3,6 @@ package org.pinae.logmesh.processor.imp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -56,7 +54,7 @@ public class FilterProcessor implements Processor {
 		// 选取需要启动的过滤器
 		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>)Ndb.execute(config,
 				"select:filter->enable:true");
-
+		
 		for (Map<String, Object> filterConfig : filterConfigList) {
 
 			MessageComponent filterComponent = ComponentFactory.create(filterConfig);

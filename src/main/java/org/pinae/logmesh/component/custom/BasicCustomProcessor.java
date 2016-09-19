@@ -1,6 +1,5 @@
 package org.pinae.logmesh.component.custom;
 
-import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.message.Message;
 
 /**
@@ -9,7 +8,7 @@ import org.pinae.logmesh.message.Message;
  * @author Huiyugeng
  * 
  */
-public class BasicCustomProcessor implements MessageProcessor {
+public class BasicCustomProcessor extends AbstractCustomProcessor {
 	
 	public void initialize() {
 

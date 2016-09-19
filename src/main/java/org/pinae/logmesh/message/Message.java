@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Huiyugeng
  * 
  */
-public class Message implements Cloneable, Serializable{
+public class Message implements Cloneable, Serializable {
 
 	private static final long serialVersionUID = 827069274403052860L;
 	
@@ -42,6 +42,13 @@ public class Message implements Cloneable, Serializable{
 		this.owner = owner;
 		this.ip = ip;
 	}
+	
+	public Message(String ip, String owner, long timestamp, Object message) {
+		this.message = message;
+		this.owner = owner;
+		this.ip = ip;
+		this.timestamp = timestamp;
+	}
 
 	public Object getMessage() {
 		return message;
@@ -53,6 +60,10 @@ public class Message implements Cloneable, Serializable{
 
 	public String getIP() {
 		return ip;
+	}
+	
+	public void setIP(String ip) {
+		this.ip = ip;
 	}
 
 	public String getOwner() {
@@ -77,6 +88,10 @@ public class Message implements Cloneable, Serializable{
 
 	public long getTimestamp() {
 		return timestamp;
+	}
+	
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public synchronized long incCounter() {

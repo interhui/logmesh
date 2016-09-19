@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mvel2.MVEL;
+import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.ndb.Ndb;
 
@@ -15,7 +16,7 @@ import org.pinae.ndb.Ndb;
  * @author Huiyugeng
  * 
  */
-public class ExpressionRule extends Rule {
+public class ExpressionRule extends AbstractRule {
 
 	public ExpressionRule(String filename) {
 		super.load("", filename);
@@ -32,15 +33,12 @@ public class ExpressionRule extends Rule {
 	/**
 	 * 将消息与规则表达式规则进行匹配
 	 * 
-	 * @param type 消息类型
-	 * @param ip 消息发送地址
-	 * @param time 消息发送时间
 	 * @param message 消息内容
 	 * 
 	 * @return 匹配的规则列表
 	 */
-	public MatchedRule match(String type, String ip, String time, Map<String, String> message) {
-		return super.match(this.ruleList, type, ip, time, message);
+	public MatchedRule match(Message message) {
+		return super.match(this.ruleList, message);
 	}
 
 	/*

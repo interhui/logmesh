@@ -83,10 +83,10 @@ public class MessageServer {
 				if (configFile != null) {
 					this.config = loadConfig(configFile);
 				} else {
-					logger.error(String.format("Load Server Config %s%s FAIL", this.path, this.filename));
+					logger.error(String.format("Load server config %s%s FAIL", this.path, this.filename));
 				}
 			} else {
-				logger.error("Server Config File is NULL");
+				logger.error("Server config filename is NULL");
 			}
 		}
 		
@@ -123,7 +123,7 @@ public class MessageServer {
 			long startupTime = System.currentTimeMillis() - startTime;
 			logger.info(String.format("Start Logmesh in %d ms", startupTime));
 		} else {
-			logger.error("Server Configurtion is NULL and Start Logmesh FAIL");
+			logger.error("Server configurtion is NULL and start FAIL");
 		}
 	}
 
@@ -136,18 +136,18 @@ public class MessageServer {
 	public Map<String, Object> loadConfig(File file) {
 		long startTime = System.currentTimeMillis();
 
-		logger.info(String.format("Loading Server Config: %s", file.getAbsolutePath()));
+		logger.info(String.format("Loading server config: %s", file.getAbsolutePath()));
 
 		Map<String, Object> serverConfig = new HashMap<String, Object>();
 
 		try {
 			serverConfig = (Map<String, Object>) Xml.toMap(file, "UTF8");
 		} catch (Exception e) {
-			logger.error(String.format("Load Server Config Error: exception=%s", e.getMessage()));
+			logger.error(String.format("Load server config Error: exception=%s", e.getMessage()));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Load Server Config Finished in %d ms", startupTime));
+		logger.info(String.format("Load server config Finished in %d ms", startupTime));
 
 		List<String> importFilenameList = (List<String>)Ndb.execute(serverConfig, "select:import->file");
 		for (String importFilename : importFilenameList) {
@@ -373,7 +373,7 @@ public class MessageServer {
 			long startupTime = System.currentTimeMillis() - startTime;
 			logger.info(String.format("Start message merger in %d ms", startupTime));
 		} else {
-			logger.info("Merger Processor is Disable");
+			logger.info("Merger processor is Disable");
 		}
 
 	}

@@ -1,12 +1,15 @@
 package org.pinae.logmesh.component.custom.rule;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
@@ -20,8 +23,8 @@ import org.pinae.ndb.Ndb;
  * 
  * 
  */
-public abstract class Rule {
-	private static Logger logger = Logger.getLogger(Rule.class);
+public abstract class AbstractRule {
+	private static Logger logger = Logger.getLogger(AbstractRule.class);
 
 	protected List<Map<String, Object>> ruleList = new ArrayList<Map<String, Object>>(); // 告警规则列表
 	
@@ -56,27 +59,28 @@ public abstract class Rule {
 	/**
 	 * 将消息与规则表达式规则进行匹配
 	 * 
-	 * @param type 消息类型
-	 * @param ip 消息发送地址
-	 * @param time 消息发送时间
 	 * @param message 消息内容
 	 * 
 	 * @return 匹配的规则列表
 	 */
-	protected MatchedRule match(List<Map<String, Object>> ruleList, String type, String ip, String time, Object message) {
+	protected MatchedRule match(List<Map<String, Object>> ruleList, Message message) {
 		MatchedRule matchedRule = new MatchedRule();
 
 		for (Map<String, Object> rule : ruleList) {
 			if (rule.containsKey("name")) {
-
+				
 				String name = (String) rule.get("name");
+				
+				String type = message.getType();
+				String ip = message.getIP();
+				String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(message.getTimestamp()));
 				
 				//时间/消息类型/IP地址匹配
 				if (MatchUtils.matchString((String) rule.get("type"), type) && MatchUtils.matchString((String) rule.get("ip"), ip)
 						&& MatchUtils.matchTime((String) rule.get("time"), time)) {
 					
 					//消息内容匹配
-					if (match(rule, message)) {
+					if (match(rule, message.getMessage())) {
 
 						int level = 1;
 						if (rule.containsKey("level")) {
@@ -102,6 +106,8 @@ public abstract class Rule {
 		return matchedRule;
 	}
 
-	public abstract boolean match(Map<String, Object> rule, Object message);
+	public abstract MatchedRule match(Message message);
+	
+	protected abstract boolean match(Map<String, Object> rule, Object message);
 
 }
