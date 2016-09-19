@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.message.queue.MemoryMessageQueue;
 import org.pinae.ndb.Ndb;
 
 /**
@@ -19,25 +18,25 @@ public class MessagePool {
 	private static Logger logger = Logger.getLogger(MessagePool.class);
 
 	/* 消息过滤队列 */
-	public static final MessageQueue FILTER_QUEUE = new MemoryMessageQueue("FILTER_QUEUE");
+	public static final MessageQueue FILTER_QUEUE = new MessageQueue("FILTER_QUEUE");
 
 	/* 消息归并队列 */
-	public static final MessageQueue MERGER_QUEUE = new MemoryMessageQueue("MERGER_QUEUE");
+	public static final MessageQueue MERGER_QUEUE = new MessageQueue("MERGER_QUEUE");
 
 	/* 消息路由队列 */
-	public static final MessageQueue ROUTE_QUEUE = new MemoryMessageQueue("ROUTE_QUEUE");
+	public static final MessageQueue ROUTE_QUEUE = new MessageQueue("ROUTE_QUEUE");
 	
 	/* 自定义消息处理队列 */
-	public static final MessageQueue PROCESSOR_QUEUE = new MemoryMessageQueue("PROCESSOR_QUEUE");
+	public static final MessageQueue PROCESSOR_QUEUE = new MessageQueue("PROCESSOR_QUEUE");
 	
 	/* 消息输出队列 */
-	public static final MessageQueue OUTPUT_QUEUE = new MemoryMessageQueue("OUTPUT_QUEUE");
+	public static final MessageQueue OUTPUT_QUEUE = new MessageQueue("OUTPUT_QUEUE");
 	
 	/* 原始消息处理队列 */
-	public static final MessageQueue ORIGINAL_QUEUE = new MemoryMessageQueue("ORIGINAL_QUEUE");
+	public static final MessageQueue ORIGINAL_QUEUE = new MessageQueue("ORIGINAL_QUEUE");
 
 	/* 计数器队列 */
-	public static final MessageQueue COUNTER_QUEUE = new MemoryMessageQueue("COUNTER_QUEUE");
+	public static final MessageQueue COUNTER_QUEUE = new MessageQueue("COUNTER_QUEUE");
 
 	/* 自定义消息队列 <消息队列名称, 消息队列> */
 	public static Map<String, MessageQueue> CUSTOM_MESSAGE_QUEUE = new ConcurrentHashMap<String, MessageQueue>();
@@ -73,9 +72,9 @@ public class MessagePool {
 						} catch (NumberFormatException e) {
 							size = Integer.MAX_VALUE;
 						}
-						messageQueue = new MemoryMessageQueue(name, size);
+						messageQueue = new MessageQueue(name, size);
 					} else {
-						messageQueue = new MemoryMessageQueue(name);
+						messageQueue = new MessageQueue(name);
 					}
 
 					if (StringUtils.isNotEmpty(name) && messageQueue != null) {
@@ -95,7 +94,7 @@ public class MessagePool {
 	 */
 	public static void addQueue(String name, int size) {
 		logger.info(String.format("Add message queue: %s, size: %d", name, size));
-		MessageQueue messageQueue = new MemoryMessageQueue(name, size);
+		MessageQueue messageQueue = new MessageQueue(name, size);
 		CUSTOM_MESSAGE_QUEUE.put(name, messageQueue);
 	}
 	
