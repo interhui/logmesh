@@ -5,7 +5,7 @@
 		<filter>
 			<startup>1</startup>
 			<name>IPFilter</name>
-			<enable>false</enable>
+			<enable>true</enable>
 			<class>org.pinae.logmesh.component.filter.IPFilter</class>
 			<parameters>
 				<parameter key="file" value="filter/ip_filter.xml" />
@@ -26,7 +26,7 @@
 		<outputor>
 			<name>ScreenOutputor</name>
 			<singleton>true</singleton>
-			<enable>true</enable>
+			<enable>false</enable>
 			<class>org.pinae.logmesh.output.ScreenOutputor</class>
 		</outputor>
 		

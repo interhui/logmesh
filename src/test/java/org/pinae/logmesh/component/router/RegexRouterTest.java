@@ -37,8 +37,9 @@ public class RegexRouterTest {
 		router.porcess(message);
 		assertEquals(message.getMessage(), "REGEX_ROUTER:192.168.0.104 Liu ASA Log: keep alived used 100ms");
 		
+		/* 192.168.0.103 Filter by IPFilter */
 		message = new Message("192.168.0.103", "Liu", "PIX Log: 192.168.12.21 deny access 10.3.0.12");
 		router.porcess(message);
-		assertEquals(message.getMessage(), "REGEX_ROUTER:192.168.0.103 Liu PIX Log: 192.168.12.21 deny access 10.3.0.12");
+		assertEquals(message.getMessage(), "PIX Log: 192.168.12.21 deny access 10.3.0.12");
 	}
 }

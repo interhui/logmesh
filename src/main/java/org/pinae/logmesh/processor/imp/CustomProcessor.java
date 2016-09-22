@@ -3,6 +3,7 @@ package org.pinae.logmesh.processor.imp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -47,7 +48,7 @@ public class CustomProcessor implements Processor {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<MessageProcessor> create(Map<String, Object> config) {
-		List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
+		Map<Integer, MessageProcessor> processorMap = new TreeMap<Integer, MessageProcessor>();
 
 		// 选取需要启动的处理器
 		List<Map<String, Object>> processorConfigList = (List<Map<String, Object>>) Ndb.execute(config,
@@ -66,19 +67,23 @@ public class CustomProcessor implements Processor {
 				if (processorConfig.containsKey("startup")) {
 					String startup = (String) processorConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						processorList.add(Integer.parseInt(startup), processor); 
+						processorMap.put(Integer.parseInt(startup), processor); 
 					}
 				} else {
-					processorList.add(processor);
+					int index = (int)(Math.random() * Integer.MAX_VALUE);
+					while (processorMap.containsKey(index)) {
+						index = (int)(Math.random() * Integer.MAX_VALUE);
+					}
+					processorMap.put(index, processor);
 				}
 			}
 		}
 
-		if (processorList.isEmpty()) {
-			processorList.add(new BasicCustomProcessor());
+		if (processorMap.isEmpty()) {
+			processorMap.put(0, new BasicCustomProcessor());
 		}
 
-		return processorList;
+		return new ArrayList<MessageProcessor>(processorMap.values());
 	}
 
 	public void start(String name) {

@@ -3,6 +3,7 @@ package org.pinae.logmesh.processor.imp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -49,7 +50,7 @@ public class FilterProcessor implements Processor {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<MessageFilter> create(Map<String, Object> config) {
-		List<MessageFilter> filterList = new ArrayList<MessageFilter>();
+		Map<Integer, MessageFilter> filterMap = new TreeMap<Integer, MessageFilter>();
 
 		// 选取需要启动的过滤器
 		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>)Ndb.execute(config,
@@ -68,20 +69,24 @@ public class FilterProcessor implements Processor {
 				if (filterConfig.containsKey("startup")) {
 					String startup = (String) filterConfig.get("startup");
 					if (StringUtils.isAlphanumeric(startup)) {
-						filterList.add(Integer.parseInt(startup), filter);
+						filterMap.put(Integer.parseInt(startup), filter);
 					}
 				} else {
-					filterList.add(filter);
+					int index = (int)(Math.random() * Integer.MAX_VALUE);
+					while (filterMap.containsKey(index)) {
+						index = (int)(Math.random() * Integer.MAX_VALUE);
+					}
+					filterMap.put(index, filter);
 				}
 			}
 		}
 
 		// 如果处理器队列中不含任何过滤器则启动默认过滤器
-		if (filterList.isEmpty()) {
-			filterList.add(new BasicFilter());
+		if (filterMap.isEmpty()) {
+			filterMap.put(0, new BasicFilter());
 		}
 
-		return filterList;
+		return new ArrayList<MessageFilter>(filterMap.values());
 	}
 
 	public void start(String name) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -74,6 +75,7 @@ public class SolrStorer implements Storer {
 		this.solrPoster.stop();
 	}
 
+	@SuppressWarnings("unchecked")
 	public SolrInputDocument handleMessage(Message message) {
 
 		if (message != null) {
@@ -83,9 +85,19 @@ public class SolrStorer implements Storer {
 			document.addField("id", Long.toString(message.getTimestamp()) + message.getIP()); // 使用时间戳和IP地址作为编号
 			document.addField("ip", message.getIP());
 			document.addField("type", message.getType());
-			document.addField("message", message.getMessage());
 			document.addField("owner", message.getOwner());
 			document.addField("time", String.valueOf(message.getTimestamp()));
+			
+			Object msg = message.getMessage();
+			if (msg instanceof Map) {
+				Map<String, String> msgMap = (Map<String, String>)msg;
+				Set<String> msgKeySet = msgMap.keySet();
+				for (String msgKey : msgKeySet) {
+					document.addField(msgKey, msgMap.get(msgKey));
+				}
+			} else {
+				document.addField("message", msg.toString());
+			}
 
 			return document;
 		}
@@ -95,12 +107,12 @@ public class SolrStorer implements Storer {
 
 	private class SolrPoster implements Processor {
 		
-		private HttpSolrClient solrClient;
+		private HttpSolrClient solr;
 		
 		public SolrPoster() throws StorerException {
 			try {
-				this.solrClient = new HttpSolrClient(solrURL);
-				SolrPingResponse ping = this.solrClient.ping();
+				this.solr = new HttpSolrClient(solrURL);
+				SolrPingResponse ping = this.solr.ping();
 				if (ping == null || 0 != ping.getStatus()) {
 					throw new StorerException(String.format("Couldn't connect solr server %d", solrURL));
 				}
@@ -129,9 +141,9 @@ public class SolrStorer implements Storer {
 							}
 						}
 						try {
-							solrClient.add(docList);
+							solr.add(docList);
 							// 将消息提交到Solr
-							UpdateResponse response = solrClient.commit();
+							UpdateResponse response = solr.commit();
 							if (response.getStatus() == 0) {
 								logger.debug(String.format("commit document %s succee. cost time is %sms", docList.toArray().toString(),
 										response.getQTime()));
@@ -154,9 +166,9 @@ public class SolrStorer implements Storer {
 		}
 
 		public void stop() {
-			if (this.solrClient != null) {
+			if (this.solr != null) {
 				try {
-					this.solrClient.close();
+					this.solr.close();
 				} catch (IOException e) {
 					logger.error(String.format("SolrStorer Exception: exception=%s", e.getMessage()));
 				}
