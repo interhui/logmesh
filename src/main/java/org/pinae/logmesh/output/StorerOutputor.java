@@ -3,7 +3,7 @@ package org.pinae.logmesh.output;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.output.storer.DBStorer;
+import org.pinae.logmesh.output.storer.DatabaseStorer;
 import org.pinae.logmesh.output.storer.FileStorer;
 import org.pinae.logmesh.output.storer.SolrStorer;
 import org.pinae.logmesh.output.storer.Storer;
@@ -29,7 +29,7 @@ public class StorerOutputor extends ComponentInfo implements MessageOutputor {
 			if (type.equalsIgnoreCase("file")) {
 				store = new FileStorer(getParameters());
 			} else if (type.equalsIgnoreCase("db")) {
-				store = new DBStorer(getParameters());
+				store = new DatabaseStorer(getParameters());
 			} else if (type.equalsIgnoreCase("solr")) {
 				store = new SolrStorer(getParameters());
 			}
