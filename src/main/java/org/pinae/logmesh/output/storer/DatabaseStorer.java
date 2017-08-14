@@ -26,8 +26,8 @@ import org.pinae.logmesh.util.ConfigMap;
  * 
  * 
  */
-public class DBStorer implements Storer {
-	private static Logger logger = Logger.getLogger(FileStorer.class);
+public class DatabaseStorer implements Storer {
+	private static Logger logger = Logger.getLogger(DatabaseStorer.class);
 
 	// JDBC驱动
 	private String driver;
@@ -53,11 +53,11 @@ public class DBStorer implements Storer {
 
 	private String defaultSql = "insert into event(time, ip, owner, message) values ('${time}', '${ip}', '${owner}', '${message}')";
 
-	public DBStorer(Map<String, Object> config) {
+	public DatabaseStorer(Map<String, Object> config) {
 		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "DB_STORE_QUEUE"));
 	}
 
-	public DBStorer(Map<String, Object> config, MessageQueue messageQueue) {
+	public DatabaseStorer(Map<String, Object> config, MessageQueue messageQueue) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}
