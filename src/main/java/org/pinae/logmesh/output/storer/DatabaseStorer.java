@@ -14,7 +14,7 @@ import org.apache.velocity.app.Velocity;
 import org.apache.velocity.context.Context;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
-import org.pinae.logmesh.message.MessageQueue;
+import org.pinae.logmesh.message.MemoryMessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.util.ConfigMap;
@@ -49,7 +49,7 @@ public class DatabaseStorer implements Storer {
 	private DBSaver dbLogSaver = null;
 
 	private ConfigMap<String, Object> config;
-	private MessageQueue messageQueue;
+	private MemoryMessageQueue messageQueue;
 
 	private String defaultSql = "insert into event(time, ip, owner, message) values ('${time}', '${ip}', '${owner}', '${message}')";
 
@@ -57,7 +57,7 @@ public class DatabaseStorer implements Storer {
 		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "DB_STORE_QUEUE"));
 	}
 
-	public DatabaseStorer(Map<String, Object> config, MessageQueue messageQueue) {
+	public DatabaseStorer(Map<String, Object> config, MemoryMessageQueue messageQueue) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}

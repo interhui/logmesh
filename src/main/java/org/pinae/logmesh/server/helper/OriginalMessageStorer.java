@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
-import org.pinae.logmesh.message.MessageQueue;
+import org.pinae.logmesh.message.MemoryMessageQueue;
 import org.pinae.logmesh.output.storer.FileStorer;
 import org.pinae.logmesh.output.storer.StorerException;
 import org.pinae.logmesh.processor.Processor;
@@ -106,7 +106,7 @@ public class OriginalMessageStorer {
 
 		private String encoding = "utf8";
 
-		public MessageStore(ConfigMap<String, Object> config, MessageQueue messageQueue) {
+		public MessageStore(ConfigMap<String, Object> config, MemoryMessageQueue messageQueue) {
 			super(config, messageQueue);
 			if (config != null) {
 				this.encoding = config.getString("encoding", "utf8");

@@ -18,28 +18,28 @@ public class MessagePool {
 	private static Logger logger = Logger.getLogger(MessagePool.class);
 
 	/* 消息过滤队列 */
-	public static final MessageQueue FILTER_QUEUE = new MessageQueue("FILTER_QUEUE");
+	public static final MemoryMessageQueue FILTER_QUEUE = new MemoryMessageQueue("FILTER_QUEUE");
 
 	/* 消息归并队列 */
-	public static final MessageQueue MERGER_QUEUE = new MessageQueue("MERGER_QUEUE");
+	public static final MemoryMessageQueue MERGER_QUEUE = new MemoryMessageQueue("MERGER_QUEUE");
 
 	/* 消息路由队列 */
-	public static final MessageQueue ROUTE_QUEUE = new MessageQueue("ROUTE_QUEUE");
+	public static final MemoryMessageQueue ROUTE_QUEUE = new MemoryMessageQueue("ROUTE_QUEUE");
 	
 	/* 自定义消息处理队列 */
-	public static final MessageQueue PROCESSOR_QUEUE = new MessageQueue("PROCESSOR_QUEUE");
+	public static final MemoryMessageQueue PROCESSOR_QUEUE = new MemoryMessageQueue("PROCESSOR_QUEUE");
 	
 	/* 消息输出队列 */
-	public static final MessageQueue OUTPUT_QUEUE = new MessageQueue("OUTPUT_QUEUE");
+	public static final MemoryMessageQueue OUTPUT_QUEUE = new MemoryMessageQueue("OUTPUT_QUEUE");
 	
 	/* 原始消息处理队列 */
-	public static final MessageQueue ORIGINAL_QUEUE = new MessageQueue("ORIGINAL_QUEUE");
+	public static final MemoryMessageQueue ORIGINAL_QUEUE = new MemoryMessageQueue("ORIGINAL_QUEUE");
 
 	/* 计数器队列 */
-	public static final MessageQueue COUNTER_QUEUE = new MessageQueue("COUNTER_QUEUE");
+	public static final MemoryMessageQueue COUNTER_QUEUE = new MemoryMessageQueue("COUNTER_QUEUE");
 
 	/* 自定义消息队列 <消息队列名称, 消息队列> */
-	public static Map<String, MessageQueue> CUSTOM_MESSAGE_QUEUE = new ConcurrentHashMap<String, MessageQueue>();
+	public static Map<String, MemoryMessageQueue> CUSTOM_MESSAGE_QUEUE = new ConcurrentHashMap<String, MemoryMessageQueue>();
 
 	@SuppressWarnings("unchecked")
 	public static void initialize(Map<String, Object> config) {
@@ -65,16 +65,16 @@ public class MessagePool {
 					String name = (String) queueConfigMap.get("name");
 					int size = Integer.MAX_VALUE;
 					
-					MessageQueue messageQueue = null;
+					MemoryMessageQueue messageQueue = null;
 					if (queueConfigMap.containsKey("size")) {
 						try {
 							size = Integer.parseInt((String) queueConfigMap.get("size"));
 						} catch (NumberFormatException e) {
 							size = Integer.MAX_VALUE;
 						}
-						messageQueue = new MessageQueue(name, size);
+						messageQueue = new MemoryMessageQueue(name, size);
 					} else {
-						messageQueue = new MessageQueue(name);
+						messageQueue = new MemoryMessageQueue(name);
 					}
 
 					if (StringUtils.isNotEmpty(name) && messageQueue != null) {
@@ -94,7 +94,7 @@ public class MessagePool {
 	 */
 	public static void addQueue(String name, int size) {
 		logger.info(String.format("Add message queue: %s, size: %d", name, size));
-		MessageQueue messageQueue = new MessageQueue(name, size);
+		MemoryMessageQueue messageQueue = new MemoryMessageQueue(name, size);
 		CUSTOM_MESSAGE_QUEUE.put(name, messageQueue);
 	}
 	
@@ -105,7 +105,7 @@ public class MessagePool {
 	 */
 	public static void removeQueue(String name) {
 		logger.info(String.format("Remove message queue: %s", name));
-		MessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
+		MemoryMessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
 		if (messageQueue != null) {
 			synchronized (messageQueue) {
 				messageQueue.clear();
@@ -121,8 +121,8 @@ public class MessagePool {
 	 * 
 	 * @return 自定义消息队列
 	 */
-	public static MessageQueue getQueue(String name) {
-		MessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
+	public static MemoryMessageQueue getQueue(String name) {
+		MemoryMessageQueue messageQueue = CUSTOM_MESSAGE_QUEUE.get(name);
 		return messageQueue;
 	}
 

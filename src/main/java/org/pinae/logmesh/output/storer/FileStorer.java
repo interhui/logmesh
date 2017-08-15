@@ -13,7 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
-import org.pinae.logmesh.message.MessageQueue;
+import org.pinae.logmesh.message.MemoryMessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.util.ConfigMap;
@@ -39,13 +39,13 @@ public class FileStorer implements Storer {
 	private FileSaver fileCreator; // 文件存储线程
 
 	private ConfigMap<String, Object> config;
-	private MessageQueue messageQueue;
+	private MemoryMessageQueue messageQueue;
 
 	public FileStorer(Map<String, Object> config) {
 		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String)config.get("queue") : "FILE_STORE_QUEUE"));
 	}
 
-	public FileStorer(Map<String, Object> config, MessageQueue messageQueue) {
+	public FileStorer(Map<String, Object> config, MemoryMessageQueue messageQueue) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}

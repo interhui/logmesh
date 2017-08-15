@@ -2,7 +2,7 @@ package org.pinae.logmesh.message;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.pinae.logmesh.message.MessageQueue;
+import org.pinae.logmesh.message.MemoryMessageQueue;
 
 /**
  * 内存模式消息队列 
@@ -12,7 +12,7 @@ import org.pinae.logmesh.message.MessageQueue;
  * @author Huiyugeng
  * 
  */
-public class MessageQueue extends LinkedBlockingQueue<Message> {
+public class MemoryMessageQueue extends LinkedBlockingQueue<Message> {
 
 	private static final long serialVersionUID = 2669009460413252047L;
 
@@ -25,11 +25,11 @@ public class MessageQueue extends LinkedBlockingQueue<Message> {
 	/* 消息队列最大容量 */
 	private int maxSize = 0;
 
-	public MessageQueue(String name) {
+	public MemoryMessageQueue(String name) {
 		this(name, Integer.MAX_VALUE);
 	}
 
-	public MessageQueue(String name, int maxSize) {
+	public MemoryMessageQueue(String name, int maxSize) {
 		this.name = name;
 		this.maxSize = maxSize;
 	}
