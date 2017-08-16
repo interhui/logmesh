@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.text.DecimalFormat;
 
 import org.apache.log4j.Logger;
-import org.codehaus.stax2.ri.typed.ValueDecoderFactory.DecimalDecoder;
 import org.junit.Test;
 
 /**

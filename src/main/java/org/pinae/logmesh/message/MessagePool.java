@@ -20,9 +20,6 @@ public class MessagePool {
 	/* 消息过滤队列 */
 	public static final MemoryMessageQueue FILTER_QUEUE = new MemoryMessageQueue("FILTER_QUEUE");
 
-	/* 消息归并队列 */
-	public static final MemoryMessageQueue MERGER_QUEUE = new MemoryMessageQueue("MERGER_QUEUE");
-
 	/* 消息路由队列 */
 	public static final MemoryMessageQueue ROUTE_QUEUE = new MemoryMessageQueue("ROUTE_QUEUE");
 	

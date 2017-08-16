@@ -14,6 +14,11 @@
 		<size>50000</size>
 	</queue>
 	<queue>
+		<!--Elasticsearch存储队列-->
+		<name>ES_STORE_QUEUE</name>
+		<size>50000</size>
+	</queue>
+	<queue>
 		<!--数据库存储队列-->
 		<name>DB_STORE_QUEUE</name>
 		<size>50000</size>

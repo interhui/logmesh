@@ -56,12 +56,45 @@
 		<!--输出器类:存储输出器-->
 		<class>org.pinae.logmesh.output.StorerOutputor</class>
 		<parameters>
-			<!--输出方式：file/db/solr-->
+			<!--输出方式：file/db/solr/es-->
 			<parameter key="type" value="file"/>
 			
-			<parameter key="path" value="d:\TestData\message"/>
+			<parameter key="path" value="d:\log\message"/>
 			<parameter key="title" value="message"/>
 			<parameter key="ext" value="log"/>
+		</parameters>
+	</outputor>
+	
+	<!--存储消息输出器配置-->
+	<outputor>
+		<!--输出器名称-->
+		<name>es-store</name>
+		<!--是否启动输出器:true/false-->
+		<enable>true</enable>
+		<!--输出器类:存储输出器-->
+		<class>org.pinae.logmesh.output.StorerOutputor</class>
+		<parameters>
+			<!--输出方式：file/db/solr/es-->
+			<parameter key="type" value="es"/>
+			
+			<parameter key="address" value="127.0.0.1:9300"/>
+			<parameter key="cluster" value="logmesh"/>
+		</parameters>
+	</outputor>
+	
+	<!--存储消息输出器配置-->
+	<outputor>
+		<!--输出器名称-->
+		<name>solr-store</name>
+		<!--是否启动输出器:true/false-->
+		<enable>false</enable>
+		<!--输出器类:存储输出器-->
+		<class>org.pinae.logmesh.output.StorerOutputor</class>
+		<parameters>
+			<!--输出方式：file/db/solr/es-->
+			<parameter key="type" value="solr"/>
+			
+			<parameter key="url" value="http://127.0.0.1:8983/solr/logmesh"/>
 		</parameters>
 	</outputor>
 	

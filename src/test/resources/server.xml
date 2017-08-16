@@ -44,7 +44,7 @@
 			<!--消息输出格式：时间(time)/所有者(owner)/IP(ip)/消息类型(type)/message(消息内容)-->
 			<parameter key="msgFormat" value="$time : $ip : $message"/> 
 			<!--消息存储路径-->
-			<parameter key="path" value="d:\TestData\original"/>
+			<parameter key="path" value="d:\log\original"/>
 			<!--消息文件目录格式-->
 			<parameter key="dir" value="yyyy-MM-dd-HH-mm"/>
 			<!--消息文件文件头-->

@@ -11,7 +11,7 @@ public class MessageServerDemo {
 		server.start();
 		
 		// 5秒后启动消息发送
-		TimeUnit.SECONDS.sleep(5);
-		new Thread(new MessageSenderExample(1, false), "MessageSender").start();
+		//TimeUnit.SECONDS.sleep(5);
+		//new Thread(new MessageSenderExample(1, false), "MessageSender").start();
 	}
 }

@@ -13,11 +13,9 @@ import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.ProcessorPool;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
-import org.pinae.logmesh.processor.imp.MergerProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.processor.imp.RouterProcessor;
 import org.pinae.logmesh.receiver.AbstractReceiver;
-import org.pinae.logmesh.receiver.event.JMSReceiver;
 import org.pinae.logmesh.receiver.event.KafkaReceiver;
 import org.pinae.logmesh.receiver.event.TCPReceiver;
 import org.pinae.logmesh.receiver.event.UDPReceiver;
@@ -102,9 +100,6 @@ public class MessageServer {
 	
 			// 启动消息路由器
 			startRouter(config);
-	
-			// 启动归并器
-			startMerger(config);
 	
 			// 启动过滤器
 			startFilter(config);
@@ -193,9 +188,6 @@ public class MessageServer {
 				} else if (type.equalsIgnoreCase("UDP")) {
 					receiver = new UDPReceiver();
 					name = "UDPReceiver";
-				} else if (type.equalsIgnoreCase("JMS")) {
-					receiver = new JMSReceiver();
-					name = "JMSReceiver";
 				} else if (type.equalsIgnoreCase("Kafka")) {
 					receiver = new KafkaReceiver();
 					name = "KafkaReceiver";
@@ -352,31 +344,6 @@ public class MessageServer {
 	 * 
 	 * @param config 配置信息
 	 */
-	@SuppressWarnings("unchecked")
-	public void startMerger(Map<String, Object> config) {
-		long startTime = System.currentTimeMillis();
-
-		Map<String, Object> mergerConfig = (Map<String, Object>) Ndb.execute(config, "one:merger");
-		
-		boolean enable = false;
-		
-		try{
-			enable = Boolean.parseBoolean((String) mergerConfig.get("enable"));
-		} catch(Exception e) {
-			enable = false;
-		}
-		
-		if (enable == true) {
-
-			new MergerProcessor(mergerConfig).start("merger");
-
-			long startupTime = System.currentTimeMillis() - startTime;
-			logger.info(String.format("Start message merger in %d ms", startupTime));
-		} else {
-			logger.info("Merger processor is Disable");
-		}
-
-	}
 
 	/**
 	 * 启动消息自定义处理器

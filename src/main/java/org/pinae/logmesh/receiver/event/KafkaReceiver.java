@@ -14,8 +14,6 @@ import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.receiver.AbstractReceiver;
 import org.pinae.logmesh.receiver.EventDrivenReceiver;
 
-import kafka.utils.ShutdownableThread;
-
 public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiver {
 	
 	private static Logger logger = Logger.getLogger(KafkaReceiver.class.getName());
@@ -24,7 +22,7 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 	/* Kafka消息队列 */
 	private String topic = "default";
 	/* 消息提交周期 */
-	private long fetchCycle = 1000;
+	private long fetch = 1000;
 	
 	public void initialize(Map<String, Object> config) {
 		super.initialize(config);
@@ -54,7 +52,7 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 				"org.apache.kafka.common.serialization.StringDeserializer");
 		
 		this.topic = super.config.getString("topic", "default");
-		this.fetchCycle = super.config.getLong("fetchCycle", 1000);
+		this.fetch = super.config.getLong("fetch", 100);
 	}
 	
 	public void start(String name) {
@@ -62,7 +60,7 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 
 		try {
 			MessageConsumer consumer = new MessageConsumer(this.props);
-			consumer.start();
+			new Thread(consumer, "Kafka-Receiver").start();
 		} catch (Exception e) {
 			logger.error(String.format("Kafka Receiver Started Error: %s", e.getMessage()));
 		}
@@ -80,29 +78,35 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 				this.props.getProperty("topic"));
 	}
 
-	private class MessageConsumer extends ShutdownableThread {
+	private class MessageConsumer implements Runnable {
 		
 		private KafkaConsumer<String, String> consumer;
 		
 		public MessageConsumer(Properties props) {
-			super("Kafaka-Receiver", false);
 			this.consumer = new KafkaConsumer<String, String>(props);
 		}
 
-		@Override
-		public void doWork() {
-			this.consumer.subscribe(Collections.singletonList(topic));
-			ConsumerRecords<String, String> records = consumer.poll(fetchCycle);
-			for (ConsumerRecord<String, String> record : records) {
-				String key = record.key();
-				String message = record.value();
-				String keys[] = key.split("$");
-				if (message != null && keys != null && keys.length == 3) {
-					addMessage(new Message(keys[1], keys[2], message));
-				} else {
-					addMessage(new Message(message));
+		public void run() {
+			while(!isStop) {
+				this.consumer.subscribe(Collections.singletonList(topic));
+				ConsumerRecords<String, String> records = consumer.poll(fetch);
+				for (ConsumerRecord<String, String> record : records) {
+					String key = record.key();
+					String message = record.value();
+					String keys[] = key.split("$");
+					if (message != null && keys != null && keys.length == 3) {
+						addMessage(new Message(keys[1], keys[2], message));
+					} else {
+						addMessage(new Message(message));
+					}
+				}
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					
 				}
 			}
+			
 		}
 		
 	}

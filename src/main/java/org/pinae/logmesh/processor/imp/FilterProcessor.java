@@ -34,8 +34,6 @@ public class FilterProcessor implements Processor {
 	/* 消息过滤组件列表 */
 	private List<MessageFilter> filterList = new ArrayList<MessageFilter>();
 
-	/* 是否启用归并消息 */
-	private boolean merger = false;
 	/* 消息过滤线程是否停止 */
 	private boolean isStop = false;
 
@@ -96,11 +94,6 @@ public class FilterProcessor implements Processor {
 			ComponentPool.registe(filter);
 		}
 
-		// 是否启动消息归并
-		if (((List<?>) Ndb.execute(config, "select:thread->merger->enable:true")).size() > 0) {
-			merger = true;
-		}
-
 		// 设置线程启动标记
 		this.isStop = false;
 		// 启动消息过滤线程
@@ -130,12 +123,8 @@ public class FilterProcessor implements Processor {
 					}
 
 					if (message != null && message.getMessage() != null) {
-						if (merger == true) {
-							MessagePool.MERGER_QUEUE.offer(message); // 将消息进行合并
-						} else {
-							MessagePool.ROUTE_QUEUE.offer(message); // 将消息填入路由队列中
-							MessagePool.PROCESSOR_QUEUE.offer(message); // 将消息填入自定义处理器队列中
-						}
+						MessagePool.ROUTE_QUEUE.offer(message); // 将消息填入路由队列中
+						MessagePool.PROCESSOR_QUEUE.offer(message); // 将消息填入自定义处理器队列中
 						MessagePool.COUNTER_QUEUE.offer(message); // 将消息填入统计队列中
 					}
 				}

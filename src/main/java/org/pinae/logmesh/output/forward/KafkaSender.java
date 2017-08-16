@@ -18,22 +18,16 @@ public class KafkaSender implements Sender {
 	
 	/* 消息主题 */
 	private String topic = "default";;
-	/* 是否异步模式 */
-	private boolean isAsync;
-	/* 消息回调类 */
-	private Class<?> callbackClass;
 	
 	private Properties props = new Properties();
 	private KafkaProducer<String, String> producer;
 	
 	public KafkaSender(String url, String topic) {
-		this(url, topic, null, false, null);
+		this(url, topic, null);
 	}
 	
-	public KafkaSender(String url, String topic, String clientId, boolean isAsync, Class<?> callbackClass) {
+	public KafkaSender(String url, String topic, String clientId) {
 		this.topic = topic;
-		this.isAsync = isAsync;
-		this.callbackClass = callbackClass;
 		
 		this.props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, url);
 		this.props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
@@ -62,22 +56,7 @@ public class KafkaSender implements Sender {
 			
 			if (msgKey != null && msgContent != null) {
 				try {
-					if (this.isAsync && this.callbackClass != null) {
-						try {
-							Object callbackObj = this.callbackClass.newInstance();
-							if (callbackObj != null && callbackObj instanceof KafkaSenderCallback) {
-								KafkaSenderCallback senderCallback = (KafkaSenderCallback)callbackObj;
-								senderCallback.setMessage(message);
-								this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent), senderCallback);
-							}
-						} catch (InstantiationException e) {
-							throw new SendException(e);
-						} catch (IllegalAccessException e) {
-							throw new SendException(e);
-						}
-					} else {
-						this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent));
-					}
+					this.producer.send(new ProducerRecord<String, String>(this.topic, msgKey, msgContent));
 				}catch (Exception e) {
 					throw new SendException(e);
 				}

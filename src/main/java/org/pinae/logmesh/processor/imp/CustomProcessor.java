@@ -111,15 +111,14 @@ public class CustomProcessor implements Processor {
 
 			while (!MessagePool.PROCESSOR_QUEUE.isEmpty()) {
 				Message message = MessagePool.PROCESSOR_QUEUE.poll();
-				if (message != null) {
-					for (MessageProcessor processor : processorList) {
-						if (processor != null) {
-							message = processor.porcess(message);
-							if (message != null) {
-								MessagePool.OUTPUT_QUEUE.offer(message);
-							}
-						}
+				for (MessageProcessor processor : processorList) {
+					if (processor != null && message != null) {
+						message = processor.porcess(message);
 					}
+				}
+				
+				if (message != null) {
+					MessagePool.OUTPUT_QUEUE.offer(message);
 				}
 			}
 			try {
