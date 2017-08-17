@@ -2,18 +2,17 @@ package org.pinae.logmesh.receiver.event;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.jboss.netty.bootstrap.ConnectionlessBootstrap;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 
 /**
  * UDP消息接收器
@@ -24,7 +23,7 @@ import org.jboss.netty.channel.socket.nio.NioDatagramChannelFactory;
 public class UDPReceiver extends NettyReceiver {
 	private static Logger logger = Logger.getLogger(UDPReceiver.class.getName());
 
-	private ConnectionlessBootstrap bootstrap = null;
+	private EventLoopGroup group = null;
 
 	public void initialize(Map<String, Object> config) {
 		super.initialize(config);
@@ -38,22 +37,26 @@ public class UDPReceiver extends NettyReceiver {
 	public void start(String name) {
 		super.start(name);
 
-		bootstrap = new ConnectionlessBootstrap(new NioDatagramChannelFactory(Executors.newCachedThreadPool()));
+		EventLoopGroup group = new NioEventLoopGroup();
+		
+		Bootstrap bootstrap = new Bootstrap();
+		bootstrap.group(group).channel(NioDatagramChannel.class);
+		bootstrap.handler(new UDPMessageHandler());
+		bootstrap.option(ChannelOption.SO_BROADCAST, true);
+		
+		bootstrap.option(ChannelOption.SO_RCVBUF, 1024 * 1024);  // 设置UDP读缓冲区为1M  
+		bootstrap.option(ChannelOption.SO_SNDBUF, 1024 * 1024);  // 设置UDP写缓冲区为1M  
 
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("handler", new UDPMessageHandler());
-
-				return pipeline;
-			}
-		});
-
-		bootstrap.bind(new InetSocketAddress(port));
+		try {
+			bootstrap.bind(new InetSocketAddress(port)).sync().channel();
+		} catch (InterruptedException e) {
+			logger.error("UDP Server Exception: exception=" + e.getMessage());
+		}
+		
 	}
 
 	public void stop() {
-		bootstrap.releaseExternalResources();
+		group.shutdownGracefully();
 		isStop = true;
 		logger.info("UDP Receiver STOP");
 	}
@@ -62,15 +65,17 @@ public class UDPReceiver extends NettyReceiver {
 		return "UDP Receiver AT " + Integer.toString(port);
 	}
 
-	private class UDPMessageHandler extends SimpleChannelHandler {
-		public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
-			addMessage(getMessage(event));
-		}
+	private class UDPMessageHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
 		@Override
-		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			logger.info(e.getCause().getMessage());
+		protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket message) throws Exception {
+			InetSocketAddress sender = message.sender();
+			if (sender != null) {
+				String ip = sender.getAddress().getHostAddress();
+				addMessage(getMessage(ip, message.content()));
+			}
 		}
+
 	}
 
 }

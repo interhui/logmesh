@@ -1,14 +1,16 @@
 package org.pinae.logmesh.receiver.event;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.util.Map;
 
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.MessageEvent;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.receiver.AbstractReceiver;
 import org.pinae.logmesh.receiver.EventDrivenReceiver;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * 基于Netty的消息接收器
@@ -29,7 +31,7 @@ public abstract class NettyReceiver extends AbstractReceiver implements EventDri
 
 	public void initialize(Map<String, Object> config) {
 		super.initialize(config);
-		
+
 		this.port = super.config.getInt("port", 514);
 		this.msgType = super.config.getString("message", "String");
 		this.codec = super.config.getString("codec", "utf8");
@@ -42,34 +44,24 @@ public abstract class NettyReceiver extends AbstractReceiver implements EventDri
 	 * 
 	 * @return 消息内容
 	 */
-	protected Message getMessage(MessageEvent event) {
-		ChannelBuffer buffer = (ChannelBuffer) event.getMessage();
-		byte[] message = buffer.copy().toByteBuffer().array();
+	protected Message getMessage(String ip, ByteBuf message) {
 
-		if (message != null && message.length > 0) {
+		if (message != null) {
 
-			String ip = event.getRemoteAddress().toString();
-
-			// 解析IP格式地址，例如(/127.0.0.1:11554)
-			if (ip.startsWith("/")) {
-				ip = ip.substring(1);
-			}
-			if (ip.indexOf(":") > 0) {
-				String ips[] = ip.split(":");
-				if (ips.length == 2) {
-					ip = ips[0];
-				}
-			}
-
-			Object msg = message;
 			if ("String".equalsIgnoreCase(this.msgType)) {
 				try {
-					msg = new String(message, this.codec);
+					ByteBuf buffer = (ByteBuf) message;
+					byte[] bytes = new byte[buffer.readableBytes()];
+					buffer.readBytes(bytes);
+					
+					return new Message(ip, new String(bytes, this.codec));
 				} catch (UnsupportedEncodingException e) {
 
 				}
+			} else {
+				return new Message(ip, message);
 			}
-			return new Message(ip, msg);
+			
 		}
 
 		return null;

@@ -2,18 +2,18 @@ package org.pinae.logmesh.receiver.event;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  * TCP消息接收器
@@ -24,7 +24,8 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 public class TCPReceiver extends NettyReceiver {
 	private static Logger logger = Logger.getLogger(TCPReceiver.class.getName());
 
-	private ServerBootstrap bootstrap = null;
+	private EventLoopGroup masterGroup = new NioEventLoopGroup();
+	private EventLoopGroup workerGroup = new NioEventLoopGroup();
 
 	public void initialize(Map<String, Object> config) {
 		super.initialize(config);
@@ -38,26 +39,25 @@ public class TCPReceiver extends NettyReceiver {
 	public void start(String name) {
 		super.start(name);
 
-		bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
-				Executors.newCachedThreadPool()));
+		ServerBootstrap bootstrap = new ServerBootstrap();
 
-		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-			public ChannelPipeline getPipeline() throws Exception {
-				ChannelPipeline pipeline = Channels.pipeline();
-				pipeline.addLast("handler", new TCPMessageHandler());
+		bootstrap.group(masterGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, 1024)
+				.childHandler(new TCPMessageHandler());
 
-				return pipeline;
-			}
-		});
-
-		bootstrap.bind(new InetSocketAddress(port));
+		try {
+			bootstrap.bind(new InetSocketAddress(port)).sync();
+		} catch (InterruptedException e) {
+			logger.error("TCP Server Exception: exception=" + e.getMessage());
+		}
 
 	}
 
 	public void stop() {
-		bootstrap.releaseExternalResources();
+		
+		masterGroup.shutdownGracefully();
+		workerGroup.shutdownGracefully();
+		
 		isStop = true;
-
 		logger.info("TCP Receiver STOP");
 	}
 
@@ -65,16 +65,18 @@ public class TCPReceiver extends NettyReceiver {
 		return "TCP Receiver AT " + Integer.toString(port);
 	}
 
-	private class TCPMessageHandler extends SimpleChannelHandler {
-
-		public void messageReceived(ChannelHandlerContext ctx, MessageEvent event) throws Exception {
-			addMessage(getMessage(event));
-		}
+	private class TCPMessageHandler extends SimpleChannelInboundHandler<Object>  {
 
 		@Override
-		public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-			logger.info(e.getCause().getMessage());
+		protected void channelRead0(ChannelHandlerContext ctx, Object message) throws Exception {
+			NioSocketChannel channel = (NioSocketChannel)ctx.channel();
+			InetSocketAddress sender = channel.remoteAddress();
+			if (sender != null) {
+				String ip = sender.getAddress().getHostAddress();
+				addMessage(getMessage(ip, (ByteBuf)message));
+			}
 		}
+
 	}
 
 }
