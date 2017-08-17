@@ -29,7 +29,7 @@ public class SolrStorer implements Storer {
 	private static Logger logger = Logger.getLogger(SolrStorer.class);
 
 	/* Solr地址 */
-	private String solrURL = "http://127.0.0.1:8983/solr/logmesh";
+	private String solrURL;
 	/* Solr存储周期 */
 	private long cycle;
 	
@@ -111,7 +111,7 @@ public class SolrStorer implements Storer {
 		
 		public SolrPoster() throws StorerException {
 			try {
-				this.solr = new HttpSolrClient(solrURL);
+				this.solr = new HttpSolrClient.Builder(solrURL).build();
 				SolrPingResponse ping = this.solr.ping();
 				if (ping == null || 0 != ping.getStatus()) {
 					throw new StorerException(String.format("Couldn't connect solr server %d", solrURL));

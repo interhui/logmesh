@@ -38,7 +38,7 @@
 		<!--输出器类:转发输出器-->
 		<class>org.pinae.logmesh.output.ForwardOutputor</class>
 		<parameters>
-			<!--输出协议：udp/tcp/jms-->
+			<!--输出协议：udp/tcp-->
 			<parameter key="protocol" value="udp"/>
 			<!--转发目标地址，如果输出协议为jms，格式为：url:user:password:type:target-->
 			<parameter key="destination" value="127.0.0.1"/>
@@ -56,7 +56,7 @@
 		<!--输出器类:存储输出器-->
 		<class>org.pinae.logmesh.output.StorerOutputor</class>
 		<parameters>
-			<!--输出方式：file/db/solr/es-->
+			<!--输出方式：file/solr/es-->
 			<parameter key="type" value="file"/>
 			
 			<parameter key="path" value="d:\log\message"/>
@@ -74,11 +74,14 @@
 		<!--输出器类:存储输出器-->
 		<class>org.pinae.logmesh.output.StorerOutputor</class>
 		<parameters>
-			<!--输出方式：file/db/solr/es-->
+			<!--输出方式：file/solr/es-->
 			<parameter key="type" value="es"/>
 			
-			<parameter key="address" value="127.0.0.1:9300"/>
-			<parameter key="cluster" value="logmesh"/>
+			<parameter key="address" value="http://127.0.0.1:9200"/>
+			<parameter key="esindex" value="logmesh"/>
+			<parameter key="estype" value="logmesh"/>
+			<parameter key="thread" value="2"/>
+			<parameter key="batch" value="100"/>
 		</parameters>
 	</outputor>
 	
@@ -91,7 +94,7 @@
 		<!--输出器类:存储输出器-->
 		<class>org.pinae.logmesh.output.StorerOutputor</class>
 		<parameters>
-			<!--输出方式：file/db/solr/es-->
+			<!--输出方式：file/solr/es-->
 			<parameter key="type" value="solr"/>
 			
 			<parameter key="url" value="http://127.0.0.1:8983/solr/logmesh"/>

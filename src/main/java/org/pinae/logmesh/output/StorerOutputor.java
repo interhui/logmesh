@@ -3,6 +3,7 @@ package org.pinae.logmesh.output;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
+import org.pinae.logmesh.output.storer.ElasticsearchStore;
 import org.pinae.logmesh.output.storer.FileStorer;
 import org.pinae.logmesh.output.storer.SolrStorer;
 import org.pinae.logmesh.output.storer.Storer;
@@ -29,6 +30,8 @@ public class StorerOutputor extends ComponentInfo implements MessageOutputor {
 				store = new FileStorer(getParameters());
 			} else if (type.equalsIgnoreCase("solr")) {
 				store = new SolrStorer(getParameters());
+			} else if (type.equalsIgnoreCase("es")) {
+				store = new ElasticsearchStore(getParameters());
 			}
 
 			if (store != null) {
