@@ -3,7 +3,7 @@
 
 	<!--UDP采集器配置-->
 	<receiver>
-		<!-- 采集器类型 udp/tcp/jms/kafka -->
+		<!-- 采集器类型 udp/tcp/kafka -->
 		<type>udp</type>
 		<!--是否启动采集器:true/false-->
 		<enable>true</enable>
@@ -19,6 +19,7 @@
 			<parameter key="message" value="string"/>
 		</parameters>
 	</receiver>
+	
 	<!--TCP采集器配置-->
 	<receiver>
 		<type>tcp</type>
@@ -30,26 +31,7 @@
 			<parameter key="message" value="string"/>
 		</parameters>
 	</receiver>
-	<!--JMS采集器配置-->
-	<receiver>
-		<type>jms</type>
-		<enable>false</enable>
-		<original>true</original>
-		<codec>utf8</codec>
-		<!--JMS采集器配置参数-->
-		<parameters>
-			<!--JMS地址-->
-			<parameter key="url" value="tcp://localhost:61616"/>
-			<!--JMS类型：queue/topic-->
-			<parameter key="type" value="queue"/>
-			<!--JMS队列名称-->
-			<parameter key="target" value="default"/>
-			<!--JMS用户名-->
-			<parameter key="username" value="jms"/>
-			<!--JMS密码-->
-			<parameter key="password" value="jms"/>
-		</parameters>
-	</receiver>
+
 	<!-- Kafka采集器配置, 消息格式为 <String, String> -->
 	<receiver>
 		<type>kafka</type>

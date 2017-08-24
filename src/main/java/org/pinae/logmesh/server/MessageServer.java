@@ -1,6 +1,8 @@
 package org.pinae.logmesh.server;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,8 @@ public class MessageServer {
 	private boolean startup = false;
 	
 	private MessageCounter messageCounter = null; 
+	
+	private SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
 	public MessageServer() {
 		
@@ -116,7 +120,8 @@ public class MessageServer {
 			this.startup = true;
 	
 			long startupTime = System.currentTimeMillis() - startTime;
-			logger.info(String.format("Start Logmesh in %d ms", startupTime));
+			
+			logger.info(String.format("Start Logmesh at %s in %d ms", dateFmt.format(new Date()), startupTime));
 		} else {
 			logger.error("Server configurtion is NULL and start FAIL");
 		}
@@ -235,11 +240,13 @@ public class MessageServer {
 
 		Map<String, Object> originalConfig = (Map<String, Object>) Ndb.execute(config, "one:original");
 		
-		OriginalMessageStorer messageStorer = new OriginalMessageStorer(ComponentFactory.createParameter(originalConfig));
-		messageStorer.start();
-
-		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start origina message storer in %d ms", startupTime));
+		if (originalConfig != null) {
+			OriginalMessageStorer messageStorer = new OriginalMessageStorer(ComponentFactory.createParameter(originalConfig));
+			messageStorer.start();
+	
+			long startupTime = System.currentTimeMillis() - startTime;
+			logger.info(String.format("Start origina message storer in %d ms", startupTime));
+		}
 	}
 
 	/**
@@ -253,12 +260,15 @@ public class MessageServer {
 		long startTime = System.currentTimeMillis();
 
 		Map<String, Object> counterConfig = (Map<String, Object>) Ndb.execute(config, "one:counter");
-		this.messageCounter = new MessageCounter(ComponentFactory.createParameter(counterConfig));
-
-		messageCounter.start("MessageCounter");
-
-		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start message counter in %d ms", startupTime));
+		
+		if (counterConfig != null) {
+			this.messageCounter = new MessageCounter(ComponentFactory.createParameter(counterConfig));
+	
+			messageCounter.start("MessageCounter");
+	
+			long startupTime = System.currentTimeMillis() - startTime;
+			logger.info(String.format("Start message counter in %d ms", startupTime));
+		}
 	}
 	
 	/**
@@ -340,12 +350,6 @@ public class MessageServer {
 	}
 
 	/**
-	 * 启动消息归并器
-	 * 
-	 * @param config 配置信息
-	 */
-
-	/**
 	 * 启动消息自定义处理器
 	 * 
 	 * @param config 配置信息
@@ -400,7 +404,7 @@ public class MessageServer {
 	public void stop() {
 		ProcessorPool.stopAll();
 
-		logger.info("Logmesh STOP");
+		logger.info("Logmesh STOP at " + dateFmt.format(new Date()));
 	}
 
 	/**

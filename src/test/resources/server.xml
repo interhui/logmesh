@@ -4,27 +4,14 @@
 	<!--消息所有者-->
 	<owner>Pinae</owner>
 	
-	<!-- 引入其他Server配置文件 -->
+	<!-- 引入根配置文件 -->
 	<import file="root.xml"/>
 	
 	<!-- 消息采集组件 -->
 	<import file="receiver.xml"/>
+	
 	<!-- 消息输出组件 -->
 	<import file="outputor.xml"/>
-
-	<!--消息归并配置-->
-	<merger>
-		<!--是否启动归并:true/false-->
-		<enable>false</enable>
-		<!--归并处理方式 -->
-		<class>org.pinae.logmesh.component.merger.RegexMerger</class> 
-		<parameters>
-			<!--归并规则 -->
-			<parameter key="file" value="merger/merger_regex.xml"/>
-			<!--归并周期 (ms)-->
-			<parameter key="cycle" value="5000"/>
-		</parameters>
-	</merger>
 	
 	<!--消息计数器配置-->
 	<counter>
@@ -41,6 +28,8 @@
 	<!--原始消息记录器配置-->
 	<original>
 		<parameters>
+			<!--是否激活原始日志存储:true/false-->
+			<parameter key="enable" value="true"/> 
 			<!--消息输出格式：时间(time)/所有者(owner)/IP(ip)/消息类型(type)/message(消息内容)-->
 			<parameter key="msgFormat" value="$time : $ip : $message"/> 
 			<!--消息存储路径-->

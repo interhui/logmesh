@@ -63,7 +63,7 @@ public class OriginalMessageStorer {
 
 	public void start() {
 
-		if (config != null) {
+		if (config != null && config.getBoolean("enable", true)) {
 			this.msgPattern = config.getString("msgPattern", "$time : $ip : $message");
 
 			if (msgPattern.contains("$time")) {
@@ -84,18 +84,21 @@ public class OriginalMessageStorer {
 
 			this.zipDirPath = config.getString("path", "");
 			this.zipDirPattern = config.getString("dir", "yyyy-MM-dd");
+			
+			MessageStore messageStore = new MessageStore(config, MessagePool.ORIGINAL_QUEUE);
+			try {
+				messageStore.connect("OriginalMessageStore");
+			} catch (StorerException e) {
+				logger.error(String.format("OriginalMessageStore Connect Fail: exception=%s", e.getMessage()));
+			}
+
+			if (this.isZip) {
+				new MessageCompress().start("MessageCompress");
+			}
+		} else {
+			logger.info("Original Message Disable");
 		}
 
-		MessageStore messageStore = new MessageStore(config, MessagePool.ORIGINAL_QUEUE);
-		try {
-			messageStore.connect("OriginalMessageStore");
-		} catch (StorerException e) {
-			logger.error(String.format("OriginalMessageStore Connect Fail: exception=%s", e.getMessage()));
-		}
-
-		if (this.isZip) {
-			new MessageCompress().start("MessageCompress");
-		}
 	}
 
 	/*

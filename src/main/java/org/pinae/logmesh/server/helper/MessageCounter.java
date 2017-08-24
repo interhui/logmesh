@@ -27,12 +27,12 @@ public class MessageCounter implements Processor {
 	private static Logger logger = Logger.getLogger(FilterProcessor.class);
 
 	/* 计数器池: [计数器类型, [统计指标(IP地址/时间类型), 计数器值]] */
-	private Map<String, Map<String, Long>> counterPool = new ConcurrentHashMap<String, Map<String, Long>>(); 
+	private Map<String, Map<String, Long>> counterPool = new ConcurrentHashMap<String, Map<String, Long>>();
 
 	/* 计数器类型 */
-	private String counterTypes[] = { "time", "owner", "ip", "type" }; 
+	private String counterTypes[] = { "time", "owner", "ip", "type" };
 	/* 启动的消息计数器类型 */
-	private String enableCounterTypes; 
+	private String enableCounterTypes;
 	/* 是否激活计数器 */
 	private boolean enable = true;
 
@@ -59,7 +59,7 @@ public class MessageCounter implements Processor {
 	public Map<String, Long> getCounter(String type) {
 		return getCounter(type, null);
 	}
-	
+
 	/**
 	 * 根据计数器类型和关键字获得计数数据
 	 * 
@@ -92,27 +92,28 @@ public class MessageCounter implements Processor {
 	}
 
 	public void start(String name) {
-		// 初始化计数器池
-		for (String counterType : counterTypes) {
-			counterPool.put(counterType, new HashMap<String, Long>());
-		}
+		if (this.config != null && this.config.getBoolean("enable", true)) {
+			// 初始化计数器池
+			for (String counterType : counterTypes) {
+				counterPool.put(counterType, new HashMap<String, Long>());
+			}
 
-		if (this.config != null && this.config.containsKey("enable") && ((String)this.config.get("enable")).equalsIgnoreCase("true")) {
 			this.enable = true;
 
-			if (this.config.containsKey("counter") && StringUtils.isNotEmpty((String)this.config.get("counter"))) {
-				this.enableCounterTypes = (String)this.config.get("counter");
+			if (this.config.containsKey("counter") && StringUtils.isNotEmpty((String) this.config.get("counter"))) {
+				this.enableCounterTypes = (String) this.config.get("counter");
 			} else {
 				this.enableCounterTypes = StringUtils.join(counterTypes, "|");
 			}
 
 			logger.info("Message Counter Enable");
+			
+			this.isStop = false; // 设置线程启动标记
+			ProcessorFactory.getThread(name, this).start(); // 启动消息计数器线程
 		} else {
 			logger.info("Message Counter Disable");
 		}
 
-		this.isStop = false; // 设置线程启动标记
-		ProcessorFactory.getThread(name, this).start(); // 启动消息计数器线程
 	}
 
 	public void stop() {
@@ -133,8 +134,7 @@ public class MessageCounter implements Processor {
 
 				if (message != null) {
 
-					String log[] = { timeFormat.format(new Date(message.getTimestamp())), message.getOwner(),
-							message.getIP(), message.getType() };
+					String log[] = { timeFormat.format(new Date(message.getTimestamp())), message.getOwner(), message.getIP(), message.getType() };
 
 					for (int i = 0; i < counterTypes.length; i++) {
 						String counterType = counterTypes[i];
