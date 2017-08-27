@@ -47,11 +47,27 @@
 			<!--Kafka地址-->
 			<parameter key="bootstrap.servers" value="192.168.228.129:9092"/>
 			<!--消息组编号-->
-			<parameter key="ggroup.id" value="default-group"/>
+			<parameter key="group.id" value="default-group"/>
 			<!--自动提交延迟-->
 			<parameter key="enable.auto.commit" value="true"/>
 			<!--自动提交延迟-->
 			<parameter key="auto.commit.interval.ms" value="1000"/>
+		</parameters>
+	</receiver>
+	
+	<!-- 文件采集器 -->
+	<receiver>
+		<type>file</type>
+		<enable>true</enable>
+		<original>true</original>
+		<codec>utf8</codec>
+		<parameters>
+			<!--消息主题-->
+			<parameter key="file" value="d:\\demo.log"/>
+			<!--Kafka地址-->
+			<parameter key="index" value="d:\\demo.idx"/>
+			<!--消息组编号-->
+			<parameter key="cycle" value="30000"/>
 		</parameters>
 	</receiver>
 	

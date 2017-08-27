@@ -3,12 +3,14 @@ package org.pinae.logmesh.receiver.pollable;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.receiver.AbstractReceiver;
 import org.pinae.logmesh.receiver.PollableReceiver;
 import org.pinae.logmesh.util.FileReader;
@@ -26,6 +28,8 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 	private File file;
 	private String codec;
 	private String idxFilePath;
+	
+	private String localAddress;
 	
 	private long watchCycle;
 	
@@ -47,9 +51,16 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 			throw new NullPointerException("Filename is null");
 		}
 
+		
 		this.codec = super.config.getString("codec", "utf8");
 		this.idxFilePath = super.config.getString("index", null);
 		this.watchCycle = super.config.getLong("cycle", 1000);
+		
+		try {
+			this.localAddress = super.config.getString("address", InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			this.localAddress = "127.0.0.1";
+		}
 		
 	}
 
@@ -58,6 +69,7 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 
 		try {
 			new Thread(new FileWatcher()).start();
+			logger.info(String.format("File Monitor to %s", file.getAbsolutePath()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +77,7 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 
 	public void stop() {
 		isStop = true;
-		logger.info("TCP Receiver STOP");
+		logger.info("File Monitor STOP");
 	}
 
 	public String getName() {
@@ -73,16 +85,13 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 	}
 
 	private class FileWatcher implements Runnable {
-
-		private String localAddress;
 		
 		private long idxPos;
 		
 		private File idxFile;
 
 		public FileWatcher() throws IOException {
-			
-			this.localAddress = InetAddress.getLocalHost().getHostAddress();
+
 		}
 		
 		private long getPositionFromIndex() throws IOException {
@@ -130,8 +139,7 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 					while (iterContent.hasNext()) {
 						List<String> rows = iterContent.next();
 						for (String row : rows) {
-							System.out.println(row.trim());
-							//addMessage(new Message(localAddress, row.trim()));
+							addMessage(new Message(localAddress, row.trim()));
 						}
 					}
 					

@@ -96,17 +96,6 @@ public class FileReader<T> implements Iterable<List<T>> {
 					}
 					return channel.map(FileChannel.MapMode.READ_ONLY, chunkPos, chunkSize);
 				} catch (IOException e) {
-//					chunkPos = 0;
-//					try {
-//						if (channel.size() - position < chunkSize) {
-//							chunkSize = channel.size() - position;
-//						}
-//						return channel.map(FileChannel.MapMode.READ_ONLY, 0, chunkSize);
-//					} catch (IOException e1) {
-//						close();
-//						throw new RuntimeException(e1);
-//					}
-					e.printStackTrace();
 					throw new RuntimeException(e);
 				}
 			}
