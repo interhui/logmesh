@@ -1,7 +1,6 @@
 package org.pinae.logmesh.receiver.event;
 
 import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
 import java.util.Map;
 
 import org.pinae.logmesh.message.Message;
@@ -10,7 +9,6 @@ import org.pinae.logmesh.receiver.EventDrivenReceiver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 /**
  * 基于Netty的消息接收器
