@@ -30,7 +30,7 @@ public class MessageServerTest {
 			assertEquals(processorList.size(), 1);
 			
 			List<Map<String, Object>> queueList = (List<Map<String, Object>>)Ndb.execute(config, "select:queue");
-			assertEquals(queueList.size(), 3);
+			assertEquals(queueList.size(), 4);
 			
 			List<Map<String, Object>> filterList = (List<Map<String, Object>>)Ndb.execute(config, "select:filter");
 			assertEquals(filterList.size(), 5);
@@ -39,7 +39,7 @@ public class MessageServerTest {
 			assertEquals(receiverList.size(), 4);
 			
 			List<Map<String, Object>> outputorList = (List<Map<String, Object>>)Ndb.execute(config, "select:outputor");
-			assertEquals(outputorList.size(), 3);
+			assertEquals(outputorList.size(), 5);
 		}
 	}
 }
