@@ -4,12 +4,11 @@
 
 	<groupId>org.pinae</groupId>
 	<artifactId>logmesh</artifactId>
-	<version>1.0</version>
+	<version>1.2</version>
 	<packaging>jar</packaging>
 
 	<name>logmesh</name>
 	<description>Free log colloector</description>
-	<url>https://www.logmesh.com</url>
 
 	<licenses>
 		<license>

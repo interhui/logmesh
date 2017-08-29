@@ -1,4 +1,4 @@
-#logmesh#
+# Logmesh #
 
 Logmesh是一个开源消息采集/过滤/路由应用
 
@@ -14,13 +14,13 @@ Logmesh是一个开源消息采集/过滤/路由应用
 
 最新的更新时间 (2015/01/30)
 
-更新版本和下载: logmesh-1.1.tar.gz (更新内容)
+更新版本和下载: logmesh-1.2.tar.gz (更新内容)
 
 安装与运行:
 	
-	wget https://github.com/interhui/logmesh/releases/logmesh-1.0.tar.gz
-	tar -xvf logmesh-1.0.tar.gz
-	cd logmesh-1.0
+	wget https://github.com/interhui/logmesh/releases/logmesh-1.2.tar.gz
+	tar -xvf logmesh-1.2.tar.gz
+	cd logmesh-1.2
 	./startup.sh server.xml
 
 ## 授权信息 ##
