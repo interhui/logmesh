@@ -120,6 +120,11 @@
 			<artifactId>mvel2</artifactId>
 			<version>2.2.7.Final</version>
 		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
 	</dependencies>
 
 	<organization>
