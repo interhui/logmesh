@@ -21,7 +21,7 @@ import org.pinae.logmesh.receiver.AbstractReceiver;
 import org.pinae.logmesh.receiver.event.KafkaReceiver;
 import org.pinae.logmesh.receiver.event.TCPReceiver;
 import org.pinae.logmesh.receiver.event.UDPReceiver;
-import org.pinae.logmesh.receiver.pollable.FileMonitor;
+import org.pinae.logmesh.receiver.pollable.FileWatcher;
 import org.pinae.logmesh.server.helper.MessageCounter;
 import org.pinae.logmesh.server.helper.OriginalMessageStorer;
 import org.pinae.logmesh.util.ClassLoaderUtils;
@@ -198,7 +198,7 @@ public class MessageServer {
 					receiver = new KafkaReceiver();
 					name = "KafkaReceiver";
 				} else if (type.equalsIgnoreCase("file")) {
-					receiver = new FileMonitor();
+					receiver = new FileWatcher();
 					name = "FileMonitor";
 				}
 			

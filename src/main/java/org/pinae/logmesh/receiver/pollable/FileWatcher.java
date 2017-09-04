@@ -22,8 +22,8 @@ import org.pinae.logmesh.util.FileUtils;
  * @author Huiyugeng
  *
  */
-public class FileMonitor extends AbstractReceiver implements PollableReceiver {
-	private static Logger logger = Logger.getLogger(FileMonitor.class);
+public class FileWatcher extends AbstractReceiver implements PollableReceiver {
+	private static Logger logger = Logger.getLogger(FileWatcher.class);
 
 	private File file;
 	private String codec;
@@ -33,7 +33,7 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 	
 	private long watchCycle;
 	
-	public FileMonitor() {
+	public FileWatcher() {
 		
 	}
 	
@@ -68,29 +68,29 @@ public class FileMonitor extends AbstractReceiver implements PollableReceiver {
 		super.start(name);
 
 		try {
-			new Thread(new FileWatcher()).start();
-			logger.info(String.format("File Monitor to %s", file.getAbsolutePath()));
+			new Thread(new FilePollable()).start();
+			logger.info(String.format("FileWatcher to %s", file.getAbsolutePath()));
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Start FileWatcher Fail: " + e.getMessage());
 		}
 	}
 
 	public void stop() {
 		isStop = true;
-		logger.info("File Monitor STOP");
+		logger.info("FileWatcher is Stopped");
 	}
 
 	public String getName() {
-		return "FileMonitor AT " + file.getName();
+		return "FileWatcher AT " + file.getName();
 	}
 
-	private class FileWatcher implements Runnable {
+	private class FilePollable implements Runnable {
 		
 		private long idxPos;
 		
 		private File idxFile;
 
-		public FileWatcher() throws IOException {
+		public FilePollable() throws IOException {
 
 		}
 		

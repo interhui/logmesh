@@ -68,7 +68,7 @@ public class KafkaReceiver extends AbstractReceiver implements EventDrivenReceiv
 
 	public void stop() {
 		isStop = true;
-		logger.info("Kafka Receiver STOP");
+		logger.info("Kafka Receiver is Stopped");
 	}
 
 	public String getName() {

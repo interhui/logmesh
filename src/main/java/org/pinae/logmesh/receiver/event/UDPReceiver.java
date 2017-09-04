@@ -58,7 +58,7 @@ public class UDPReceiver extends NettyReceiver {
 	public void stop() {
 		group.shutdownGracefully();
 		isStop = true;
-		logger.info("UDP Receiver STOP");
+		logger.info("UDP Receiver is Stopped");
 	}
 
 	public String getName() {

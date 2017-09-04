@@ -58,7 +58,7 @@ public class TCPReceiver extends NettyReceiver {
 		workerGroup.shutdownGracefully();
 		
 		isStop = true;
-		logger.info("TCP Receiver STOP");
+		logger.info("TCP Receiver is Stopped");
 	}
 
 	public String getName() {
