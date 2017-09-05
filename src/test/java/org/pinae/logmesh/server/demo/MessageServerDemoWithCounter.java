@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.custom.DemoCustomProcessor;
 import org.pinae.logmesh.output.ScreenOutputor;
+import org.pinae.logmesh.output.sender.MessageUDPSenderTest;
 import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
 import org.pinae.logmesh.server.helper.MessageCounter;
-import org.pinae.logmesh.server.sender.MessageUDPSenderExample;
 
 public class MessageServerDemoWithCounter {
 
@@ -41,7 +41,7 @@ public class MessageServerDemoWithCounter {
 		
 		// 5秒后启动消息发送
 		TimeUnit.SECONDS.sleep(5);
-		new Thread(new MessageUDPSenderExample(1, false), "MessageSender").start();
+		new Thread(new MessageUDPSenderTest(1, false), "MessageSender").start();
 	}
 
 	public static class CounterDisplay implements Runnable {

@@ -36,7 +36,7 @@ public class FileStorer implements Storer {
 	private SimpleDateFormat dirPattern; // 通过日期构建的目录格式
 	private SimpleDateFormat filePattern; // 通过日期构建的文件格式
 
-	private FileSaver fileCreator; // 文件存储线程
+	private FileSaver fileSaver; // 文件存储线程
 
 	private ConfigMap<String, Object> config;
 	private MemoryMessageQueue messageQueue;
@@ -68,8 +68,8 @@ public class FileStorer implements Storer {
 		this.cycle = this.config.getLong("cycle", 5000);
 
 		if (messageQueue != null) {
-			this.fileCreator = new FileSaver();
-			this.fileCreator.start(name);
+			this.fileSaver = new FileSaver();
+			this.fileSaver.start(name);
 		} else {
 			logger.error("FileStorer's MessageQueue is null");
 		}
@@ -82,7 +82,7 @@ public class FileStorer implements Storer {
 	}
 
 	public void close() throws StorerException {
-		this.fileCreator.stop();
+		this.fileSaver.stop();
 	}
 
 	public String handleMessage(Message message) {

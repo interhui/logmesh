@@ -1,10 +1,10 @@
-package org.pinae.logmesh.server.sender;
+package org.pinae.logmesh.output;
 
 import java.util.Random;
 
-public class MessageSenderExample {
+public class MessageMaker {
 	
-	private String messages[] = {
+	private static String messages[] = {
 		"Firewall Log: 192.168.78.32 inbound stream",
 		"Database Log: 192.168.33.12(PL/SQL) used SYSTEM connect Test-DB(Oracle 11.0.2.0)",
 		"Host Log: 192.168.33.12(SSH) used root connect Transfer-FS(Ubuntu 14.04.03)",
@@ -12,7 +12,7 @@ public class MessageSenderExample {
 		"PIX Log: 192.168.12.21 deny access 10.3.0.12"
 	};
 	
-	public String getMessage() {
+	public static String getMessage() {
 		Random random = new Random();
 		int index = random.nextInt(messages.length);
 		if (index < messages.length) {

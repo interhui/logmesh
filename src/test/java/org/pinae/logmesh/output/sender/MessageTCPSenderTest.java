@@ -1,22 +1,23 @@
-package org.pinae.logmesh.server.sender;
+package org.pinae.logmesh.output.sender;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.output.MessageMaker;
 import org.pinae.logmesh.output.forward.SendException;
 import org.pinae.logmesh.output.forward.Sender;
 import org.pinae.logmesh.output.forward.TCPSender;
 
-public class MessageTCPSenderExample extends MessageSenderExample implements Runnable {
+public class MessageTCPSenderTest implements Runnable {
 	
-	private static Logger logger = Logger.getLogger(MessageTCPSenderExample.class);
+	private static Logger logger = Logger.getLogger(MessageTCPSenderTest.class);
 	
 	private Sender sender;
 	
 	private long sleep;
 	private boolean displayOriginal;
 	
-	public MessageTCPSenderExample(long sleep, boolean displayOriginal) {
+	public MessageTCPSenderTest(long sleep, boolean displayOriginal) {
 		this.sleep = sleep;
 		this.displayOriginal = displayOriginal;
 		
@@ -31,7 +32,7 @@ public class MessageTCPSenderExample extends MessageSenderExample implements Run
 	public void run() {
 		try {
 			while(true) {
-				String message = getMessage();
+				String message = MessageMaker.getMessage();
 				sender.send(message);
 				if (displayOriginal) {
 					logger.info(message);
