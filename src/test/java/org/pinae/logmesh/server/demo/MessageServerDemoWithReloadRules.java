@@ -12,6 +12,7 @@ import org.pinae.logmesh.component.filter.IPFilter;
 import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.server.MessageServer;
 import org.pinae.logmesh.server.builder.MessageServerBuilder;
+import org.pinae.logmesh.server.sender.MessageUDPSenderExample;
 
 public class MessageServerDemoWithReloadRules {
 
@@ -34,7 +35,7 @@ public class MessageServerDemoWithReloadRules {
 		
 		// 5秒后启动消息发送
 		TimeUnit.SECONDS.sleep(5);
-		new Thread(new MessageSenderExample(1, true), "MessageSender").start();
+		new Thread(new MessageUDPSenderExample(1, true), "MessageSender").start();
 		
 		// 20秒后重新载入IPFilter规则
 		TimeUnit.SECONDS.sleep(20);
