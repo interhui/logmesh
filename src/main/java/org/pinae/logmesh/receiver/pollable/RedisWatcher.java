@@ -70,7 +70,7 @@ public class RedisWatcher extends AbstractReceiver implements PollableReceiver {
 		return String.format("RedisWatcher AT %s:%d", host, port);
 	}
 	
-	public void start() {
+	public void start(String name) {
 		this.redisPool = new JedisPool(host, port);
 
 		new Thread(new RedisPollable()).start();

@@ -22,6 +22,7 @@ import org.pinae.logmesh.receiver.event.KafkaReceiver;
 import org.pinae.logmesh.receiver.event.TCPReceiver;
 import org.pinae.logmesh.receiver.event.UDPReceiver;
 import org.pinae.logmesh.receiver.pollable.FileWatcher;
+import org.pinae.logmesh.receiver.pollable.RedisWatcher;
 import org.pinae.logmesh.server.helper.MessageCounter;
 import org.pinae.logmesh.server.helper.OriginalMessageStorer;
 import org.pinae.logmesh.util.ClassLoaderUtils;
@@ -199,7 +200,10 @@ public class MessageServer {
 					name = "KafkaReceiver";
 				} else if (type.equalsIgnoreCase("file")) {
 					receiver = new FileWatcher();
-					name = "FileMonitor";
+					name = "FileWatcher";
+				} else if (type.equalsIgnoreCase("redis")) {
+					receiver = new RedisWatcher();
+					name = "RedisWatcher";
 				}
 			
 			} else if (receiverConfig.containsKey("kwClass")) {
@@ -217,7 +221,7 @@ public class MessageServer {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(String.format("Start Receiver Errork: exception=%s", e.getMessage()));
+					logger.error(String.format("Start Receiver Error: exception=%s", e.getMessage()));
 				}
 			}
 
@@ -408,7 +412,7 @@ public class MessageServer {
 	public void stop() {
 		ProcessorPool.stopAll();
 
-		logger.info("Logmesh STOP at " + dateFmt.format(new Date()));
+		logger.info("Logmesh Stopped AT " + dateFmt.format(new Date()));
 	}
 
 	/**

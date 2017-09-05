@@ -70,7 +70,7 @@
 		<!--输出器名称-->
 		<name>es-store</name>
 		<!--是否启动输出器:true/false-->
-		<enable>true</enable>
+		<enable>false</enable>
 		<!--输出器类:存储输出器-->
 		<class>org.pinae.logmesh.output.StorerOutputor</class>
 		<parameters>

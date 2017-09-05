@@ -58,17 +58,36 @@
 	<!-- 文件采集器 -->
 	<receiver>
 		<type>file</type>
-		<enable>true</enable>
+		<enable>false</enable>
 		<original>true</original>
 		<codec>utf8</codec>
 		<parameters>
-			<!--消息主题-->
+			<!--文件地址-->
 			<parameter key="file" value="d:\\demo.log"/>
-			<!--Kafka地址-->
+			<!--索引文件地址-->
 			<parameter key="index" value="d:\\demo.idx"/>
-			<!--消息组编号-->
+			<!--循环周期(ms)-->
 			<parameter key="cycle" value="30000"/>
 		</parameters>
 	</receiver>
 	
+	<!-- Redis采集器 -->
+	<receiver>
+		<type>redis</type>
+		<enable>true</enable>
+		<original>true</original>
+		<codec>utf8</codec>
+		<parameters>
+			<!--Redis服务地址(默认127.0.0.1)-->
+			<parameter key="host" value="127.0.0.1"/>
+			<!--Redis服务端口(默认6379)-->
+			<parameter key="port" value="d:\\demo.idx"/>
+			<!--Redis数据库(默认0)-->
+			<parameter key="db" value="4"/>
+			<!--采集的Key值(需要list类型)-->
+			<parameter key="key" value="log"/>
+			<!--循环周期(ms)-->
+			<parameter key="cycle" value="30000"/>
+		</parameters>
+	</receiver>
 </server>
