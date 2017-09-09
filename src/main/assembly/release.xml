@@ -7,7 +7,7 @@
 	<id>logmesh release package</id>
 	
 	<formats>
-		<format>zip</format>
+		<format>tar.gz</format>
 	</formats>
 
 	<includeBaseDirectory>true</includeBaseDirectory>
@@ -23,7 +23,7 @@
 		<!-- 添加主程序 -->
 		<file>
 			<source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
-			<destName>logmesh.jar</destName>
+			<destName>logmesh-${project.version}.jar</destName>
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>

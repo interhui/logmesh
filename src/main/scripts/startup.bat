@@ -40,8 +40,8 @@ goto run
 :run
 set TITLE=logmesh
 set JAVA_EXE=%JRE_HOME%\bin\java.exe
-set JAVA_OPT=-Xms128M -Xmx256M
-set EXEC=-jar logmesh.jar
+set JAVA_OPT=-Xms256M -Xmx1g
+set EXEC=-jar logmesh-1.2.jar
 start "%TITLE%" %JAVA_EXE% %JAVA_OPT% %EXEC%
 
 :exit

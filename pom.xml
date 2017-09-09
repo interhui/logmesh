@@ -140,7 +140,6 @@
 	</scm>
 
 	<build>
-		<finalName>logmesh</finalName>
 
 		<pluginManagement>
 			<plugins>
