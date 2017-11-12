@@ -13,7 +13,7 @@ public class MessageQueueTest {
 		int testSize = 100000;
 		int maxSize = 5;
 		
-		MemoryMessageQueue queue = new MemoryMessageQueue("Test", maxSize);
+		MessageQueue queue = new MemoryMessageQueue("Test", maxSize);
 		long start = System.currentTimeMillis();
 		for (int i = 0 ; i < testSize ; i++) {
 			queue.offer(new Message(Integer.toString(i)));

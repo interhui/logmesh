@@ -14,7 +14,7 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
-import org.pinae.logmesh.message.MemoryMessageQueue;
+import org.pinae.logmesh.message.MessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.util.ConfigMap;
@@ -37,13 +37,13 @@ public class SolrStorer implements Storer {
 	private SolrPoster solrPoster;
 
 	private ConfigMap<String, Object> config;
-	private MemoryMessageQueue messageQueue;
+	private MessageQueue messageQueue;
 
 	public SolrStorer(Map<String, Object> config) {
 		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "SOLR_STORE_QUEUE"));
 	}
 
-	public SolrStorer(Map<String, Object> config, MemoryMessageQueue messageQueue) {
+	public SolrStorer(Map<String, Object> config, MessageQueue messageQueue) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}

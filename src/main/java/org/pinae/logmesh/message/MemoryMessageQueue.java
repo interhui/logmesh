@@ -12,7 +12,7 @@ import org.pinae.logmesh.message.MemoryMessageQueue;
  * @author Huiyugeng
  * 
  */
-public class MemoryMessageQueue extends LinkedBlockingQueue<Message> {
+public class MemoryMessageQueue extends LinkedBlockingQueue<Message> implements MessageQueue {
 
 	private static final long serialVersionUID = 2669009460413252047L;
 

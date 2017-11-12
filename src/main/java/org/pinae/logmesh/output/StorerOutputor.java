@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.ComponentInfo;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.storer.ElasticsearchStore;
-import org.pinae.logmesh.output.storer.FileStorer;
+import org.pinae.logmesh.output.storer.TextFileStorer;
 import org.pinae.logmesh.output.storer.SolrStorer;
 import org.pinae.logmesh.output.storer.Storer;
 import org.pinae.logmesh.output.storer.StorerException;
@@ -27,7 +27,7 @@ public class StorerOutputor extends ComponentInfo implements MessageOutputor {
 
 		try {
 			if (type.equalsIgnoreCase("file")) {
-				store = new FileStorer(getParameters());
+				store = new TextFileStorer(getParameters());
 			} else if (type.equalsIgnoreCase("solr")) {
 				store = new SolrStorer(getParameters());
 			} else if (type.equalsIgnoreCase("es")) {

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.message.MemoryMessageQueue;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
+import org.pinae.logmesh.message.MessageQueue;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
 import org.pinae.logmesh.util.ConfigMap;
@@ -44,13 +44,13 @@ public class ElasticsearchStore implements Storer {
 	private long batchSize;
 
 	private ConfigMap<String, Object> config;
-	private MemoryMessageQueue messageQueue;
+	private MessageQueue messageQueue;
 
 	public ElasticsearchStore(Map<String, Object> config) {
 		this(config, MessagePool.getQueue(config.containsKey("queue") ? (String) config.get("queue") : "ES_STORE_QUEUE"));
 	}
 
-	public ElasticsearchStore(Map<String, Object> config, MemoryMessageQueue messageQueue) {
+	public ElasticsearchStore(Map<String, Object> config, MessageQueue messageQueue) {
 		if (config != null) {
 			this.config = new ConfigMap<String, Object>(config);
 		}
