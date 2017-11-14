@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	
+	<id>logmesh release package</id>
+	
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<!-- 添加配置支持文件 -->
+	<fileSets>
+		<fileSet>
+			<directory>src/test/resources</directory>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+	
+	<files>
+		<!-- 添加主程序 -->
+		<file>
+			<source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
+			<destName>logmesh-${project.version}.jar</destName>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
+			<source>logmesh.sh</source>
+			<!-- 设置startup.sh文件的换行符为unix换行符\n -->
+			<lineEnding>unix</lineEnding>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>0740</fileMode>
+		</file>
+		<file>
+			<source>logmesh.bat</source>
+			<!-- 设置startup.bat文件的换行符为dos换行符\r\n -->
+			<lineEnding>dos</lineEnding>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
+			<source>LICENSE</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+	</files>
+
+	<dependencySets>
+		<dependencySet>
+			<scope>runtime</scope>
+			<outputDirectory>lib</outputDirectory>
+			<!--不要把主程序本身包含进lib目录，如果不加这个主程序的jar包也会包含到lib目录下 -->
+			<useProjectArtifact>false</useProjectArtifact>
+		</dependencySet>
+	</dependencySets>
+	
+</assembly>
