@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.ndb.Ndb;
 
@@ -40,14 +39,13 @@ public class IPFilter extends BasicFilter {
 		this.pass = getBooleanValue("pass", true);
 		
 		if (hasParameter("file")) {
-			String path = ClassLoaderUtils.getResourcePath("");
 			String filterFilename = getStringValue("file", "filter/ip_filter.xml");
 			if (StringUtils.isNoneEmpty(filterFilename)) {
-				File filterFile = FileUtils.getFile(path, filterFilename);
+				File filterFile = FileUtils.getFile(filterFilename);
 				if (filterFile != null) {
 					load(filterFile);
 				} else {
-					logger.error(String.format("IPFilter Load Exception: exception=File doesn't extis, file=%s/%s", path, filterFilename));
+					logger.error(String.format("IPFilter Load Exception: exception=File doesn't extis, file=%s", filterFilename));
 				}
 			}
 		} else if (hasParameter("filter")) {

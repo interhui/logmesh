@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
@@ -29,13 +30,13 @@ public abstract class AbstractRule {
 	protected List<Map<String, Object>> ruleList = new ArrayList<Map<String, Object>>(); // 告警规则列表
 	
 	@SuppressWarnings("unchecked")
-	protected void load(String path, String filename) {
-		logger.info(String.format("Loading Alert Rule File: %s", path + filename));
+	protected void load(File ruleFile) {
+		logger.info(String.format("Loading Alert Rule File: %s", ruleFile.getPath()));
 
 		Map<String, Object> ruleConfig = null;
 
 		try {
-			ruleConfig = (Map<String, Object>)Xml.toMap(new File(path + filename), "UTF8");
+			ruleConfig = (Map<String, Object>)Xml.toMap(ruleFile, "UTF8");
 		} catch (NoSuchPathException e) {
 			logger.error(String.format("Rule Load Exception: exception=%s", e.getMessage()));
 		} catch (UnmarshalException e) {
@@ -46,7 +47,7 @@ public abstract class AbstractRule {
 			List<String> importList = (List<String>) Ndb.execute(ruleConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
-					load(path, file);
+					load(FileUtils.getFile(file));
 				}
 			}
 		}

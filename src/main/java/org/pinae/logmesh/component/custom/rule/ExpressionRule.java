@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.custom.rule;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,8 @@ import org.pinae.ndb.Ndb;
  */
 public class ExpressionRule extends AbstractRule {
 
-	public ExpressionRule(String filename) {
-		super.load("", filename);
-	}
-
-	public ExpressionRule(String path, String filename) {
-		super.load(path, filename);
+	public ExpressionRule(File ruleFile) {
+		super.load(ruleFile);
 	}
 
 	public ExpressionRule(List<Map<String, Object>> ruleList) {

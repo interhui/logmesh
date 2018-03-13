@@ -1,11 +1,12 @@
 package org.pinae.logmesh.component.custom;
 
+import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.custom.mapper.RegexMapper;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class RegexMapperProcessor extends AbstractCustomProcessor {
 	
@@ -15,9 +16,8 @@ public class RegexMapperProcessor extends AbstractCustomProcessor {
 	
 	public void initialize() {
 		if (hasParameter("file")) {
-			String path = ClassLoaderUtils.getResourcePath("");
-			String regexFilename = getStringValue("file", "mapper/regex_mapper.xml");
-			this.mapper = new RegexMapper(path, regexFilename);
+			File regexMapperFile = FileUtils.getFile(getStringValue("file", "mapper/regex_mapper.xml"));
+			this.mapper = new RegexMapper(regexMapperFile);
 		} else {
 			logger.error("Regex-Mapper filename is NULL");
 		}

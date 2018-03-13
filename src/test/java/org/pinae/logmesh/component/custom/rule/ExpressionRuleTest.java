@@ -3,6 +3,7 @@ package org.pinae.logmesh.component.custom.rule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,14 +11,15 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class ExpressionRuleTest {
 	
 	@Test
 	public void testMatch() {
-		String path = ClassLoaderUtils.getResourcePath("");
-		ExpressionRule rule = new ExpressionRule(path + "rule/expression_rule.xml");
+		
+		File ruleFile = FileUtils.getFile("rule/expression_rule.xml");
+		ExpressionRule rule = new ExpressionRule(ruleFile);
 		
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

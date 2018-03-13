@@ -13,7 +13,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.logmesh.util.MatchUtils;
 import org.pinae.ndb.Ndb;
@@ -42,14 +41,13 @@ public class ClassifyFilter extends AbstractFilter {
 	@Override
 	public void initialize() {
 		if (hasParameter("file")) {
-			String path = ClassLoaderUtils.getResourcePath("");
 			String filterFilename = getStringValue("file", "filter/classify_filter.xml");
 			if (StringUtils.isNoneEmpty(filterFilename)) {
-				File filterFile = FileUtils.getFile(path, filterFilename);
+				File filterFile = FileUtils.getFile(filterFilename);
 				if (filterFile != null) {
 					load(filterFile);
 				} else {
-					logger.error(String.format("ClassifyFilter Load Exception: exception=File doesn't extis, file=%s/%s", path, filterFilename));
+					logger.error(String.format("ClassifyFilter Load Exception: exception=File doesn't extis, file=%s", filterFilename));
 				}
 			}
 		} else if (hasParameter("filter")) {

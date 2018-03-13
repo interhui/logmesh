@@ -2,22 +2,23 @@ package org.pinae.logmesh;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
+import org.apache.log4j.Logger;
 import org.pinae.logmesh.server.MessageServer;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 
 public class Runner {
+	private static Logger logger = Logger.getLogger(Runner.class);
+	
 	public static void main(String args[]) {
 		
-		String path = ClassLoaderUtils.getResourcePath("");
 		String serverFile = "server.xml";
 		
 		Options options = new Options();
-		options.addOption("s", true, "Set server config file");
+		options.addOption("s", true, "Server config file");
 
-		CommandLineParser parser = new PosixParser(); 
+		CommandLineParser parser = new DefaultParser(); 
 		CommandLine cmd = null;
 		try {
 			cmd = parser.parse(options, args);
@@ -28,10 +29,10 @@ public class Runner {
 				}
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.error(String.format("Start server exception: %s", e.getMessage()));
 		}
 
-		MessageServer server = new MessageServer(path, serverFile);
+		MessageServer server = new MessageServer(serverFile);
 		server.start();
 
 	}

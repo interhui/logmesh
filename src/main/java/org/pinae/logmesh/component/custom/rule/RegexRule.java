@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.custom.rule;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +14,9 @@ import org.pinae.logmesh.util.MatchUtils;
  * 
  */
 public class RegexRule extends AbstractRule {
-	
-	public RegexRule(String filename) {
-		super.load("", filename);
-	}
 
-	public RegexRule(String path, String filename) {
-		super.load(path, filename);
+	public RegexRule(File ruleFile) {
+		super.load(ruleFile);
 	}
 
 	public RegexRule(List<Map<String, Object>> alertRuleList) {

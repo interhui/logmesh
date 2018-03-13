@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.pinae.logmesh.server.MessageServer;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.ndb.Ndb;
 
@@ -19,8 +18,7 @@ public class MessageServerTest {
 	public void testLoadConfig() {		
 		MessageServer server = new MessageServer();
 		
-		String path = ClassLoaderUtils.getResourcePath("");
-		File configFile = FileUtils.getFile(path, "server.xml");
+		File configFile = FileUtils.getFile("server.xml");
 		if (configFile != null) {
 			Map<String, Object> config = server.loadConfig(configFile);
 			

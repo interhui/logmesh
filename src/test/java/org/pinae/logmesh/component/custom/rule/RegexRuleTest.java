@@ -3,19 +3,20 @@ package org.pinae.logmesh.component.custom.rule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Test;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class RegexRuleTest {
 	@Test
 	public void testMatch() {
 		
-		String path = ClassLoaderUtils.getResourcePath("");
-		RegexRule alertRule = new RegexRule(path + "rule/regex_rule.xml");
+		File ruleFile = FileUtils.getFile("rule/regex_rule.xml");
+		RegexRule alertRule = new RegexRule(ruleFile);
 		
 		String today = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

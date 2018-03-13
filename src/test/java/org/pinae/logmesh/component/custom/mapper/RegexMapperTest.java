@@ -2,19 +2,19 @@ package org.pinae.logmesh.component.custom.mapper;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.Map;
 
 import org.junit.Test;
-import org.pinae.logmesh.component.custom.mapper.RegexMapper;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class RegexMapperTest {
 
 	@Test
 	public void testMap() {
 
-		String path = ClassLoaderUtils.getResourcePath("");
-		RegexMapper regexMap = new RegexMapper(path + "mapper/regex_mapper.xml");
+		File mapperFile = FileUtils.getFile("mapper/regex_mapper.xml");
+		RegexMapper regexMap = new RegexMapper(mapperFile);
 
 		String message = "FW log:name=ASA5505;time=2013-07-10;action=permit;value=45";
 		Map<String, String> resultMap = regexMap.map(message);

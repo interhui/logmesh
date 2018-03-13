@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.custom;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import org.pinae.logmesh.component.custom.rule.AbstractRule;
 import org.pinae.logmesh.component.custom.rule.ExpressionRule;
 import org.pinae.logmesh.component.custom.rule.MatchedRule;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class ExpressionRuleProcessor extends AbstractCustomProcessor {
 	
@@ -19,9 +20,8 @@ public class ExpressionRuleProcessor extends AbstractCustomProcessor {
 	
 	public void initialize() {
 		if (hasParameter("file")) {
-			String path = ClassLoaderUtils.getResourcePath("");
-			String regexFilename = getStringValue("file", "rule/expression_rule.xml");
-			this.rule = new ExpressionRule(path, regexFilename);
+			File expressionRuleFile = FileUtils.getFile(getStringValue("file", "rule/expression_rule.xml"));
+			this.rule = new ExpressionRule(expressionRuleFile);
 		} else {
 			logger.error("Expression-Rule filename is NULL");
 		}

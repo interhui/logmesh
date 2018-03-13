@@ -25,7 +25,6 @@ import org.pinae.logmesh.receiver.pollable.FileWatcher;
 import org.pinae.logmesh.receiver.pollable.RedisWatcher;
 import org.pinae.logmesh.server.helper.MessageCounter;
 import org.pinae.logmesh.server.helper.OriginalMessageStorer;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.ndb.Ndb;
@@ -40,10 +39,9 @@ import org.pinae.ndb.common.MapHelper;
 public class MessageServer {
 
 	private static Logger logger = Logger.getLogger(MessageServer.class);
-	/* 配置文件路径 */
-	private String path;
-	/* 配置文件名 */
-	private String filename;
+	/* 配置文件 */
+	private File serverFile;
+
 	/* 配置信息 */
 	private Map<String, Object> config;
 	/* 是否启动完成 */
@@ -57,17 +55,12 @@ public class MessageServer {
 		
 	}
 	
-	public MessageServer(String filename) {
-		this(null, filename);
+	public MessageServer(String serverFilename) {
+		this(FileUtils.getFile(serverFilename));
 	}
 	
-	public MessageServer(String path, String filename) {
-		if (path == null) {
-			this.path = ClassLoaderUtils.getResourcePath("");
-		} else {
-			this.path = path;
-		}
-		this.filename = filename;
+	public MessageServer(File serverFile) {
+		this.serverFile = serverFile;
 	}
 
 	public MessageServer(Map<String, Object> config) {
@@ -82,15 +75,14 @@ public class MessageServer {
 
 		// 载入配置
 		if (this.config == null) {
-			if (StringUtils.isNotEmpty(this.filename)) {
-				File configFile = FileUtils.getFile(this.path, this.filename);
-				if (configFile != null) {
-					this.config = loadConfig(configFile);
+			if (this.serverFile != null && this.serverFile.exists() && this.serverFile.isFile()) {
+				if (this.serverFile != null) {
+					this.config = loadConfig(this.serverFile);
 				} else {
-					logger.error(String.format("Load server config %s%s FAIL", this.path, this.filename));
+					logger.error(String.format("Server config %s loaded FAIL", this.serverFile.getPath()));
 				}
 			} else {
-				logger.error("Server config filename is NULL");
+				logger.error("Server Config is NULL");
 			}
 		}
 		
@@ -153,7 +145,7 @@ public class MessageServer {
 
 		List<String> importFilenameList = (List<String>)Ndb.execute(serverConfig, "select:import->file");
 		for (String importFilename : importFilenameList) {
-			File importFile = FileUtils.getFile(this.path, importFilename);
+			File importFile = FileUtils.getFile(importFilename);
 			if (importFile != null) {
 				Map<String, Object> importConfig = loadConfig(importFile);
 				

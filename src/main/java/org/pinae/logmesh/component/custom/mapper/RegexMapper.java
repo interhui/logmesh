@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.nala.xb.exception.NoSuchPathException;
 import org.pinae.nala.xb.exception.UnmarshalException;
@@ -31,12 +32,8 @@ public class RegexMapper {
 	private Map<String, Map<String, String[]>> itemMap = new HashMap<String, Map<String, String[]>>(); // 正则值映射
 	private Map<String, String> formatMap = new HashMap<String, String>(); // 格式化映射
 
-	public RegexMapper(String filename) {
-		load("", filename);
-	}
-
-	public RegexMapper(String path, String filename) {
-		load(path, filename);
+	public RegexMapper(File mapperFile) {
+		load(mapperFile);
 	}
 
 	public RegexMapper(Map<String, Pattern> patternMap, Map<String, Map<String, String[]>> itemMap) {
@@ -45,13 +42,16 @@ public class RegexMapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void load(String path, String filename) {
-		logger.info(String.format("Loading Regex Map File: %s", path + filename));
+	private void load(File mapperFile) {
+		if (mapperFile == null) {
+			throw new NullPointerException("Map File is null");
+		}
+		logger.info(String.format("Loading Regex Map File: %s", mapperFile.getAbsolutePath()));
 
 		Map<String, Object> mapperConfig = null;
 
 		try {
-			mapperConfig = (Map<String, Object>) Xml.toMap(new File(path + filename), "UTF8");
+			mapperConfig = (Map<String, Object>) Xml.toMap(mapperFile, "UTF8");
 		} catch (UnmarshalException e) {
 			logger.error(String.format("Regex Mapper Load Exception: exception=%s", e.getMessage()));
 		} catch (NoSuchPathException e) {
@@ -62,7 +62,7 @@ public class RegexMapper {
 			List<String> importList = (List<String>) Ndb.execute(mapperConfig, "select:import->file");
 			for (String file : importList) {
 				if (StringUtils.isNotEmpty(file)) {
-					load(path, file);
+					load(FileUtils.getFile(file));
 				}
 			}
 		}

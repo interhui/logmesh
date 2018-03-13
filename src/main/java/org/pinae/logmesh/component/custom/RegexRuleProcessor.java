@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component.custom;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import org.pinae.logmesh.component.custom.rule.AbstractRule;
 import org.pinae.logmesh.component.custom.rule.MatchedRule;
 import org.pinae.logmesh.component.custom.rule.RegexRule;
 import org.pinae.logmesh.message.Message;
-import org.pinae.logmesh.util.ClassLoaderUtils;
+import org.pinae.logmesh.util.FileUtils;
 
 public class RegexRuleProcessor extends AbstractCustomProcessor {
 	
@@ -19,9 +20,8 @@ public class RegexRuleProcessor extends AbstractCustomProcessor {
 	
 	public void initialize() {
 		if (hasParameter("file")) {
-			String path = ClassLoaderUtils.getResourcePath("");
-			String regexFilename = getStringValue("file", "rule/regex_rule.xml");
-			this.rule = new RegexRule(path, regexFilename);
+			File regexRuleFile = FileUtils.getFile(getStringValue("file", "rule/regex_rule.xml"));
+			this.rule = new RegexRule(regexRuleFile);
 		} else {
 			logger.error("Regex-Rule filename is NULL");
 		}

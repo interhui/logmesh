@@ -8,15 +8,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.component.ComponentInfo;
+import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.MessageOutputor;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
 import org.pinae.logmesh.processor.imp.OutputorProcessor;
-import org.pinae.logmesh.util.ClassLoaderUtils;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.ndb.Ndb;
@@ -41,14 +40,13 @@ public abstract class AbstractRouter extends ComponentInfo implements MessageRou
 	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); 
 
 	public void initialize() {
-		String path = ClassLoaderUtils.getResourcePath("");
 		String routerFilename = getStringValue("file", "router.xml");
 
-		File routerFile = FileUtils.getFile(path, routerFilename);
+		File routerFile = FileUtils.getFile(routerFilename);
 		if (routerFile != null) {
 			create(routerFile);
 		} else {
-			logger.error(String.format("Router Load Exception: exception=File doesn't extis, file=%s/%s", path, routerFilename));
+			logger.error(String.format("Router Load Exception: exception=File doesn't extis, file=%s", routerFilename));
 		}
 	}
 
