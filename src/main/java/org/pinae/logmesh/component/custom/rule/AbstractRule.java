@@ -22,7 +22,6 @@ import org.pinae.ndb.Ndb;
  * 
  * @author Huiyugeng
  * 
- * 
  */
 public abstract class AbstractRule {
 	private static Logger logger = Logger.getLogger(AbstractRule.class);
@@ -56,7 +55,43 @@ public abstract class AbstractRule {
 			this.ruleList = (List<Map<String, Object>>) Ndb.execute(ruleConfig, "select:rule");
 		}
 	}
+	
+	public MatchedRule matchMessageContent(Object message) {
+		return matchMessageContent(this.ruleList, message);
+	}
+	
+	public MatchedRule matchMessageContent(List<Map<String, Object>> ruleList, Object message) {
+		MatchedRule matchedRule = new MatchedRule();
 
+		for (Map<String, Object> rule : ruleList) {
+			if (rule.containsKey("name")) {
+				
+				String name = (String) rule.get("name");
+				if (matchMessageContent(rule, message)) {
+					int level = 1;
+					if (rule.containsKey("level")) {
+						try {
+							level = Integer.parseInt((String) rule.get("level"));
+
+							level = level > 3 ? level = 3 : level; // 告警最高等级为3
+							level = level < 1 ? level = 1 : level; // 告警最低等级为1
+
+						} catch (NumberFormatException e) {
+							level = 1;
+						}
+					}
+
+					matchedRule.addMatchedRule(name);
+					matchedRule.setLevel(level);
+				}
+			}
+		}
+		
+		return matchedRule;	
+	}
+	
+	public abstract boolean matchMessageContent(Map<String, Object> rule, Object message);
+	
 	/**
 	 * 将消息与规则表达式规则进行匹配
 	 * 
@@ -64,7 +99,7 @@ public abstract class AbstractRule {
 	 * 
 	 * @return 匹配的规则列表
 	 */
-	protected MatchedRule match(List<Map<String, Object>> ruleList, Message message) {
+	public MatchedRule match(List<Map<String, Object>> ruleList, Message message) {
 		MatchedRule matchedRule = new MatchedRule();
 
 		for (Map<String, Object> rule : ruleList) {
@@ -81,7 +116,7 @@ public abstract class AbstractRule {
 						&& MatchUtils.matchTime((String) rule.get("time"), time)) {
 					
 					//消息内容匹配
-					if (match(rule, message.getMessage())) {
+					if (matchMessageContent(rule, message.getMessage())) {
 
 						int level = 1;
 						if (rule.containsKey("level")) {
@@ -109,6 +144,10 @@ public abstract class AbstractRule {
 
 	public abstract MatchedRule match(Message message);
 	
-	protected abstract boolean match(Map<String, Object> rule, Object message);
+	public List<Map<String, Object>> getRuleList() {
+		return this.ruleList;
+	}
+	
+	
 
 }
