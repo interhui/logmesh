@@ -105,6 +105,10 @@ public class CustomProcessor implements Processor {
 		this.isStop = true;
 		logger.info("Custom Processor STOP");
 	}
+	
+	public boolean isRunning() {
+		return !this.isStop;
+	}
 
 	public void run() {
 		while (!isStop) {

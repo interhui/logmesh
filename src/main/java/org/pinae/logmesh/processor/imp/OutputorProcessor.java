@@ -68,6 +68,10 @@ public class OutputorProcessor implements Processor {
 		this.isStop = true;
 		logger.info("Outputor Processor STOP");
 	}
+	
+	public boolean isRunning() {
+		return !this.isStop;
+	}
 
 	/**
 	 * 载入消息输出器列表

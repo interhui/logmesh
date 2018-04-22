@@ -93,6 +93,10 @@ public class RouterProcessor implements Processor {
 		logger.info("Message ROUTE STOP");
 
 	}
+	
+	public boolean isRunning() {
+		return !this.isStop;
+	}
 
 	public void run() {
 		while (!isStop) {

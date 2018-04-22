@@ -20,5 +20,12 @@ public interface Processor extends Runnable {
 	 * 停止消息处理器
 	 */
 	public void stop();
+	
+	/**
+	 * 处理器是否在运行状态
+	 * 
+	 * @return true 运行状态 , false 停止状态
+	 */
+	public boolean isRunning();
 
 }

@@ -120,6 +120,10 @@ public class MessageCounter implements Processor {
 		this.isStop = true; // 设置线程停止标记
 		logger.info("Message Counter STOP");
 	}
+	
+	public boolean isRunning() {
+		return !this.isStop;
+	}
 
 	public void run() {
 		while (!isStop) {

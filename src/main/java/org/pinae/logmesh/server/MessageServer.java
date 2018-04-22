@@ -88,28 +88,28 @@ public class MessageServer {
 		
 		if (this.config != null) {
 			// 载入消息队列
-			MessagePool.initialize(config);
+			MessagePool.initialize(this.config);
 	
 			// 启动消息展示器
-			startOutputor(config);
+			startOutputor(this.config);
 	
 			// 启动自定义处理器
-			startCustomProcessor(config);
+			startCustomProcessor(this.config);
 	
 			// 启动消息路由器
-			startRouter(config);
+			startRouter(this.config);
 	
 			// 启动过滤器
-			startFilter(config);
+			startFilter(this.config);
 	
 			// 启动消息计数器
-			startMessageCounter(config);
+			startMessageCounter(this.config);
 	
 			// 启动原始消息存储器
-			startOriginaMessageStorer(config);
+			startOriginaMessageStorer(this.config);
 	
 			// 启动接收器
-			startReceiver(config);
+			startReceiver(this.config);
 	
 			this.startup = true;
 	
@@ -307,7 +307,7 @@ public class MessageServer {
 		logger.info(String.format("Starting message filter, filter count is %d", filterCounter));
 
 		for (int i = 0; i < filterCounter; i++) {
-			new FilterProcessor(config).start("filter-" + Integer.toString(i));
+			new FilterProcessor(config, this.messageCounter.isRunning()).start("filter-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
