@@ -306,8 +306,9 @@ public class MessageServer {
 
 		logger.info(String.format("Starting message filter, filter count is %d", filterCounter));
 
+		boolean enableCounter = this.messageCounter != null ? this.messageCounter.isRunning() : false;
 		for (int i = 0; i < filterCounter; i++) {
-			new FilterProcessor(config, this.messageCounter.isRunning()).start("filter-" + Integer.toString(i));
+			new FilterProcessor(config, enableCounter).start("filter-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
