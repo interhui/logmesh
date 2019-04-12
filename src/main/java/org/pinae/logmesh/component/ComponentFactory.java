@@ -1,5 +1,6 @@
 package org.pinae.logmesh.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,26 @@ public class ComponentFactory {
 				if (paramItem instanceof Map) {
 					Map<String, String> paramMap = (Map<String, String>) paramItem;
 					if (paramMap.containsKey("key") && paramMap.containsKey("value")) {
-						parameterMap.put(paramMap.get("key"), paramMap.get("value"));
+						String key = paramMap.get("key");
+						String value = paramMap.get("value");
+						
+						if (parameterMap.containsKey(key)) {
+							Object paramValueObject = parameterMap.get(key);
+							
+							if (paramValueObject != null) {
+								if (paramValueObject instanceof List) {
+									((List<String>)paramValueObject).add(value);
+								} else if (paramValueObject instanceof String){
+									List<String> paramValueList = new ArrayList<String>();
+									paramValueList.add(paramValueObject.toString());
+									paramValueList.add(value);
+									
+									parameterMap.put(key, paramValueList);
+								}
+							}
+						} else {
+							parameterMap.put(key, value);
+						}
 					}
 				}
 
