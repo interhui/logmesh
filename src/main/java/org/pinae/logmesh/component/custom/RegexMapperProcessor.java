@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.custom.mapper.Mapper;
 import org.pinae.logmesh.component.custom.mapper.RegexMapper;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.FileUtils;
@@ -12,7 +13,7 @@ public class RegexMapperProcessor extends AbstractCustomProcessor {
 	
 	private static Logger logger = Logger.getLogger(RegexMapperProcessor.class);
 	
-	private RegexMapper mapper;
+	private Mapper mapper;
 	
 	public void initialize() {
 		if (hasParameter("file")) {
@@ -42,7 +43,7 @@ public class RegexMapperProcessor extends AbstractCustomProcessor {
 					}
 				}
 			} else {
-				logger.debug("Message content is not String or Map, but " + msgObj.getClass().getName());
+				logger.debug("Message content is not String or Map instance, but " + msgObj.getClass().getName());
 			}
 		} else {
 			logger.debug("Message content is NULL");

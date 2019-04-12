@@ -25,7 +25,7 @@ import org.pinae.ndb.Ndb;
  * 
  * 
  */
-public class RegexMapper {
+public class RegexMapper implements Mapper {
 	private static Logger logger = Logger.getLogger(RegexMapper.class);
 
 	private Map<String, Pattern> patternMap = new HashMap<String, Pattern>(); // 正则匹配

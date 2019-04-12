@@ -184,6 +184,10 @@ public class SolrStorer implements Storer {
 			// Solr存储线程启动
 			ProcessorFactory.getThread(name, this).start();
 		}
+		
+		public boolean isRunning() {
+			return !this.isStop;
+		}
 
 	}
 }

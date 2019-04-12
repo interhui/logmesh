@@ -207,6 +207,10 @@ public class OriginalMessageStorer {
 			// 启动原始消息压缩线程
 			ProcessorFactory.getThread(name, this).start(); 
 		}
+		
+		public boolean isRunning() {
+			return !this.isStop;
+		}
 
 	}
 

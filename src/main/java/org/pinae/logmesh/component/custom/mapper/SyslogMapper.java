@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * 
  */
-public class SyslogMapper {
+public class SyslogMapper implements Mapper {
 
 	private static Map<Integer, String> FACILITY_CODE = new HashMap<Integer, String>();
 	private static Map<Integer, String> SEVERITY_CODE = new HashMap<Integer, String>();

@@ -36,9 +36,12 @@ public class FilterProcessor implements Processor {
 
 	/* 消息过滤线程是否停止 */
 	private boolean isStop = false;
+	
+	private boolean enableCounter = false;
 
-	public FilterProcessor(Map<String, Object> config) {
+	public FilterProcessor(Map<String, Object> config, boolean enableCounter) {
 		this.config = config;
+		this.enableCounter = enableCounter;
 	}
 
 	/**
@@ -105,6 +108,10 @@ public class FilterProcessor implements Processor {
 		this.isStop = true;
 		logger.info("Message Filter STOP");
 	}
+	
+	public boolean isRunning() {
+		return !this.isStop;
+	}
 
 	public void run() {
 		while (!isStop) {
@@ -125,7 +132,10 @@ public class FilterProcessor implements Processor {
 					if (message != null && message.getMessage() != null) {
 						MessagePool.ROUTE_QUEUE.offer(message); // 将消息填入路由队列中
 						MessagePool.PROCESSOR_QUEUE.offer(message); // 将消息填入自定义处理器队列中
-						MessagePool.COUNTER_QUEUE.offer(message); // 将消息填入统计队列中
+						
+						if (this.enableCounter) {
+							MessagePool.COUNTER_QUEUE.offer(message); // 将消息填入统计队列中
+						}
 					}
 				}
 			}

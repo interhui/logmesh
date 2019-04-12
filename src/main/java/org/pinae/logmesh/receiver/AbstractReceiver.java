@@ -17,7 +17,7 @@ import org.pinae.logmesh.util.ConfigMap;
 public abstract class AbstractReceiver implements Receiver {
 
 	/* 是否记录原始消息 */
-	private boolean isRecordOriginal = false; 
+	private boolean enableOriginalLog = false; 
 	/* 接收器是否停止 */
 	protected boolean isStop = false; 
 	/* 消息所有者 */
@@ -52,7 +52,7 @@ public abstract class AbstractReceiver implements Receiver {
 			this.config = new ConfigMap<String, Object>(config);
 		}
 
-		this.isRecordOriginal = this.config.getBoolean("original", false);
+		this.enableOriginalLog = this.config.getBoolean("original", false);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public abstract class AbstractReceiver implements Receiver {
 	protected void addMessage(Message message) {
 		if (message != null) {
 			message.setOwner(owner);
-			if (isRecordOriginal) {
+			if (this.enableOriginalLog) {
 				MessagePool.ORIGINAL_QUEUE.offer(message); // 加入原始消息处理队列
 			}
 			MessagePool.FILTER_QUEUE.offer(message); // 加入过滤处理队列
@@ -76,7 +76,7 @@ public abstract class AbstractReceiver implements Receiver {
 	}
 
 	public boolean isRunning() {
-		return isStop;
+		return !isStop;
 	}
 	
 	public void run() {

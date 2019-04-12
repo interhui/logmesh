@@ -43,7 +43,7 @@ public class ExpressionRule extends AbstractRule {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean match(Map<String, Object> rule, Object message) {
+	public boolean matchMessageContent(Map<String, Object> rule, Object message) {
 		if (rule == null || message == null) {
 			return false;
 		}

@@ -34,10 +34,11 @@ public class RegexRule extends AbstractRule {
 		return super.match(ruleList, message);
 	}
 
-	public boolean match(Map<String, Object> rule, Object message) {
+	public boolean matchMessageContent(Map<String, Object> rule, Object message) {
 		if (rule == null || message == null) {
 			return false;
 		}
 		return MatchUtils.matchString((String) rule.get("pattern"), message.toString());
 	}
+
 }

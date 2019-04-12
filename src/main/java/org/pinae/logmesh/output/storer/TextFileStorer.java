@@ -166,5 +166,9 @@ public class TextFileStorer implements Storer {
 			// 文件存储线程启动
 			ProcessorFactory.getThread(name, this).start(); 
 		}
+		
+		public boolean isRunning() {
+			return !this.isStop;
+		}
 	}
 }

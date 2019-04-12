@@ -182,6 +182,10 @@ public class ElasticsearchStore implements Storer {
 			// 存储线程启动
 			ProcessorFactory.getThread(name, this).start();
 		}
+		
+		public boolean isRunning() {
+			return !this.isStop;
+		}
 
 	}
 
