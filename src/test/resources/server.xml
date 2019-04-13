@@ -71,7 +71,9 @@
 		<class>org.pinae.logmesh.component.filter.IPFilter</class> 
 		<parameters>
 			<!--过滤配置文件-->
-			<parameter key="file" value="filter/ip_filter.xml"/>
+			<!-- <parameter key="file" value="filter/ip_filter.xml"/> -->
+			<parameter key="filter" value="127.0.0.1"/>
+			<parameter key="filter" value="127.0.0.1"/>
 			<!--匹配拦截：false；匹配通过：true-->
 			<parameter key="pass" value="true"/>
 		</parameters>
