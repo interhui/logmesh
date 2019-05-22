@@ -8,7 +8,6 @@
 	<packaging>jar</packaging>
 
 	<name>logmesh</name>
-	<description>Free log colloector</description>
 
 	<licenses>
 		<license>
@@ -358,4 +357,6 @@
 			</distributionManagement>
 		</profile>
 	</profiles>
+	<description>Log collector and transform</description>
+	<url>https://github.com/interhui/logmesh</url>
 </project>
