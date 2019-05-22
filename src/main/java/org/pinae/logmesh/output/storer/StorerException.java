@@ -21,7 +21,7 @@ public class StorerException extends Exception {
 	/**
 	 * 构造函数
 	 * 
-	 * @param message 异常提示
+	 * @param msg 异常提示
 	 * @param cause 异常引发原因
 	 */
 	public StorerException(String msg, Throwable cause) {
@@ -31,7 +31,7 @@ public class StorerException extends Exception {
 	/**
 	 * 构造函数
 	 * 
-	 * @param message 异常提示
+	 * @param msg 异常提示
 	 */
 	public StorerException(String msg) {
 		super(msg);

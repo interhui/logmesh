@@ -38,7 +38,8 @@ public abstract class NettyReceiver extends AbstractReceiver implements EventDri
 	/**
 	 * 构造消息内容
 	 * 
-	 * @param event Netty消息事件
+	 * @param ip 发送端IP地址
+	 * @param message 消息内容(字节缓冲)
 	 * 
 	 * @return 消息内容
 	 */

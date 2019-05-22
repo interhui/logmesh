@@ -76,6 +76,8 @@ public class OutputorProcessor implements Processor {
 	/**
 	 * 载入消息输出器列表
 	 * 
+	 * @param config 消息输出器配置信息
+	 * 
 	 * @return 消息输出器列表
 	 */
 	@SuppressWarnings("unchecked")

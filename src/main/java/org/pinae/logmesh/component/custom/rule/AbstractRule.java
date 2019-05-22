@@ -95,6 +95,7 @@ public abstract class AbstractRule {
 	/**
 	 * 将消息与规则表达式规则进行匹配
 	 * 
+	 * @param ruleList 规则表示式列表
 	 * @param message 消息内容
 	 * 
 	 * @return 匹配的规则列表

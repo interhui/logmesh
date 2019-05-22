@@ -106,6 +106,7 @@ public class MessageServerBuilder {
 	 * @param type 接收器类型
 	 * @param active 是否激活接收器
 	 * @param original 是否采集原始消息
+	 * @param codec 编码模式
 	 * @param parameters 接收器参数
 	 */
 	public void addReceiver(String type, boolean active, boolean original, String codec, Map<String, Object> parameters) {
@@ -194,7 +195,7 @@ public class MessageServerBuilder {
 	 * 
 	 * @param name 处理器名称
 	 * @param active 是否启用处理器
-	 * @param filterClass 处理器执行类
+	 * @param processorClass 处理器执行类
 	 * @param parameters 处理器参数
 	 */
 	public void addProcessor(String name, boolean active, String processorClass, Map<String, Object> parameters) {

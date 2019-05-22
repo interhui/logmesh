@@ -31,7 +31,7 @@ public class UDPSender implements Sender {
 	 * @param ip 发送目标IP地址
 	 * @param port 发送目标端口
 	 */
-	public UDPSender(String ip, int port) throws SendException {
+	public UDPSender(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}

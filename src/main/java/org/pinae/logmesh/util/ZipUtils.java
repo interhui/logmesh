@@ -73,7 +73,6 @@ public class ZipUtils {
 	 * @param zipfile ZIP文件
 	 * @param outDir 解压目标目录
 	 * 
-	 * @throws IOException 异常处理
 	 */
 	public static void unzip(String zipfile, String outDir) {
 
@@ -119,7 +118,6 @@ public class ZipUtils {
 	 * @param zipfile 目标ZIP文件
 	 * @param inDir 需要压缩的目录
 	 * 
-	 * @throws IOException 异常处理
 	 */
 	public static void zip(String zipfile, String inDir) {
 		List<File> fileList = getFileList(inDir);

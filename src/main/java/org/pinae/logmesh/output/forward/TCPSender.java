@@ -28,8 +28,9 @@ public class TCPSender implements Sender {
 	 * 
 	 * @param ip 发送目标IP地址
 	 * @param port 发送目标端口
+	 * 
 	 */
-	public TCPSender(String ip, int port) throws SendException {
+	public TCPSender(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}

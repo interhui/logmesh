@@ -12,7 +12,8 @@ public interface MessageProcessor extends MessageComponent {
 	/**
 	 * 消息处理方法
 	 * 
-	 * @param message 需要处理的消息
+	 * @param message 需要处理的消息对象
+	 * @return 处理后的消息对象
 	 */
 	public Message porcess(Message message);
 }

@@ -13,7 +13,7 @@ public interface Storer {
 	/**
 	 * 连接存储器
 	 * 
-	 * @throws StorerException 异常处理
+	 * @throws StorerException 存储异常
 	 */
 	public void connect() throws StorerException;
 
@@ -27,6 +27,7 @@ public interface Storer {
 	/**
 	 * 关闭存储器
 	 * 
+	 * @throws StorerException 存储异常
 	 */
 	public void close() throws StorerException;;
 }

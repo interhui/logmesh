@@ -124,6 +124,8 @@ public class MessageServer {
 	/**
 	 * 载入Logmesh配置信息
 	 * 
+	 * @param file Logmesh配置文件(XML文件)
+	 * 
 	 * @return Logmesh配置信息
 	 */
 	@SuppressWarnings("unchecked")
@@ -410,6 +412,8 @@ public class MessageServer {
 
 	/**
 	 * Logmesh是否启动完成
+	 * 
+	 * @return 启动是否完成
 	 */
 	public boolean isStartup() {
 		return this.startup;

@@ -30,9 +30,9 @@ public class ClassLoaderUtils {
 	}
 
 	/**
-	 * 获取资源路径（classes根路径）
+	 * 获取资源路径(classes根路径)
 	 * 
-	 * @param resource 资源
+	 * @param resource 资源名称
 	 * @return 资源路径
 	 */
 	public static String getResourcePath(String resource) {
@@ -59,8 +59,8 @@ public class ClassLoaderUtils {
 	 * 
 	 * @return 加载的Class类
 	 * 
-	 * @throws ClassNotFoundException
-	 * @throws IOException 
+	 * @throws ClassNotFoundException 类无法找到异常
+	 * @throws IOException IO异常
 	 */
 	public static Class<?> loadClass(String jarDir, String className) throws ClassNotFoundException, IOException {
 		if (jarDir == null) {
@@ -77,13 +77,13 @@ public class ClassLoaderUtils {
 	/**
 	 * 加载指定的Jar文件和类
 	 * 
-	 * @param jarFile Jar文件路径
+	 * @param jarFilenames Jar文件路径
 	 * @param className Class名称
 	 * 
 	 * @return 加载的Class类
 	 * 
-	 * @throws ClassNotFoundException
-	 * @throws IOException 
+	 * @throws ClassNotFoundException 类无法找到异常
+	 * @throws IOException IO异常
 	 */
 	public static Class<?> loadClass(String jarFilenames[], String className) throws ClassNotFoundException, IOException {
 		

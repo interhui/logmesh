@@ -44,6 +44,8 @@ public class CustomProcessor implements Processor {
 	/**
 	 * 载入消息处理器列表
 	 * 
+	 * @param config 消息处理器配置信息
+	 * 
 	 * @return 消息处理器列表
 	 */
 	@SuppressWarnings("unchecked")
