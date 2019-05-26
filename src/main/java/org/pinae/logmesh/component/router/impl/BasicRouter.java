@@ -1,6 +1,7 @@
-package org.pinae.logmesh.component.router;
+package org.pinae.logmesh.component.router.impl;
 
 import org.pinae.logmesh.component.ComponentInfo;
+import org.pinae.logmesh.component.router.MessageRouter;
 import org.pinae.logmesh.message.Message;
 
 /**

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.pinae.logmesh.component.filter.impl.TextDecodeFilter;
 import org.pinae.logmesh.message.Message;
 
 public class TextDecodeFilterTest {

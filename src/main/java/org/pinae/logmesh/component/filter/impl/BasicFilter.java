@@ -1,5 +1,6 @@
-package org.pinae.logmesh.component.filter;
+package org.pinae.logmesh.component.filter.impl;
 
+import org.pinae.logmesh.component.filter.AbstractFilter;
 import org.pinae.logmesh.message.Message;
 
 /**

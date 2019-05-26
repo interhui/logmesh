@@ -5,15 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
-import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.output.MessageOutputor;
+import org.pinae.logmesh.output.MessageOutputorFactory;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -24,8 +22,9 @@ import org.pinae.ndb.Ndb;
  */
 public class OutputorProcessor implements Processor {
 	private static Logger logger = Logger.getLogger(OutputorProcessor.class);
+	
 	/* 消息输出器配置信息 */
-	private Map<String, Object> config;
+	private List<Map<String, Object>> outputorConfigList;
 
 	/* 消息输出组件列表 */
 	private List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
@@ -33,8 +32,8 @@ public class OutputorProcessor implements Processor {
 	/* 消息输出线程是否停止 */
 	private boolean isStop = false;
 
-	public OutputorProcessor(Map<String, Object> config) {
-		this.config = config;
+	public OutputorProcessor(List<Map<String, Object>> outputorConfigList) {
+		this.outputorConfigList = outputorConfigList;
 	}
 
 	public void run() {
@@ -73,35 +72,8 @@ public class OutputorProcessor implements Processor {
 		return !this.isStop;
 	}
 
-	/**
-	 * 载入消息输出器列表
-	 * 
-	 * @param config 消息输出器配置信息
-	 * 
-	 * @return 消息输出器列表
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<MessageOutputor> create(Map<String, Object> config) {
-		List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
-
-		List<Map<String, Object>> outputConfigList = (List<Map<String, Object>>) Ndb.execute(config, "select:outputor->enable:true");
-
-		for (Map<String, Object> outputConfig : outputConfigList) {
-
-			MessageComponent outputorComponent = ComponentFactory.create(outputConfig);
-
-			if (outputorComponent != null && outputorComponent instanceof MessageOutputor) {
-				MessageOutputor outputor = (MessageOutputor) outputorComponent;
-				outputor.initialize();
-				outputorList.add(outputor);
-			}
-		}
-
-		return outputorList;
-	}
-
 	public void start(String name) {
-		this.outputorList = create(this.config);
+		this.outputorList = MessageOutputorFactory.create(this.outputorConfigList);
 
 		// 将过滤器在组件池中进行注册
 		for (MessageOutputor outputor : this.outputorList) {

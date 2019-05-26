@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.pinae.logmesh.component.filter.ClassifyFilter;
+import org.pinae.logmesh.component.filter.impl.ClassifyFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.MatchUtils;
 

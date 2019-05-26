@@ -11,7 +11,11 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.ComponentFactory;
+import org.pinae.logmesh.component.custom.MessageProcessorFactory;
+import org.pinae.logmesh.component.filter.MessageFilterFactory;
+import org.pinae.logmesh.component.router.MessageRouterFactory;
 import org.pinae.logmesh.message.MessagePool;
+import org.pinae.logmesh.output.MessageOutputorFactory;
 import org.pinae.logmesh.processor.ProcessorPool;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
@@ -247,7 +251,7 @@ public class MessageServer {
 			messageStorer.start();
 	
 			long startupTime = System.currentTimeMillis() - startTime;
-			logger.info(String.format("Start origina message storer in %d ms", startupTime));
+			logger.info(String.format("Start Origina Storer in %d ms", startupTime));
 		}
 	}
 
@@ -269,7 +273,7 @@ public class MessageServer {
 			messageCounter.start("MessageCounter");
 	
 			long startupTime = System.currentTimeMillis() - startTime;
-			logger.info(String.format("Start message counter in %d ms", startupTime));
+			logger.info(String.format("Start Message Counter in %d ms", startupTime));
 		}
 	}
 	
@@ -305,16 +309,18 @@ public class MessageServer {
 		if (filterCounter < 1) {
 			filterCounter = 1;
 		}
-
-		logger.info(String.format("Starting message filter, filter count is %d", filterCounter));
+		
+		List<Map<String, Object>> filterConfigList = MessageFilterFactory.getFilterConfigList(FilterProcessor.GLOBAL_FILTER, config);
+		
+		logger.info(String.format("Starting Message Filter, %d Threads", filterCounter));
 
 		boolean enableCounter = this.messageCounter != null ? this.messageCounter.isRunning() : false;
 		for (int i = 0; i < filterCounter; i++) {
-			new FilterProcessor(config, enableCounter).start("filter-" + Integer.toString(i));
+			new FilterProcessor(filterConfigList, enableCounter).start("filter-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start message filter in %d ms", startupTime));
+		logger.info(String.format("Start Message Filter in %d ms", startupTime));
 	}
 
 	/**
@@ -341,15 +347,17 @@ public class MessageServer {
 		if (routerCounter < 1) {
 			routerCounter = 1;
 		}
+		
+		List<Map<String, Object>> routerConfigList = MessageRouterFactory.getRouterConfigList(config);
 
-		logger.info(String.format("Starting message router, router count is %d", routerCounter));
+		logger.info(String.format("Starting Message Router, %d Threads", routerCounter));
 
 		for (int i = 0; i < routerCounter; i++) {
-			new RouterProcessor(config).start("router-" + Integer.toString(i));
+			new RouterProcessor(routerConfigList).start("router-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start message router in %d ms", startupTime));
+		logger.info(String.format("Start Message Router in %d ms", startupTime));
 	}
 
 	/**
@@ -376,15 +384,17 @@ public class MessageServer {
 		if (processorCounter < 1) {
 			processorCounter = 1;
 		}
+		
+		List<Map<String, Object>> processorConfigList = MessageProcessorFactory.getProcessorConfigList(CustomProcessor.GLOBAL_PROCESSOR, config);
 
-		logger.info(String.format("Starting customer message processor, processor count is %d", processorCounter));
+		logger.info(String.format("Starting Message Processor, %d Threads", processorCounter));
 
 		for (int i = 0; i < processorCounter; i++) {
-			new CustomProcessor(config).start("processor-" + Integer.toString(i));
+			new CustomProcessor(processorConfigList).start("processor-" + Integer.toString(i));
 		}
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start customer message processor in %d ms", startupTime));
+		logger.info(String.format("Start Message Processor in %d ms", startupTime));
 	}
 
 	/**
@@ -394,11 +404,13 @@ public class MessageServer {
 	 */
 	public void startOutputor(Map<String, Object> config) {
 		long startTime = System.currentTimeMillis();
+		
+		List<Map<String, Object>> outputorConfigList = MessageOutputorFactory.getOutputorConfigList(config);
 
-		new OutputorProcessor(config).start("outputor");
+		new OutputorProcessor(outputorConfigList).start("outputor");
 
 		long startupTime = System.currentTimeMillis() - startTime;
-		logger.info(String.format("Start outputor in %d ms", startupTime));
+		logger.info(String.format("Start Message Outputor in %d ms", startupTime));
 	}
 
 	/**

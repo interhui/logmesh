@@ -9,13 +9,15 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.pinae.logmesh.component.ComponentInfo;
-import org.pinae.logmesh.component.MessageProcessor;
+import org.pinae.logmesh.component.custom.MessageProcessor;
+import org.pinae.logmesh.component.custom.MessageProcessorFactory;
 import org.pinae.logmesh.component.filter.MessageFilter;
+import org.pinae.logmesh.component.filter.MessageFilterFactory;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.output.MessageOutputor;
+import org.pinae.logmesh.output.MessageOutputorFactory;
 import org.pinae.logmesh.processor.imp.CustomProcessor;
 import org.pinae.logmesh.processor.imp.FilterProcessor;
-import org.pinae.logmesh.processor.imp.OutputorProcessor;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.nala.xb.Xml;
 import org.pinae.ndb.Ndb;
@@ -27,31 +29,31 @@ import org.pinae.ndb.Ndb;
  * 
  */
 public abstract class AbstractRouter extends ComponentInfo implements MessageRouter {
+	
 	private static Logger logger = Logger.getLogger(AbstractRouter.class);
 
-	/* 消息过滤器列表, (路由器名称, 消息过滤器) */
-	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>(); 
-	/* 消息处理器列表, (路由器名称, 消息处理器) */
-	private Map<String, List<MessageProcessor>> processorMap = new HashMap<String, List<MessageProcessor>>(); 
-	/* 消息转发器列表, (路由器名称, 消息转发器) */
+	/* 消息过滤器列表, (路由名称, 消息过滤器) */
+	private Map<String, List<MessageFilter>> filterMap = new HashMap<String, List<MessageFilter>>();
+	
+	/* 消息处理器列表, (路由名称, 消息处理器) */
+	private Map<String, List<MessageProcessor>> processorMap = new HashMap<String, List<MessageProcessor>>();
+	
+	/* 消息转发器列表, (路由名称, 消息转发器) */
 	private Map<String, List<MessageOutputor>> outputorMap = new HashMap<String, List<MessageOutputor>>();
 
 	/* 消息路由条件 */
-	protected Map<String, Map<String, Object>> routerRuleMap = new HashMap<String, Map<String, Object>>(); 
+	protected Map<String, Map<String, Object>> ruleMap = new HashMap<String, Map<String, Object>>(); 
 
 	public void initialize() {
 		String routerFilename = getStringValue("file", "router.xml");
-
 		File routerFile = FileUtils.getFile(routerFilename);
-		if (routerFile != null) {
-			create(routerFile);
-		} else {
-			logger.error(String.format("Router Load Exception: exception=File doesn't extis, file=%s", routerFilename));
-		}
+		
+		load(routerFile);
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	private void create(File routerFile) {
+	private void load(File routerFile) {
+		
 		Map<String, Object> routerConfig = null;
 		try {
 			if (routerFile != null) {
@@ -62,7 +64,7 @@ public abstract class AbstractRouter extends ComponentInfo implements MessageRou
 						if (StringUtils.isNotEmpty(importFilename)) {
 							File importFile = FileUtils.getFile(routerFile.getParent(), importFilename);
 							if (importFile != null) {
-								create(importFile);
+								load(importFile);
 							} else {
 								logger.error(String.format("Router Load Exception: exception=File doesn't extis, source=%s, import=%s/%s", 
 										routerFile.getPath(), routerFile.getAbsolutePath(), importFilename));
@@ -73,42 +75,87 @@ public abstract class AbstractRouter extends ComponentInfo implements MessageRou
 				}
 
 				if (routerConfig != null && routerConfig.containsKey("rule")) {
+					
 					List<Map<String, Object>> ruleConfigList = (List<Map<String, Object>>) Ndb.execute(routerConfig,
 							"select:rule");
+					
 					for (Map<String, Object> ruleConfig : ruleConfigList) {
 
-						String name = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig
-								.toString();
+						String ruleName = ruleConfig.containsKey("name") ? ruleConfig.get("name").toString() : ruleConfig.toString();
 						
-						this.routerRuleMap.put(name, (Map<String, Object>) Ndb.execute(ruleConfig, "one:condition"));
-
-						List<MessageFilter> filterList = new ArrayList<MessageFilter>();
-						List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
-						List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
-
-						String extend = ruleConfig.containsKey("extend") ? ruleConfig.get("extend").toString() : null;
-
-						if (extend != null) {
-							filterList.addAll(this.filterMap.get(extend));
-							processorList.addAll(this.processorMap.get(extend));
-							outputorList.addAll(this.outputorMap.get(extend));
+						Map<String, Object> rules = (Map<String, Object>) Ndb.execute(ruleConfig, "one:condition");
+						
+						if (ruleName != null && rules != null && rules.size() > 0) {
+							ruleMap.put(ruleName, rules);
+							String extend = ruleConfig.containsKey("extend") ? ruleConfig.get("extend").toString() : null;
+	
+							loadFilter(ruleName, ruleConfig, extend);
+							loadProcessor(ruleName, ruleConfig, extend);
+							loadOutputor(ruleName, ruleConfig, extend);
 						}
-
-						filterList.addAll(FilterProcessor.create(ruleConfig));
-						processorList.addAll(CustomProcessor.create(ruleConfig));
-						outputorList.addAll(OutputorProcessor.create(ruleConfig));
-
-						this.filterMap.put(name, filterList);
-						this.processorMap.put(name, processorList);
-						this.outputorMap.put(name, outputorList);
 					}
 				}
 			} 
 		} catch (Exception e) {
 			logger.error(String.format("Router Load Exception: exception=%s", e.getMessage()));
-		} 
-
-
+		}	
+	}
+	
+	/*
+	 * 载入 消息过滤器
+	 * 
+	 */
+	private void loadFilter(String ruleName, Map<String, Object> ruleConfig, String extend) {
+		List<MessageFilter> filterList = new ArrayList<MessageFilter>();
+		if (extend != null && this.filterMap.containsKey(extend)) {
+			filterList.addAll(this.filterMap.get(extend));
+		}
+		
+		List<Map<String, Object>> routerFilterConfigList = MessageFilterFactory.getFilterConfigList(FilterProcessor.ROUTER_FILTER, ruleConfig);
+		
+		List<MessageFilter> routerFilterList = MessageFilterFactory.create(routerFilterConfigList);
+		if (routerFilterList != null) {
+			filterList.addAll(routerFilterList);
+		}
+		this.filterMap.put(ruleName, filterList);
+	}
+	
+	/*
+	 * 载入消息处理器
+	 * 
+	 */
+	private void loadProcessor(String ruleName, Map<String, Object> ruleConfig, String extend) {
+		List<MessageProcessor> processorList = new ArrayList<MessageProcessor>();
+		if (extend != null && this.processorMap.containsKey(extend)) {
+			processorList.addAll(this.processorMap.get(extend));
+		}
+		
+		List<Map<String, Object>> routerProcessorConfigList = MessageProcessorFactory.getProcessorConfigList(CustomProcessor.ROUTER_PROCESSOR, ruleConfig);
+		
+		List<MessageProcessor> routerProcessorList = MessageProcessorFactory.create(routerProcessorConfigList);
+		if (routerProcessorList != null) {
+			processorList.addAll(routerProcessorList);
+		}
+		this.processorMap.put(ruleName, processorList);
+	}
+	
+	/*
+	 * 载入消息输出器
+	 * 
+	 */
+	private void loadOutputor(String ruleName, Map<String, Object> ruleConfig, String extend) {
+		List<MessageOutputor> outputorList = new ArrayList<MessageOutputor>();
+		if (extend != null && this.outputorMap.containsKey(extend)) {
+			outputorList.addAll(this.outputorMap.get(extend));
+		}
+		
+		List<Map<String, Object>> routerOutputorConfigList = MessageOutputorFactory.getOutputorConfigList(ruleConfig);
+		
+		List<MessageOutputor> routerOutputorList = MessageOutputorFactory.create(routerOutputorConfigList);
+		if (routerOutputorList != null) {
+			outputorList.addAll(routerOutputorList);
+		}
+		this.outputorMap.put(ruleName, outputorList);
 	}
 
 	public void porcess(Message message) {

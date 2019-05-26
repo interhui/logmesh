@@ -1,4 +1,4 @@
-package org.pinae.logmesh.component.router;
+package org.pinae.logmesh.component.router.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.pinae.logmesh.component.router.AbstractRouter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.ndb.Ndb;
 
@@ -28,9 +29,9 @@ public class IPRouter extends AbstractRouter {
 	public void initialize() {
 		super.initialize();
 		
-		this.ruleNameSet = routerRuleMap.keySet();
+		this.ruleNameSet = ruleMap.keySet();
 		for (String ruleName : this.ruleNameSet) {
-			Map<String, Object> rule = routerRuleMap.get(ruleName);
+			Map<String, Object> rule = ruleMap.get(ruleName);
 			if (rule != null) {
 				String type = rule.containsKey("type") ? rule.get("type").toString() : null;
 				if (type != null && type.equalsIgnoreCase("ip")) {

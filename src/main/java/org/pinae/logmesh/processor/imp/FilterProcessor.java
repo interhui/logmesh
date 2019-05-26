@@ -3,20 +3,15 @@ package org.pinae.logmesh.processor.imp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
-import org.pinae.logmesh.component.MessageComponent;
-import org.pinae.logmesh.component.filter.BasicFilter;
+import org.pinae.logmesh.component.filter.MessageFilterFactory;
 import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -26,10 +21,15 @@ import org.pinae.ndb.Ndb;
  * 
  */
 public class FilterProcessor implements Processor {
+	
 	private static Logger logger = Logger.getLogger(FilterProcessor.class);
+	
+	public static final String GLOBAL_FILTER = "global";
+	
+	public static final String ROUTER_FILTER = "router";
 
 	/* 消息过滤器配置信息 */
-	private Map<String, Object> config;
+	private List<Map<String, Object>> filterConfigList;
 
 	/* 消息过滤组件列表 */
 	private List<MessageFilter> filterList = new ArrayList<MessageFilter>();
@@ -39,61 +39,13 @@ public class FilterProcessor implements Processor {
 	
 	private boolean enableCounter = false;
 
-	public FilterProcessor(Map<String, Object> config, boolean enableCounter) {
-		this.config = config;
+	public FilterProcessor(List<Map<String, Object>> filterConfigList, boolean enableCounter) {
+		this.filterConfigList = filterConfigList;
 		this.enableCounter = enableCounter;
 	}
 
-	/**
-	 * 载入消息过滤器列表
-	 * 
-	 * @param config 消息过滤器配置信息
-	 * 
-	 * @return 消息过滤器列表
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<MessageFilter> create(Map<String, Object> config) {
-		Map<Integer, MessageFilter> filterMap = new TreeMap<Integer, MessageFilter>();
-
-		// 选取需要启动的过滤器
-		List<Map<String, Object>> filterConfigList = (List<Map<String, Object>>)Ndb.execute(config,
-				"select:filter->enable:true");
-		
-		for (Map<String, Object> filterConfig : filterConfigList) {
-
-			MessageComponent filterComponent = ComponentFactory.create(filterConfig);
-
-			if (filterComponent != null && filterComponent instanceof MessageFilter) {
-				MessageFilter filter = (MessageFilter) filterComponent;
-				// 调用过滤器初始化
-				filter.initialize();
-
-				// 判断是否包含过滤器顺序
-				if (filterConfig.containsKey("startup")) {
-					String startup = (String) filterConfig.get("startup");
-					if (StringUtils.isAlphanumeric(startup)) {
-						filterMap.put(Integer.parseInt(startup), filter);
-					}
-				} else {
-					int index = (int)(Math.random() * Integer.MAX_VALUE);
-					while (filterMap.containsKey(index)) {
-						index = (int)(Math.random() * Integer.MAX_VALUE);
-					}
-					filterMap.put(index, filter);
-				}
-			}
-		}
-
-		// 如果处理器队列中不含任何过滤器则启动默认过滤器
-		if (filterMap.isEmpty()) {
-			filterMap.put(0, new BasicFilter());
-		}
-
-		return new ArrayList<MessageFilter>(filterMap.values());
-	}
-
 	public void start(String name) {
-		this.filterList = create(this.config);
+		this.filterList = MessageFilterFactory.create(this.filterConfigList);
 		// 将过滤器在组件池中进行注册
 		for (MessageFilter filter : this.filterList) {
 			ComponentPool.registe(filter);

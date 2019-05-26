@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.custom.MessageProcessor;
 import org.pinae.logmesh.component.filter.MessageFilter;
 import org.pinae.logmesh.component.router.MessageRouter;
 

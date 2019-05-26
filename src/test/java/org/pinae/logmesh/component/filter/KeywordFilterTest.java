@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.pinae.logmesh.component.filter.KeywordFilter;
+import org.pinae.logmesh.component.filter.impl.KeywordFilter;
 import org.pinae.logmesh.message.Message;
 
 public class KeywordFilterTest {

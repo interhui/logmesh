@@ -37,7 +37,7 @@ public class MessageServerTest {
 			assertEquals(receiverList.size(), 5);
 			
 			List<Map<String, Object>> outputorList = (List<Map<String, Object>>)Ndb.execute(config, "select:outputor");
-			assertEquals(outputorList.size(), 5);
+			assertEquals(outputorList.size(), 4);
 		}
 	}
 }

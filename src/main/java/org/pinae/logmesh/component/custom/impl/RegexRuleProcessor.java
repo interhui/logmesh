@@ -1,4 +1,4 @@
-package org.pinae.logmesh.component.custom;
+package org.pinae.logmesh.component.custom.impl;
 
 import java.io.File;
 import java.util.HashMap;
@@ -6,24 +6,25 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.custom.AbstractCustomProcessor;
 import org.pinae.logmesh.component.custom.rule.AbstractRule;
-import org.pinae.logmesh.component.custom.rule.ExpressionRule;
 import org.pinae.logmesh.component.custom.rule.MatchedRule;
+import org.pinae.logmesh.component.custom.rule.RegexRule;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.FileUtils;
 
-public class ExpressionRuleProcessor extends AbstractCustomProcessor {
+public class RegexRuleProcessor extends AbstractCustomProcessor {
 	
-	private static Logger logger = Logger.getLogger(ExpressionRuleProcessor.class);
+	private static Logger logger = Logger.getLogger(RegexRuleProcessor.class);
 	
 	private AbstractRule rule;
 	
 	public void initialize() {
 		if (hasParameter("file")) {
-			File expressionRuleFile = FileUtils.getFile(getStringValue("file", "rule/expression_rule.xml"));
-			this.rule = new ExpressionRule(expressionRuleFile);
+			File regexRuleFile = FileUtils.getFile(getStringValue("file", "rule/regex_rule.xml"));
+			this.rule = new RegexRule(regexRuleFile);
 		} else {
-			logger.error("Expression-Rule filename is NULL");
+			logger.error("Regex-Rule filename is NULL");
 		}
 	}
 	
@@ -42,5 +43,5 @@ public class ExpressionRuleProcessor extends AbstractCustomProcessor {
 		}
 		return message;
 	}
-	
+
 }

@@ -1,5 +1,6 @@
-package org.pinae.logmesh.component;
+package org.pinae.logmesh.component.custom;
 
+import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.message.Message;
 
 /**

@@ -1,4 +1,4 @@
-package org.pinae.logmesh.component.filter;
+package org.pinae.logmesh.component.filter.impl;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.filter.AbstractFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.logmesh.util.MatchUtils;

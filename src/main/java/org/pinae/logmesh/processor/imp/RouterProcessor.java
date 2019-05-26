@@ -5,16 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.pinae.logmesh.component.ComponentFactory;
 import org.pinae.logmesh.component.ComponentPool;
-import org.pinae.logmesh.component.MessageComponent;
-import org.pinae.logmesh.component.router.BasicRouter;
 import org.pinae.logmesh.component.router.MessageRouter;
+import org.pinae.logmesh.component.router.MessageRouterFactory;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.message.MessagePool;
 import org.pinae.logmesh.processor.Processor;
 import org.pinae.logmesh.processor.ProcessorFactory;
-import org.pinae.ndb.Ndb;
 
 /**
  * 
@@ -28,7 +25,7 @@ public class RouterProcessor implements Processor {
 	private static Logger logger = Logger.getLogger(RouterProcessor.class);
 
 	/* 消息路由器配置信息 */
-	private Map<String, Object> config;
+	private List<Map<String, Object>> routerConfigList;
 	
 	/* 消息路由处理组件列表  */
 	private List<MessageRouter> routerList = new ArrayList<MessageRouter>();
@@ -36,47 +33,13 @@ public class RouterProcessor implements Processor {
 	/* 消息路由线程是否停止 */
 	private boolean isStop = false; // 
 
-	public RouterProcessor(Map<String, Object> config) {
-		this.config = config;
-	}
-
-	/**
-	 * 载入消息路由列表
-	 * 
-	 * @return 消息路由列表
-	 */
-	@SuppressWarnings("unchecked")
-	public List<MessageRouter> create() {
-		List<MessageRouter> routerList = new ArrayList<MessageRouter>();
-
-		// 选取需要启动的路由器
-		List<Map<String, Object>> routerConfigList = (List<Map<String, Object>>) Ndb.execute(config,
-				"select:router->enable:true");
-
-		for (Map<String, Object> routerConfig : routerConfigList) {
-
-			MessageComponent routerComponent = ComponentFactory.create(routerConfig);
-
-			if (routerComponent != null && routerComponent instanceof MessageRouter) {
-				MessageRouter router = (MessageRouter) routerComponent;
-				// 调用路由器初始化
-				router.initialize(); 
-				// 加入路由队列
-				routerList.add(router); 
-			}
-		}
-
-		if (routerList.size() == 0) {
-			routerList.add(new BasicRouter());
-		}
-
-		return routerList;
-
+	public RouterProcessor(List<Map<String, Object>> routerConfigList) {
+		this.routerConfigList = routerConfigList;
 	}
 
 	public void start(String name) {
 
-		this.routerList = create();
+		this.routerList = MessageRouterFactory.create(this.routerConfigList);
 
 		// 将路由在组件池中进行注册
 		for (MessageRouter router : this.routerList) {

@@ -1,9 +1,10 @@
-package org.pinae.logmesh.component.custom;
+package org.pinae.logmesh.component.custom.impl;
 
 import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.custom.AbstractCustomProcessor;
 import org.pinae.logmesh.component.custom.mapper.Mapper;
 import org.pinae.logmesh.component.custom.mapper.RegexMapper;
 import org.pinae.logmesh.message.Message;

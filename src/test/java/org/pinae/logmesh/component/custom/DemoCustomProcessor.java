@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pinae.logmesh.component.ComponentInfo;
-import org.pinae.logmesh.component.MessageProcessor;
 import org.pinae.logmesh.message.Message;
 
 /**

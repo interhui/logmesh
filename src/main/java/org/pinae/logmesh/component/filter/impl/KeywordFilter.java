@@ -1,6 +1,7 @@
-package org.pinae.logmesh.component.filter;
+package org.pinae.logmesh.component.filter.impl;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,44 +9,43 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.filter.AbstractFilter;
 import org.pinae.logmesh.message.Message;
 import org.pinae.logmesh.util.FileUtils;
 import org.pinae.ndb.Ndb;
 
 /**
- * IP地址过滤器
+ * 关键字过滤器
  * 
  * @author Huiyugeng
  * 
  * 
  */
-public class IPFilter extends BasicFilter {
-	private static Logger logger = Logger.getLogger(IPFilter.class);
-	
-	/* IP地址列表 */
-	private List<String> ipList = new ArrayList<String>(); 
+public class KeywordFilter extends AbstractFilter {
+	private static Logger logger = Logger.getLogger(KeywordFilter.class);
 
-	/* true:匹配通过; false:匹配阻断 */
-	private boolean pass = true; // 
+	private List<String> keywordList = new ArrayList<String>(); // 关键字列表
 
-	public IPFilter() {
+	private boolean pass = true; // 匹配通过
+
+	public KeywordFilter() {
 
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initialize() {
-
+		
 		this.pass = getBooleanValue("pass", true);
 		
 		if (hasParameter("file")) {
-			String filterFilename = getStringValue("file", "filter/ip_filter.xml");
+			String filterFilename = getStringValue("file", "filter/keyword_filter.xml");
 			if (StringUtils.isNoneEmpty(filterFilename)) {
 				File filterFile = FileUtils.getFile(filterFilename);
 				if (filterFile != null) {
 					load(filterFile);
 				} else {
-					logger.error(String.format("IPFilter Load Exception: exception=File doesn't extis, file=%s", filterFilename));
+					logger.error(String.format("KeywordFilter Load Exception: exception=File doesn't extis, file=%s", filterFilename));
 				}
 			}
 		} else if (hasParameter("filter")) {
@@ -54,10 +54,10 @@ public class IPFilter extends BasicFilter {
 				if (filter instanceof String) {
 					String filterStr = (String)filter;
 					if (StringUtils.isNoneEmpty(filterStr)) {
-						this.ipList = Arrays.asList(filterStr.split("\\|"));
+						this.keywordList.addAll(Arrays.asList(filterStr.split("\\|")));
 					}
 				} else if (filter instanceof List) {
-					this.ipList = (List<String>)filter;
+					this.keywordList = (List<String>)filter;
 				}
 			}
 		}
@@ -68,14 +68,14 @@ public class IPFilter extends BasicFilter {
 		Map<String, Object> filterConfig = loadConfig(filterFile);
 
 		if (filterConfig != null && filterConfig.containsKey("import")) {
-			List<String> importList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
-			for (String importFilename : importList) {
+			List<String> importFilenameList = (List<String>) Ndb.execute(filterConfig, "select:import->file");
+			for (String importFilename : importFilenameList) {
 				if (StringUtils.isNotEmpty(importFilename)) {
 					File importFile = FileUtils.getFile(filterFile.getParent(), importFilename);
 					if (importFile != null) {
 						loadConfig(importFile);
 					} else {
-						logger.error(String.format("IPFilter Load Exception: exception=File doesn't extis, source=%s, import=%s/%s",
+						logger.error(String.format("KeywordFilter Load Exception: exception=File doesn't extis, source=%s, import=%s/%s",
 								filterFile.getPath(), filterFile.getAbsolutePath(), importFilename));
 					}
 				}
@@ -83,20 +83,29 @@ public class IPFilter extends BasicFilter {
 		}
 
 		if (filterConfig != null && filterConfig.containsKey("filter")) {
-			this.ipList = (List<String>) Ndb.execute(filterConfig, "select:filter->ip");
+			this.keywordList = (List<String>) Ndb.execute(filterConfig, "select:filter->keyword");
 		}
 	}
 
 	@Override
 	public Message filter(Message message) {
-		Object msgContent = message.getMessage();
-		String msgIP = message.getIP();
 
-		if (msgContent != null && msgIP != null) {
+		Object msgContent = message.getMessage();
+
+		if (msgContent != null) {
 
 			boolean matched = false;
-			for (String ip : ipList) {
-				if (msgIP.matches(ip)) {
+
+			if (msgContent instanceof byte[]) {
+				try {
+					msgContent = new String((byte[]) msgContent, "utf8");
+				} catch (UnsupportedEncodingException e) {
+					return null;
+				}
+			}
+
+			for (String keyword : keywordList) {
+				if (msgContent.toString().contains(keyword)) {
 					matched = true;
 					break;
 				}
@@ -110,7 +119,6 @@ public class IPFilter extends BasicFilter {
 		} else {
 			return null;
 		}
-
 	}
 
 }

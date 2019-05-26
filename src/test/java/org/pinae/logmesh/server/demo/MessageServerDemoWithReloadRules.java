@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.pinae.logmesh.component.ComponentPool;
 import org.pinae.logmesh.component.MessageComponent;
 import org.pinae.logmesh.component.custom.DemoCustomProcessor;
-import org.pinae.logmesh.component.filter.IPFilter;
+import org.pinae.logmesh.component.filter.impl.IPFilter;
 import org.pinae.logmesh.output.ScreenOutputor;
 import org.pinae.logmesh.output.sender.MessageUDPSenderTest;
 import org.pinae.logmesh.server.MessageServer;

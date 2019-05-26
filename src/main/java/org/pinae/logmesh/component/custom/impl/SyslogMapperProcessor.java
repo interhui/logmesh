@@ -1,6 +1,7 @@
-package org.pinae.logmesh.component.custom;
+package org.pinae.logmesh.component.custom.impl;
 
 import org.apache.log4j.Logger;
+import org.pinae.logmesh.component.custom.AbstractCustomProcessor;
 import org.pinae.logmesh.component.custom.mapper.Mapper;
 import org.pinae.logmesh.component.custom.mapper.SyslogMapper;
 import org.pinae.logmesh.message.Message;
