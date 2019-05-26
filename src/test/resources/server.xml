@@ -54,11 +54,11 @@
 	<!--消息过滤器配置-->
 	<!--
 		目前包括的过滤器包括：
-		 * IP过滤器 : org.pinae.logmesh.component.filter.IPFilter
-		 * 文本解码过滤器 : org.pinae.logmesh.component.filter.TextDecodeFilter
-		 * 关键字过滤器 : org.pinae.logmesh.component.filter.KeywordFilter
-		 * 正则表达式过滤器 : org.pinae.logmesh.component.filter.RegexFilter
-		 * 分类过滤器 : org.pinae.logmesh.component.filter.ClassifyFilter
+		 * IP过滤器 : org.pinae.logmesh.component.filter.impl.IPFilter
+		 * 文本解码过滤器 : org.pinae.logmesh.component.filter.impl.TextDecodeFilter
+		 * 关键字过滤器 : org.pinae.logmesh.component.filter.impl.KeywordFilter
+		 * 正则表达式过滤器 : org.pinae.logmesh.component.filter.impl.RegexFilter
+		 * 分类过滤器 : org.pinae.logmesh.component.filter.impl.ClassifyFilter
 	-->
 	<filter>
 		<!--过滤器启动顺序-->
@@ -68,7 +68,7 @@
 		<!--是否启用该过滤器:true/false-->
 		<enable>true</enable>
 		<!--过滤器类-->
-		<class>org.pinae.logmesh.component.filter.IPFilter</class> 
+		<class>org.pinae.logmesh.component.filter.impl.IPFilter</class> 
 		<parameters>
 			<!--过滤配置文件-->
 			<!-- <parameter key="file" value="filter/ip_filter.xml"/> -->
@@ -82,7 +82,7 @@
 		<startup>2</startup>
 		<name>TextDecodeFilter</name>
 		<enable>true</enable>
-		<class>org.pinae.logmesh.component.filter.TextDecodeFilter</class>
+		<class>org.pinae.logmesh.component.filter.impl.TextDecodeFilter</class>
 		<parameters>
 			<parameter key="file" value="filter/text_decode_filter.xml"/>
 		</parameters>
@@ -91,7 +91,7 @@
 		<startup>3</startup>
 		<name>KeywordFilter</name>
 		<enable>true</enable>
-		<class>org.pinae.logmesh.component.filter.KeywordFilter</class>
+		<class>org.pinae.logmesh.component.filter.impl.KeywordFilter</class>
 		<parameters>
 			<parameter key="file" value="filter/keyword_filter.xml"/>
 			<parameter key="pass" value="true"/>
@@ -101,7 +101,7 @@
 		<startup>4</startup>
 		<name>RegexFilter</name>
 		<enable>true</enable>
-		<class>org.pinae.logmesh.component.filter.RegexFilter</class>
+		<class>org.pinae.logmesh.component.filter.impl.RegexFilter</class>
 		<parameters>
 			<parameter key="file" value="filter/regex_filter.xml"/>
 			<parameter key="pass" value="true"/>
@@ -111,7 +111,7 @@
 		<startup>5</startup>
 		<name>ClassifyFilter</name>
 		<enable>true</enable>
-		<class>org.pinae.logmesh.component.filter.ClassifyFilter</class>
+		<class>org.pinae.logmesh.component.filter.impl.ClassifyFilter</class>
 		<parameters>
 			<parameter key="file" value="filter/classify_filter.xml"/>
 		</parameters>
@@ -125,7 +125,7 @@
 		<!--是否启用该路由器:true/false-->
 		<enable>true</enable>
 		<!--路由器类-->
-		<class>org.pinae.logmesh.component.router.IPRouter</class>
+		<class>org.pinae.logmesh.component.router.impl.IPRouter</class>
 		<parameters>
 			<!--路由配置文件-->
 			<parameter key="file" value="router/ip_router.xml"/>
@@ -137,7 +137,7 @@
 		<!--是否启用该路由器:true/false-->
 		<enable>true</enable>
 		<!--路由器类-->
-		<class>org.pinae.logmesh.component.router.RegexRouter</class>
+		<class>org.pinae.logmesh.component.router.impl.RegexRouter</class>
 		<parameters>
 			<!--路由配置文件-->
 			<parameter key="file" value="router/regex_router.xml"/>

@@ -79,7 +79,7 @@ public class MessageFilterFactory {
 				String name = (String)fileterConfig.get("name");
 				String className = (String)fileterConfig.get("kwClass");
 				if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(className)) {
-					logger.info(String.format("Start Filter %s (%s)", name, className));
+					logger.info(String.format("Start Message Filter %s (%s)", name, className));
 				}
 			}
 		}

@@ -55,7 +55,7 @@ public class MessageRouterFactory {
 			String name = (String)routerConfig.get("name");
 			String className = (String)routerConfig.get("kwClass");
 			if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(className)) {
-				logger.info(String.format("Start Router %s (%s)", name, className));
+				logger.info(String.format("Start Message Router %s (%s)", name, className));
 			}
 		}
 		

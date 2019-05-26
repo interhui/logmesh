@@ -72,7 +72,7 @@ public class MessageProcessorFactory {
 				String name = (String)processorConfig.get("name");
 				String className = (String)processorConfig.get("kwClass");
 				if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(className)) {
-					logger.info(String.format("Start Processor %s (%s)", name, className));
+					logger.info(String.format("Start Message Processor %s (%s)", name, className));
 				}
 			}
 		}

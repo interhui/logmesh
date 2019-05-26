@@ -6,7 +6,7 @@
 			<startup>1</startup>
 			<name>IPFilter</name>
 			<enable>true</enable>
-			<class>org.pinae.logmesh.component.filter.IPFilter</class>
+			<class>org.pinae.logmesh.component.filter.impl.IPFilter</class>
 			<parameters>
 				<parameter key="file" value="filter/ip_filter.xml" />
 				<parameter key="pass" value="true" />
@@ -16,7 +16,7 @@
 			<startup>2</startup>
 			<name>KeywordFilter</name>
 			<enable>true</enable>
-			<class>org.pinae.logmesh.component.filter.KeywordFilter</class>
+			<class>org.pinae.logmesh.component.filter.impl.KeywordFilter</class>
 			<parameters>
 				<parameter key="file" value="filter/keyword_filter.xml" />
 				<parameter key="pass" value="true" />

@@ -47,7 +47,7 @@ public class MessageOutputorFactory {
 			String name = (String)outputorConfig.get("name");
 			String className = (String)outputorConfig.get("kwClass");
 			if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(className)) {
-				logger.info(String.format("Start Filter %s (%s)", name, className));
+				logger.info(String.format("Start Message Outputor %s (%s)", name, className));
 			}
 		}
 		
