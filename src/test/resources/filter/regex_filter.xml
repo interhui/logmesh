@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<filters>
-	<filter>
-		<pattern>(PIX|ASA)\s+Log.*</pattern>
-		<pattern>(Firewall)\s+Log.*</pattern>
-	</filter>
-</filters>
