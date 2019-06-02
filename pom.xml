@@ -4,8 +4,8 @@
 
 	<groupId>org.pinae</groupId>
 	<artifactId>logmesh</artifactId>
-	<version>1.5</version>
-	<packaging>jar</packaging>
+	<version>1.6</version>
+	<packaging>pom</packaging>
 
 	<name>logmesh</name>
 
@@ -30,6 +30,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<modules>
+		<module>logmesh-core</module>
+		<module>logmesh-utils</module>
+		<module>logmesh-netty</module>
+		<module>logmesh-redis</module>
+		<module>logmesh-kafka</module>
+		<module>logmesh-txtfile</module>
+		<module>logmesh-elasticsearch</module>
+	</modules>
 
 	<dependencies>
 		<dependency>
@@ -74,17 +84,6 @@
 			<version>1.4</version>
 		</dependency>
 		<dependency>
-			<groupId>io.searchbox</groupId>
-			<artifactId>jest</artifactId>
-			<version>5.3.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-clients</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
@@ -113,11 +112,6 @@
 			<groupId>org.mvel</groupId>
 			<artifactId>mvel2</artifactId>
 			<version>2.4.4.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.10.2</version>
 		</dependency>
 	</dependencies>
 

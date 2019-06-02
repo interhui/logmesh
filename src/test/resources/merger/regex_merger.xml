@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<merger>
-	<pattern>.*(Teardown) \S+ connection \S+ for outside:(\S+)/\d+ to inside:(\S+)/\d+ duration \S+ bytes \d+.*</pattern>
-	<pattern>.*(Built inbound) TCP connection \S+ for outside:(\S+)/\d+.* to inside:(\S+)/\d+.*</pattern>
-	<pattern>.*(Built outbound) TCP connection \S+ for outside:(\S+)/\d+.* to inside:(\S+)/\d+.*</pattern>
-	<pattern>.*(Deny) TCP (no connection) from (\S+)/\d+ to (\S+)/\d+ flags \S+  on interface \S+</pattern>
-</merger>
